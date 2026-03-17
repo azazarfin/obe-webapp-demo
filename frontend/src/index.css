@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-ruet-blue: #1E70C3;
+  --color-ruet-dark: #142D55;
+}
+
+body {
+  @apply antialiased;
+}

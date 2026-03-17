@@ -1,0 +1,29 @@
+node_modules/
+.env
+dist/
+build/
+.DS_Store
+
+# Plan and documentation files
+*_plan.txt
+plan-text.txt
+OBE Webapp Plan Elaboration.pdf
+guidelines.md
+gemini.md
+
+# Mock data and spreadsheets
+*.xlsx
+
+# Extraction scripts and outputs
+pdf-reader.js
+python-excel-reader.py
+python-pdf-reader.py
+*-output.txt
+
+# Environment and IDE
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
