@@ -1,27 +1,31 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Book, Users, Briefcase } from 'lucide-react';
+import { Search, MapPin, Book, Users, Briefcase, FileText } from 'lucide-react';
+import { SEMESTERS } from '../../utils/semesterUtils';
 
 const mockCoursesInfo = [
-  { id: 1, code: 'CSE 3101', name: 'Database Systems', credit: 3, dept: 'CSE', semester: '5th' },
-  { id: 2, code: 'ECE 3101', name: 'Signals and Systems', credit: 3, dept: 'ECE', semester: '5th' },
-  { id: 3, code: 'ME 2101', name: 'Basic Thermodynamics', credit: 3, dept: 'ME', semester: '3rd' },
-  { id: 4, code: 'CSE 4101', name: 'Artificial Intelligence', credit: 3, dept: 'CSE', semester: '7th' }
+  { id: 1, code: 'CSE 3101', name: 'Database Systems', credit: 3, dept: 'CSE', semester: '2nd Year Odd',
+    contents: 'Introduction to DBMS, ER Model, Relational Model, SQL, Normalization, Transaction Management, Indexing & Hashing, Query Processing' },
+  { id: 2, code: 'ECE 3101', name: 'Signals and Systems', credit: 3, dept: 'ECE', semester: '2nd Year Odd',
+    contents: 'Continuous and Discrete Signals, LTI Systems, Fourier Series, Fourier Transform, Laplace Transform, Z-Transform' },
+  { id: 3, code: 'ME 2101', name: 'Basic Thermodynamics', credit: 3, dept: 'ME', semester: '1st Year Odd',
+    contents: 'Laws of Thermodynamics, Properties of Pure Substances, Energy Analysis, Entropy, Gas Power Cycles' },
+  { id: 4, code: 'CSE 4101', name: 'Artificial Intelligence', credit: 3, dept: 'CSE', semester: '3rd Year Odd',
+    contents: 'Search Algorithms, Knowledge Representation, Machine Learning Basics, Neural Networks, NLP Fundamentals' },
 ];
 
 const mockTeachersInfo = [
   { id: 1, name: 'Dr. John Doe', designation: 'Professor', dept: 'ECE', email: 'john@ece.ruet.ac.bd' },
   { id: 2, name: 'Jane Smith', designation: 'Assistant Professor', dept: 'CSE', email: 'jane@cse.ruet.ac.bd' },
-  { id: 3, name: 'Dr. Alan Turing', designation: 'Professor', dept: 'CSE', email: 'alan@cse.ruet.ac.bd' }
+  { id: 3, name: 'Dr. Alan Turing', designation: 'Professor', dept: 'CSE', email: 'alan@cse.ruet.ac.bd' },
 ];
 
 const UniversityDirectory = () => {
-  const [activeTab, setActiveTab] = useState('courses'); // 'courses' or 'teachers'
+  const [activeTab, setActiveTab] = useState('courses');
   const [filterDept, setFilterDept] = useState('All');
   const [filterSemester, setFilterSemester] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
   const departments = ['All', 'CSE', 'ECE', 'ME', 'EEE', 'CE'];
-  const semesters = ['All', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
 
   const filteredCourses = mockCoursesInfo.filter(course => {
     return (filterDept === 'All' || course.dept === filterDept) &&
@@ -37,7 +41,6 @@ const UniversityDirectory = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-8">
       
-      {/* Search and Filters */}
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
           <div className="w-full md:w-1/2 relative">
@@ -67,14 +70,13 @@ const UniversityDirectory = () => {
                   onChange={(e) => setFilterSemester(e.target.value)}
                   className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:border-ruet-blue"
                >
-                  <option value="All" className="dark:bg-gray-800">All Sems</option>
-                  {semesters.filter(s => s !== 'All').map(s => <option key={s} value={s} className="dark:bg-gray-800">{s}</option>)}
+                  <option value="All" className="dark:bg-gray-800">All Semesters</option>
+                  {SEMESTERS.map(s => <option key={s} value={s} className="dark:bg-gray-800">{s}</option>)}
                </select>
              )}
           </div>
         </div>
 
-        {/* Directory Tabs */}
         <div className="flex border-b border-gray-200 dark:border-gray-700">
           <button
             onClick={() => setActiveTab('courses')}
@@ -91,7 +93,6 @@ const UniversityDirectory = () => {
         </div>
       </div>
 
-      {/* Results */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {activeTab === 'courses' ? (
            filteredCourses.length > 0 ? (
@@ -101,10 +102,20 @@ const UniversityDirectory = () => {
                      <span className="text-xs font-bold px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded inline-block">{course.code}</span>
                      <span className="text-xs text-gray-500 dark:text-gray-400">{course.credit} CR</span>
                    </div>
-                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 line-clamp-1">{course.name}</h3>
-                   <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-800">
+                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-1">{course.name}</h3>
+                   
+                   {course.contents && (
+                     <div className="mb-4">
+                       <div className="flex items-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
+                         <FileText size={12} className="mr-1" /> Course Contents
+                       </div>
+                       <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3">{course.contents}</p>
+                     </div>
+                   )}
+
+                   <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
                       <span className="flex items-center"><MapPin size={14} className="mr-1" /> {course.dept}</span>
-                      <span>Semester: {course.semester}</span>
+                      <span className="text-xs font-medium bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">{course.semester}</span>
                    </div>
                 </div>
              ))

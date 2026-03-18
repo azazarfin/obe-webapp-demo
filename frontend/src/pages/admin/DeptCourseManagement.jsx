@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, X, Trash2, CheckCircle, Edit, AlertCircle } from 'lucide-react';
+import { Plus, X, Trash2, CheckCircle, Edit, AlertCircle, BarChart3 } from 'lucide-react';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { defaultSeries } from './SeriesManagement';
 
@@ -164,6 +164,11 @@ const DeptCourseManagement = () => {
                     {course.status === 'running' && (
                       <button onClick={() => handleMarkFinishedClick(course.id)} className="text-orange-500 hover:text-orange-700" title="Mark Finished">
                         <CheckCircle size={18} />
+                      </button>
+                    )}
+                    {course.status === 'finished' && (
+                      <button className="text-green-600 hover:text-green-800 dark:text-green-400" title="View Report">
+                        <BarChart3 size={18} />
                       </button>
                     )}
                     <button className="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Edit"><Edit size={18} /></button>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClipboardList, BookOpen, Users, CalendarCheck, BarChart3, FileText, UserCog, MessageSquare } from 'lucide-react';
+import { ClipboardList, BookOpen, Users, CalendarCheck, BarChart3, FileText, UserCog, MessageSquare, GraduationCap } from 'lucide-react';
 
 const mockCourseData = {
   code: 'CSE 3101',
@@ -102,6 +102,17 @@ const TeacherCoursePage = ({ courseType = 'Theory', onNavigate }) => {
               <div>
                 <span className="block font-semibold text-purple-800 dark:text-purple-300">Add Assessment</span>
                 <span className="text-xs text-purple-600/70 dark:text-purple-400/70">Lab/sessional assessments</span>
+              </div>
+            </button>
+          )}
+
+          {isTheory && (
+            <button onClick={() => onNavigate('semester_final')}
+              className="flex items-center p-4 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors text-left group">
+              <GraduationCap size={22} className="text-teal-600 dark:text-teal-400 mr-3 group-hover:scale-110 transition-transform" />
+              <div>
+                <span className="block font-semibold text-teal-800 dark:text-teal-300">Semester Final</span>
+                <span className="text-xs text-teal-600/70 dark:text-teal-400/70">Part A & Part B marking</span>
               </div>
             </button>
           )}
