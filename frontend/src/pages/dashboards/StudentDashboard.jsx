@@ -118,12 +118,16 @@ const StudentDashboard = () => {
             </h2>
             <div className="space-y-2">
               {mockFinishedCourses.map(course => (
-                <div key={course.id} className="flex justify-between items-center p-3 rounded-md border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#2d2d2d] transition-colors">
+                <div key={course.id} onClick={() => handleCourseClick({ ...course, attendance: 100, marks: { ct: { earned: 18, total: 20 }, attendance: { earned: 9.5, total: 10 }, assignment: { earned: 9, total: 10 } }, obe: { CO1: { percentage: 92, threshold: 50 }, CO2: { percentage: 81, threshold: 50 }, CO3: { percentage: 78, threshold: 50 } }, isFinished: true })}
+                  className="flex justify-between items-center p-3 rounded-md border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#2d2d2d] hover:border-ruet-blue/30 transition-all cursor-pointer group">
                   <div>
-                    <p className="font-medium text-gray-800 dark:text-gray-200">{course.code} — {course.name}</p>
+                    <p className="font-medium text-gray-800 dark:text-gray-200 group-hover:text-ruet-blue dark:group-hover:text-blue-400 transition-colors">{course.code} — {course.name}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">{course.teacher}</p>
                   </div>
-                  <span className="px-3 py-1 text-sm font-bold text-ruet-blue dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-full">{course.grade}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-3 py-1 text-sm font-bold text-ruet-blue dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-full">{course.grade}</span>
+                    <ChevronRight className="text-gray-400 group-hover:text-ruet-blue transition-colors" size={16} />
+                  </div>
                 </div>
               ))}
             </div>
