@@ -1,35 +1,30 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  uid: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
   role: { 
     type: String, 
     enum: ['CENTRAL_ADMIN', 'DEPT_ADMIN', 'TEACHER', 'STUDENT'], 
     required: true 
   },
-  email: { 
-    type: String, 
-    required: true, 
-    unique: true,
-    validate: {
-      validator: function(v) {
-        if (this.role === 'STUDENT') {
-          return /^[\w-\.]+@student\.ruet\.ac\.bd$/.test(v);
-        }
-        return /^[\w-\.]+@[\w-\.]+\.+[\w-]{2,4}$/.test(v);
-      },
-      message: props => `${props.value} is not a valid email!`
-    }
-  },
-  profileRef: { 
-    type: mongoose.Schema.Types.ObjectId,
-    refPath: 'profileModel'
-  },
-  profileModel: {
-    type: String,
-    enum: ['Student', 'Teacher', null],
-    default: null
-  }
+  department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department' },
+  rollNumber: { type: String },
+  designation: { type: String },
+  series: { type: Number },
+  section: { type: String }
 }, { timestamps: true });
+
+userSchema.pre('save', async function() {
+  if (!this.isModified('password')) return;
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
 
 module.exports = mongoose.model('User', userSchema);

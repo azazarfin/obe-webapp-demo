@@ -1,4 +1,6 @@
-const admin = require('../config/firebase');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'ruet-obe-dev-secret-key-2024';
 
 const verifyToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -10,13 +12,21 @@ const verifyToken = async (req, res, next) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    req.user = decodedToken;
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
     next();
   } catch (error) {
-    console.error('Firebase Auth Error:', error);
     return res.status(401).json({ error: 'Unauthorized: Invalid token' });
   }
 };
 
-module.exports = { verifyToken };
+const requireRole = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Forbidden: Insufficient permissions' });
+    }
+    next();
+  };
+};
+
+module.exports = { verifyToken, requireRole, JWT_SECRET };

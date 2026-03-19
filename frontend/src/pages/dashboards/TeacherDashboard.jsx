@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { User, Mail, Building, BookOpen, Award } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Mail, Building, BookOpen, Award, Loader2 } from 'lucide-react';
 import TakeAttendance from '../teacher/TakeAttendance';
 import AddAssessment from '../teacher/AddAssessment';
 import AddSessionalAssessment from '../teacher/AddSessionalAssessment';
@@ -9,43 +9,48 @@ import ModifyStudentRoster from '../teacher/ModifyStudentRoster';
 import ManageCourseFeedback from '../teacher/ManageCourseFeedback';
 import TeacherCoursePage from '../teacher/TeacherCoursePage';
 import SemesterFinalMarking from '../teacher/SemesterFinalMarking';
-
-const mockTeacherInfo = {
-  name: 'Dr. John Doe',
-  designation: 'Professor',
-  department: 'Computer Science & Engineering (CSE)',
-  email: 'john@cse.ruet.ac.bd',
-  joinYear: 2015,
-  phone: '+880-1234-567890',
-};
+import { useAuth } from '../../contexts/AuthContext';
+import api from '../../utils/api';
 
 const TeacherDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedCourseType, setSelectedCourseType] = useState('Theory');
+  const [selectedInstance, setSelectedInstance] = useState(null);
+  const [instances, setInstances] = useState([]);
+  const [loadingInst, setLoadingInst] = useState(true);
+  const { currentUser } = useAuth();
 
-  const handleCourseClick = (courseType) => {
-    setSelectedCourseType(courseType);
+  useEffect(() => {
+    api.get('/class-instances?status=Running')
+      .then(data => setInstances(data))
+      .catch(() => {})
+      .finally(() => setLoadingInst(false));
+  }, []);
+
+  const handleCourseClick = (instance) => {
+    setSelectedInstance(instance);
+    setSelectedCourseType(instance.course?.type || 'Theory');
     setActiveTab('course_page');
   };
 
   const renderContent = () => {
     switch(activeTab) {
       case 'course_page':
-        return <TeacherCoursePage courseType={selectedCourseType} onNavigate={(tab) => setActiveTab(tab)} />;
+        return <TeacherCoursePage courseType={selectedCourseType} classInstance={selectedInstance} onNavigate={(tab) => setActiveTab(tab)} />;
       case 'attendance':
-        return <TakeAttendance />;
+        return <TakeAttendance classInstance={selectedInstance} />;
       case 'assessment':
-        return <AddAssessment />;
+        return <AddAssessment classInstance={selectedInstance} />;
       case 'sessional_assessment':
-        return <AddSessionalAssessment />;
+        return <AddSessionalAssessment classInstance={selectedInstance} />;
       case 'semester_final':
-        return <SemesterFinalMarking />;
+        return <SemesterFinalMarking classInstance={selectedInstance} />;
       case 'evaluation':
-        return <EvaluationReport courseType={selectedCourseType} />;
+        return <EvaluationReport courseType={selectedCourseType} classInstance={selectedInstance} />;
       case 'roster':
-        return <ModifyStudentRoster />;
+        return <ModifyStudentRoster classInstance={selectedInstance} />;
       case 'feedback':
-        return <ManageCourseFeedback />;
+        return <ManageCourseFeedback classInstance={selectedInstance} />;
       case 'experience_report':
         return <InstructorExperienceReport onBack={() => setActiveTab('overview')} />;
       case 'overview':
@@ -58,26 +63,22 @@ const TeacherDashboard = () => {
                   <User size={28} className="text-ruet-blue dark:text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">{mockTeacherInfo.name}</h2>
-                  <p className="text-sm text-ruet-blue dark:text-blue-400 font-medium">{mockTeacherInfo.designation}</p>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">{currentUser?.name}</h2>
+                  <p className="text-sm text-ruet-blue dark:text-blue-400 font-medium">{currentUser?.designation}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-gray-100 dark:border-gray-800">
                 <div className="text-center p-2">
                   <p className="text-xs text-gray-500 uppercase font-medium flex items-center justify-center"><Building size={12} className="mr-1" />Department</p>
-                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mt-0.5">{mockTeacherInfo.department}</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mt-0.5">{currentUser?.department?.shortName || currentUser?.department?.name || '—'}</p>
                 </div>
                 <div className="text-center p-2">
                   <p className="text-xs text-gray-500 uppercase font-medium flex items-center justify-center"><Mail size={12} className="mr-1" />Email</p>
-                  <p className="text-sm font-medium text-ruet-blue dark:text-blue-400 mt-0.5">{mockTeacherInfo.email}</p>
-                </div>
-                <div className="text-center p-2">
-                  <p className="text-xs text-gray-500 uppercase font-medium flex items-center justify-center"><Award size={12} className="mr-1" />Joined</p>
-                  <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">{mockTeacherInfo.joinYear}</p>
+                  <p className="text-sm font-medium text-ruet-blue dark:text-blue-400 mt-0.5 break-all">{currentUser?.email}</p>
                 </div>
                 <div className="text-center p-2">
                   <p className="text-xs text-gray-500 uppercase font-medium flex items-center justify-center"><BookOpen size={12} className="mr-1" />Running Courses</p>
-                  <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">2</p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">{instances.length}</p>
                 </div>
               </div>
             </div>
@@ -85,29 +86,26 @@ const TeacherDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
                 <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Running Courses</h2>
-                <ul className="space-y-3">
-                  <li className="p-4 bg-gray-50 dark:bg-[#2d2d2d] rounded-lg border border-transparent hover:border-ruet-blue/30 transition-all cursor-pointer"
-                      onClick={() => handleCourseClick('Theory')}>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-bold text-gray-800 dark:text-gray-200">CSE 3101 - Database Systems</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Section A, 2021 Series</p>
-                      </div>
-                      <span className="px-2 py-0.5 text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded">Theory</span>
-                    </div>
-                  </li>
-
-                  <li className="p-4 bg-gray-50 dark:bg-[#2d2d2d] rounded-lg border border-transparent hover:border-purple-400/30 transition-all cursor-pointer"
-                      onClick={() => handleCourseClick('Sessional')}>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-bold text-gray-800 dark:text-gray-200">CSE 3102 - Database Systems Lab</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Section A, 2021 Series</p>
-                      </div>
-                      <span className="px-2 py-0.5 text-xs font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 rounded">Sessional</span>
-                    </div>
-                  </li>
-                </ul>
+                {loadingInst ? (
+                  <div className="flex justify-center py-6"><Loader2 className="animate-spin text-ruet-blue" size={24} /></div>
+                ) : instances.length === 0 ? (
+                  <p className="text-sm text-gray-500 text-center py-6">No running courses assigned.</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {instances.map(inst => (
+                      <li key={inst._id} className={`p-4 bg-gray-50 dark:bg-[#2d2d2d] rounded-lg border border-transparent hover:border-ruet-blue/30 transition-all cursor-pointer`}
+                          onClick={() => handleCourseClick(inst)}>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-bold text-gray-800 dark:text-gray-200">{inst.course?.courseCode} — {inst.course?.courseName}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Section {inst.section}, {inst.series} Series</p>
+                          </div>
+                          <span className={`px-2 py-0.5 text-xs font-semibold rounded ${inst.course?.type === 'Sessional' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'}`}>{inst.course?.type}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               
               <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">

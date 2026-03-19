@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
@@ -14,53 +11,23 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { loginDemo } = useAuth();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    if (email.endsWith('@demo.com')) {
-      let assignedRole = 'STUDENT';
-      if (email.includes('central')) assignedRole = 'CENTRAL_ADMIN';
-      else if (email.includes('dept')) assignedRole = 'DEPT_ADMIN';
-      else if (email.includes('teacher')) assignedRole = 'TEACHER';
-      
-      loginDemo(assignedRole);
-      setLoading(false);
-      
-      if (assignedRole === 'CENTRAL_ADMIN') navigate('/central-admin');
-      else if (assignedRole === 'DEPT_ADMIN') navigate('/dept-admin');
-      else if (assignedRole === 'TEACHER') navigate('/teacher');
-      else navigate('/student');
-      return;
-    }
-
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken();
+      const user = await login(email, password);
 
-      const response = await fetch('http://localhost:5000/api/auth/me', {
-         headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-         const data = await response.json();
-         const role = data.role;
-         if (role === 'CENTRAL_ADMIN') navigate('/central-admin');
-         else if (role === 'DEPT_ADMIN') navigate('/dept-admin');
-         else if (role === 'TEACHER') navigate('/teacher');
-         else if (role === 'STUDENT') navigate('/student');
-         else navigate('/unauthorized');
-      } else {
-         setError('User role not found in the system. Please contact an administrator.');
-         // Optionally sign out from Firebase if no DB user exists
-         // await auth.signOut();
-      }
+      if (user.role === 'CENTRAL_ADMIN') navigate('/central-admin');
+      else if (user.role === 'DEPT_ADMIN') navigate('/dept-admin');
+      else if (user.role === 'TEACHER') navigate('/teacher');
+      else if (user.role === 'STUDENT') navigate('/student');
+      else navigate('/unauthorized');
     } catch (err) {
-      setError('Failed to log in. Please check your credentials.');
-      console.error(err);
+      setError(err.message || 'Failed to log in. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -103,7 +70,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="focus:ring-ruet-blue focus:border-ruet-blue block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-[#2d2d2d] dark:text-white rounded-md p-2.5 outline-none transition-colors"
-                  placeholder="ID@student.ruet.ac.bd"
+                  placeholder="email@ruet.ac.bd"
                 />
               </div>
             </div>
