@@ -3,9 +3,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-const { verifyToken } = require('./middleware/authMiddleware');
-
 const authRoutes = require('./routes/authRoutes');
+const departmentRoutes = require('./routes/departmentRoutes');
+const courseRoutes = require('./routes/courseRoutes');
+const userRoutes = require('./routes/userRoutes');
+const classInstanceRoutes = require('./routes/classInstanceRoutes');
+const assessmentRoutes = require('./routes/assessmentRoutes');
+const enrollmentRoutes = require('./routes/enrollmentRoutes');
 
 const app = express();
 app.use(cors());
@@ -17,18 +21,15 @@ app.get('/', (req, res) => {
   res.send('RUET OBE Evaluation System API');
 });
 
-// Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/departments', departmentRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/class-instances', classInstanceRoutes);
+app.use('/api/assessments', assessmentRoutes);
+app.use('/api/enrollments', enrollmentRoutes);
 
-// Example protected route to test middleware
-app.get('/api/protected', verifyToken, (req, res) => {
-  res.json({ message: 'Authenticated successfully', user: req.user });
-});
-
-mongoose.connect(process.env.MONGO_URI, { 
-//   useNewUrlParser: true, // Deprecated in Mongoose 6+
-//   useUnifiedTopology: true // Deprecated in Mongoose 6+
-})
+mongoose.connect(process.env.MONGO_URI, {})
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => console.error('MongoDB connection error:', err));
 

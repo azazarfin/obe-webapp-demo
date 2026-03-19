@@ -5,7 +5,7 @@ const assessmentSchema = new mongoose.Schema({
   title: { type: String, required: true }, // e.g., "CT-1", "Final-Q1a"
   type: { 
     type: String, 
-    enum: ['CT', 'Assignment', 'Final', 'Quiz', 'Report', 'LabFinal'], 
+    enum: ['CT', 'Assignment', 'Final', 'Quiz', 'Report', 'LabFinal', 'Presentation', 'Viva', 'Custom'], 
     required: true 
   },
   totalMarks: { type: Number, required: true },

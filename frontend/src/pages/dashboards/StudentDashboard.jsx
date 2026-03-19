@@ -6,39 +6,19 @@ import StudentCoursePage from '../student/StudentCoursePage';
 import StudentOBEAttainment from '../student/StudentOBEAttainment';
 import StudentMarksheet from '../student/StudentMarksheet';
 import StudentAttendanceInfo from '../student/StudentAttendanceInfo';
+import { useAuth } from '../../contexts/AuthContext';
 
-const mockStudentInfo = {
-  name: 'Md. Rahim Uddin',
-  roll: '2103001',
-  email: '2103001@student.ruet.ac.bd',
-  dept: 'CSE',
-  series: '2021',
-  section: 'A',
-};
 
-const mockEnrolledCourses = [
-  { 
-    id: 'c1', code: 'CSE 3101', name: 'Database Systems', attendance: 92, teacher: 'Dr. John Doe',
-    marks: { ct: { earned: 18, total: 20 }, attendance: { earned: 9.2, total: 10 }, assignment: { earned: 8.5, total: 10 }, final: { earned: null, total: 60 } },
-    obe: { CO1: { percentage: 88, threshold: 60 }, CO2: { percentage: 75, threshold: 60 }, CO3: { percentage: 55, threshold: 60 } }
-  },
-  { 
-    id: 'c2', code: 'ECE 3101', name: 'Signals and Systems', attendance: 85, teacher: 'Dr. Jane Smith',
-    marks: { ct: { earned: 15, total: 20 }, attendance: { earned: 8.5, total: 10 }, assignment: { earned: 9, total: 10 }, final: { earned: 45, total: 60 } },
-    obe: { CO1: { percentage: 92, threshold: 60 }, CO2: { percentage: 81, threshold: 60 }, CO3: { percentage: 78, threshold: 60 }, CO4: { percentage: 85, threshold: 60 } }
-  }
-];
 
-const mockFinishedCourses = [
-  { id: 'f1', code: 'CSE 2101', name: 'Data Structures', teacher: 'Prof. Ada Lovelace', grade: 'A' },
-  { id: 'f2', code: 'CSE 2201', name: 'Algorithms', teacher: 'Dr. Alan Turing', grade: 'A-' },
-];
-
-const mockGlobalObe = { PO1: 85, PO2: 78, PO3: 65, PO4: 90, PO5: 82, PO6: 70 };
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const { currentUser } = useAuth();
+
+  const mockEnrolledCourses = [];
+  const mockFinishedCourses = [];
+  const mockGlobalObe = {};
 
   const handleCourseClick = (course) => {
     setSelectedCourse(course);
@@ -63,14 +43,14 @@ const StudentDashboard = () => {
             <User size={28} className="text-ruet-blue dark:text-blue-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{mockStudentInfo.name}</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Roll: {mockStudentInfo.roll} · {mockStudentInfo.dept} · Series {mockStudentInfo.series} · Section {mockStudentInfo.section}</p>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{currentUser?.name}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Roll: {currentUser?.rollNumber} · {currentUser?.department?.shortName || '—'} · Series {currentUser?.series} · Section {currentUser?.section}</p>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-gray-100 dark:border-gray-800">
           <div className="text-center p-2">
             <p className="text-xs text-gray-500 uppercase font-medium">Email</p>
-            <p className="text-sm font-medium text-ruet-blue dark:text-blue-400 mt-0.5">{mockStudentInfo.email}</p>
+            <p className="text-sm font-medium text-ruet-blue dark:text-blue-400 mt-0.5 break-all">{currentUser?.email}</p>
           </div>
           <div className="text-center p-2">
             <p className="text-xs text-gray-500 uppercase font-medium">Running Courses</p>
