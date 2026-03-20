@@ -10,6 +10,10 @@ const userRoutes = require('./routes/userRoutes');
 const classInstanceRoutes = require('./routes/classInstanceRoutes');
 const assessmentRoutes = require('./routes/assessmentRoutes');
 const enrollmentRoutes = require('./routes/enrollmentRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
+const instructorReportRoutes = require('./routes/instructorReportRoutes');
+const seriesRoutes = require('./routes/seriesRoutes');
 
 const app = express();
 app.use(cors());
@@ -28,6 +32,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/class-instances', classInstanceRoutes);
 app.use('/api/assessments', assessmentRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/instructor-reports', instructorReportRoutes);
+app.use('/api/series', seriesRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {})
   .then(() => console.log('MongoDB connected successfully'))

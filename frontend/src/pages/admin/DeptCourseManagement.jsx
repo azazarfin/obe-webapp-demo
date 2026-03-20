@@ -1,42 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, X, Trash2, CheckCircle, Edit, AlertCircle, BarChart3, Loader2 } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CheckCircle, Edit, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
+import { departmentUsesSections, getDepartmentSections, normalizeSectionValue } from '../../utils/departmentUtils';
 
-const sectionOptions = ['N/A', 'A', 'B', 'C', 'D', 'E'];
+const initialForm = {
+  course: '',
+  series: '',
+  section: 'N/A',
+  teachers: [],
+  teacherSearch: ''
+};
 
 const DeptCourseManagement = () => {
+  const { currentUser } = useAuth();
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [instances, setInstances] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-
-  const [showAssignModal, setShowAssignModal] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
-
-  const [selectedCourse, setSelectedCourse] = useState('');
-  const [selectedSeries, setSelectedSeries] = useState('');
-  const [selectedSection, setSelectedSection] = useState('');
-  const [assignedTeachers, setAssignedTeachers] = useState([]);
-  const [currentTeacher, setCurrentTeacher] = useState('');
-  const [coPoMapping, setCoPoMapping] = useState([{ co: 'CO1', po: [] }]);
-
+  const [showModal, setShowModal] = useState(false);
+  const [editingInstance, setEditingInstance] = useState(null);
+  const [formData, setFormData] = useState(initialForm);
   const [filterSection, setFilterSection] = useState('');
   const [confirm, setConfirm] = useState({ open: false, type: '', id: null });
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [cs, ts, inst] = await Promise.all([
+      const [courseData, teacherData, instanceData] = await Promise.all([
         api.get('/courses'),
         api.get('/users?role=TEACHER'),
         api.get('/class-instances')
       ]);
-      setCourses(cs);
-      setTeachers(ts);
-      setInstances(inst);
+      setCourses(Array.isArray(courseData) ? courseData : []);
+      setTeachers(Array.isArray(teacherData) ? teacherData : []);
+      setInstances(Array.isArray(instanceData) ? instanceData : []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -44,41 +46,95 @@ const DeptCourseManagement = () => {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const selectedCourse = useMemo(
+    () => courses.find((course) => course._id === formData.course) || null,
+    [courses, formData.course]
+  );
+
+  const availableSections = useMemo(
+    () => getDepartmentSections(selectedCourse?.department),
+    [selectedCourse]
+  );
+
+  const showSectionSelect = departmentUsesSections(selectedCourse?.department);
+  const activeTeachers = useMemo(() => teachers.filter((teacher) => !teacher.onLeave), [teachers]);
+  const filteredTeachers = useMemo(() => activeTeachers.filter((teacher) => (
+    !formData.teachers.includes(teacher._id) &&
+    (!formData.teacherSearch || teacher.name.toLowerCase().includes(formData.teacherSearch.toLowerCase()))
+  )), [activeTeachers, formData.teacherSearch, formData.teachers]);
+
+  const departmentSections = useMemo(
+    () => getDepartmentSections(currentUser?.department),
+    [currentUser]
+  );
+
+  const filteredInstances = filterSection
+    ? instances.filter((instance) => instance.section === filterSection)
+    : instances;
 
   const resetForm = () => {
-    setSelectedCourse('');
-    setSelectedSeries('');
-    setSelectedSection('');
-    setAssignedTeachers([]);
-    setCurrentTeacher('');
-    setCoPoMapping([{ co: 'CO1', po: [] }]);
+    setEditingInstance(null);
+    setFormData(initialForm);
   };
 
-  const handleAddTeacher = () => {
-    if (currentTeacher && !assignedTeachers.includes(currentTeacher)) {
-      setAssignedTeachers([...assignedTeachers, currentTeacher]);
-      setCurrentTeacher('');
-    }
+  const openCreateModal = () => {
+    resetForm();
+    setShowModal(true);
   };
 
-  const handleSubmitAssignment = async (e) => {
-    e.preventDefault();
-    if (assignedTeachers.length === 0) return;
+  const openEditModal = (instance) => {
+    const courseDepartment = instance.course?.department;
+    setEditingInstance(instance);
+    setFormData({
+      course: instance.course?._id || '',
+      series: String(instance.series || ''),
+      section: normalizeSectionValue(courseDepartment, instance.section || 'N/A'),
+      teachers: Array.isArray(instance.teachers) && instance.teachers.length > 0
+        ? instance.teachers.map((teacher) => String(teacher._id))
+        : (instance.teacher?._id ? [String(instance.teacher._id)] : []),
+      teacherSearch: ''
+    });
+    setShowModal(true);
+  };
+
+  const handleCourseChange = (courseId) => {
+    const course = courses.find((item) => item._id === courseId);
+    setFormData((prev) => ({
+      ...prev,
+      course: courseId,
+      section: normalizeSectionValue(course?.department, prev.section)
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!selectedCourse) return;
+
     setSaving(true);
     try {
-      await api.post('/class-instances', {
-        course: selectedCourse,
-        teacher: assignedTeachers[0],
-        series: parseInt(selectedSeries),
-        section: selectedSection,
-        status: 'Running',
-        coPoMapping
-      });
+      const payload = {
+        course: formData.course,
+        teachers: formData.teachers,
+        series: Number.parseInt(formData.series, 10),
+        section: normalizeSectionValue(selectedCourse.department, formData.section),
+        status: editingInstance?.status || 'Running'
+      };
+
+      if (editingInstance) {
+        await api.put(`/class-instances/${editingInstance._id}`, payload);
+        setSuccessMsg('Running course updated successfully.');
+      } else {
+        await api.post('/class-instances', { ...payload, coPoMapping: [] });
+        setSuccessMsg('Course assigned successfully.');
+      }
+
       await fetchData();
-      setShowAssignModal(false);
+      setShowModal(false);
       resetForm();
-      setSuccessMsg('Course assigned successfully!');
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (err) {
       setError(err.message);
@@ -109,19 +165,36 @@ const DeptCourseManagement = () => {
     }
   };
 
-  const filtered = filterSection ? instances.filter(i => i.section === filterSection) : instances;
-  const isCascadeReady = selectedCourse && selectedSeries && selectedSection;
+  const handleAddTeacher = (teacherId) => {
+    if (!teacherId || formData.teachers.includes(teacherId)) {
+      return;
+    }
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-ruet-blue" size={32} /></div>;
+    setFormData((prev) => ({
+      ...prev,
+      teachers: [...prev.teachers, teacherId]
+    }));
+  };
+
+  const handleRemoveTeacher = (teacherId) => {
+    setFormData((prev) => ({
+      ...prev,
+      teachers: prev.teachers.filter((id) => id !== teacherId)
+    }));
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-ruet-blue" size={32} /></div>;
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Course Management</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Assign teachers, manage running courses, and mark courses as finished.</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Assign teachers, edit running courses, and finish or delete course instances for your department.</p>
         </div>
-        <button onClick={() => { resetForm(); setShowAssignModal(true); }} className="flex items-center px-4 py-2 bg-ruet-blue text-white rounded-md hover:bg-ruet-dark transition-colors font-medium">
+        <button onClick={openCreateModal} className="flex items-center px-4 py-2 bg-ruet-blue text-white rounded-md hover:bg-ruet-dark transition-colors font-medium">
           <Plus size={18} className="mr-2" /> Assign New Course
         </button>
       </div>
@@ -134,13 +207,18 @@ const DeptCourseManagement = () => {
       )}
 
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg border border-gray-100 dark:border-gray-800">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
           <h3 className="font-semibold text-gray-800 dark:text-gray-200">Running & Finished Courses</h3>
-          <select value={filterSection} onChange={e => setFilterSection(e.target.value)} className="text-sm p-1.5 border border-gray-300 dark:border-gray-600 rounded bg-transparent dark:text-white outline-none">
-            <option value="">All Sections</option>
-            {sectionOptions.map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
+          {departmentSections.length > 0 && (
+            <select value={filterSection} onChange={(event) => setFilterSection(event.target.value)} className="text-sm p-1.5 border border-gray-300 dark:border-gray-600 rounded bg-transparent dark:text-white outline-none">
+              <option value="">All Sections</option>
+              {departmentSections.map((section) => (
+                <option key={section} value={section}>{section}</option>
+              ))}
+            </select>
+          )}
         </div>
+
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-[#2d2d2d]">
@@ -148,33 +226,40 @@ const DeptCourseManagement = () => {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Course</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Series</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Section</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Teacher</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Teachers</th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
                 <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-[#1e1e1e] divide-y divide-gray-200 dark:divide-gray-700">
-              {filtered.length > 0 ? filtered.map(inst => (
-                <tr key={inst._id}>
+              {filteredInstances.length > 0 ? filteredInstances.map((instance) => (
+                <tr key={instance._id}>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <span className="text-sm font-bold text-ruet-blue dark:text-blue-400">{inst.course?.courseCode}</span>
-                    <span className="block text-xs text-gray-500 dark:text-gray-400">{inst.course?.courseName}</span>
+                    <span className="text-sm font-bold text-ruet-blue dark:text-blue-400">{instance.course?.courseCode}</span>
+                    <span className="block text-xs text-gray-500 dark:text-gray-400">{instance.course?.courseName}</span>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{inst.series}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{inst.section}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{instance.series}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{instance.section === 'N/A' ? 'No Section' : instance.section}</td>
                   <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                    <span className="inline-block bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs px-2 py-0.5 rounded-full">{inst.teacher?.name}</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(Array.isArray(instance.teachers) && instance.teachers.length > 0 ? instance.teachers : [instance.teacher]).filter(Boolean).map((teacher) => (
+                        <span key={teacher._id} className="inline-block bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs px-2 py-0.5 rounded-full">{teacher.name}</span>
+                      ))}
+                    </div>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-center">
-                    <span className={`text-xs px-2 py-1 rounded font-semibold ${inst.status === 'Running' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'}`}>
-                      {inst.status}
+                    <span className={`text-xs px-2 py-1 rounded font-semibold ${instance.status === 'Running' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'}`}>
+                      {instance.status}
                     </span>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-right text-sm space-x-2">
-                    {inst.status === 'Running' && (
-                      <button onClick={() => setConfirm({ open: true, type: 'finish', id: inst._id })} className="text-orange-500 hover:text-orange-700" title="Mark Finished"><CheckCircle size={18} /></button>
+                    {instance.status === 'Running' && (
+                      <>
+                        <button onClick={() => openEditModal(instance)} className="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Edit Running Course"><Edit size={18} /></button>
+                        <button onClick={() => setConfirm({ open: true, type: 'finish', id: instance._id })} className="text-orange-500 hover:text-orange-700" title="Mark Finished"><CheckCircle size={18} /></button>
+                      </>
                     )}
-                    <button onClick={() => setConfirm({ open: true, type: 'delete', id: inst._id })} className="text-red-500 hover:text-red-700" title="Delete"><Trash2 size={18} /></button>
+                    <button onClick={() => setConfirm({ open: true, type: 'delete', id: instance._id })} className="text-red-500 hover:text-red-700" title="Delete"><Trash2 size={18} /></button>
                   </td>
                 </tr>
               )) : (
@@ -185,74 +270,84 @@ const DeptCourseManagement = () => {
         </div>
       </div>
 
-      {showAssignModal && (
+      {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-[#1e1e1e] rounded-lg shadow-xl w-full max-w-lg p-6 border border-gray-200 dark:border-gray-800 overflow-y-auto max-h-[90vh]">
+          <div className="bg-white dark:bg-[#1e1e1e] rounded-lg shadow-xl w-full max-w-xl p-6 border border-gray-200 dark:border-gray-800 overflow-y-auto max-h-[90vh]">
             <div className="flex justify-between items-center mb-5 border-b border-gray-200 dark:border-gray-800 pb-3">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Assign Teacher to Course</h3>
-              <button onClick={() => setShowAssignModal(false)} className="text-gray-500 hover:text-gray-700"><X size={20} /></button>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">{editingInstance ? 'Edit Running Course' : 'Assign Teachers to Course'}</h3>
+              <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-gray-700"><X size={20} /></button>
             </div>
-            <form onSubmit={handleSubmitAssignment} className="space-y-5">
+
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold mb-1.5 text-gray-700 dark:text-gray-300">Step 1: Select Course</label>
-                <select required value={selectedCourse} onChange={e => { setSelectedCourse(e.target.value); setSelectedSeries(''); setSelectedSection(''); setAssignedTeachers([]); }}
-                  className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
+                <label className="block text-sm font-semibold mb-1.5 text-gray-700 dark:text-gray-300">Course</label>
+                <select required value={formData.course} onChange={(event) => handleCourseChange(event.target.value)} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
                   <option value="">-- Choose Course --</option>
-                  {courses.map(c => <option key={c._id} value={c._id}>{c.courseCode} — {c.courseName}</option>)}
+                  {courses.map((course) => (
+                    <option key={course._id} value={course._id}>{course.courseCode} - {course.courseName}</option>
+                  ))}
                 </select>
               </div>
 
-              <div className={!selectedCourse ? 'opacity-40 pointer-events-none' : ''}>
-                <label className="block text-sm font-semibold mb-1.5 text-gray-700 dark:text-gray-300">Step 2: Series & Section</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <input type="number" required placeholder="Series Year (e.g. 2021)" value={selectedSeries} onChange={e => setSelectedSeries(e.target.value)}
-                    className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue"/>
-                  <select required value={selectedSection} onChange={e => setSelectedSection(e.target.value)}
-                    className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
-                    <option value="">-- Section --</option>
-                    {sectionOptions.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
+              <div className={`grid gap-3 ${showSectionSelect ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                <div>
+                  <label className="block text-sm font-semibold mb-1.5 text-gray-700 dark:text-gray-300">Series</label>
+                  <input type="number" required placeholder="Series Year (e.g. 2021)" value={formData.series} onChange={(event) => setFormData((prev) => ({ ...prev, series: event.target.value }))} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue" />
                 </div>
+
+                {showSectionSelect && (
+                  <div>
+                    <label className="block text-sm font-semibold mb-1.5 text-gray-700 dark:text-gray-300">Section</label>
+                    <select required value={formData.section} onChange={(event) => setFormData((prev) => ({ ...prev, section: event.target.value }))} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
+                      {availableSections.map((section) => (
+                        <option key={section} value={section}>{section}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
-              <div className={!isCascadeReady ? 'opacity-40 pointer-events-none' : ''}>
-                <label className="block text-sm font-semibold mb-1.5 text-gray-700 dark:text-gray-300">Step 3: Assign Teacher</label>
-                <div className="flex space-x-2">
-                  <select value={currentTeacher} onChange={e => setCurrentTeacher(e.target.value)}
-                    className="flex-1 p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
-                    <option value="">-- Select Teacher --</option>
-                    {teachers.filter(t => !assignedTeachers.includes(t._id)).map(t => (
-                      <option key={t._id} value={t._id}>{t.name}</option>
-                    ))}
-                  </select>
-                  <button type="button" onClick={handleAddTeacher} disabled={!currentTeacher}
-                    className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-40 font-bold">
-                    <Plus size={20} />
-                  </button>
+              {!showSectionSelect && selectedCourse && (
+                <p className="text-xs text-gray-500 dark:text-gray-400">This department does not use sections. The running course will be created without a section.</p>
+              )}
+
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">Assign Teachers</label>
+                <div className="relative">
+                  <input type="text" placeholder="Search teacher by name" value={formData.teacherSearch} onChange={(event) => setFormData((prev) => ({ ...prev, teacherSearch: event.target.value }))} className="w-full p-2.5 pl-9 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue" />
+                  <Search size={16} className="absolute left-3 top-3 text-gray-400" />
                 </div>
-                {assignedTeachers.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    {assignedTeachers.map((tid, idx) => {
-                      const t = teachers.find(t => t._id === tid);
+                <select value="" onChange={(event) => handleAddTeacher(event.target.value)} size={Math.min(Math.max(filteredTeachers.length + 1, 2), 6)} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
+                  <option value="" disabled>Select a teacher to add</option>
+                  {filteredTeachers.length > 0 ? filteredTeachers.map((teacher) => (
+                    <option key={teacher._id} value={teacher._id}>{teacher.name} - {teacher.department?.shortName} ({teacher.teacherType || 'Host'})</option>
+                  )) : (
+                    <option value="" disabled>No available teacher found</option>
+                  )}
+                </select>
+                {formData.teachers.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {formData.teachers.map((teacherId) => {
+                      const teacher = teachers.find((item) => item._id === teacherId);
+                      if (!teacher) return null;
                       return (
-                        <div key={idx} className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md px-3 py-2">
-                          <span className="text-sm font-medium text-blue-800 dark:text-blue-300">{t?.name}</span>
-                          <button type="button" onClick={() => setAssignedTeachers(assignedTeachers.filter(id => id !== tid))} className="text-red-500 hover:text-red-700"><X size={16} /></button>
-                        </div>
+                        <span key={teacherId} className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs px-3 py-1 rounded-full">
+                          {teacher.name} - {teacher.department?.shortName}
+                          <button type="button" onClick={() => handleRemoveTeacher(teacherId)} className="text-red-500 hover:text-red-700">
+                            <X size={12} />
+                          </button>
+                        </span>
                       );
                     })}
                   </div>
                 )}
-                {isCascadeReady && assignedTeachers.length === 0 && (
-                  <p className="mt-2 text-xs text-orange-500 flex items-center"><AlertCircle size={14} className="mr-1" /> At least one teacher must be assigned.</p>
-                )}
+                <p className="text-xs text-gray-500 dark:text-gray-400">Teachers on leave are excluded automatically. The first selected teacher becomes the primary instructor for compatibility across reports.</p>
               </div>
 
               <div className="flex justify-end pt-3 border-t border-gray-200 dark:border-gray-800">
-                <button type="button" onClick={() => setShowAssignModal(false)} className="px-4 py-2 border mr-2 rounded text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">Cancel</button>
-                <button type="submit" disabled={!isCascadeReady || assignedTeachers.length === 0 || saving}
-                  className="px-5 py-2 bg-ruet-blue text-white rounded-md hover:bg-ruet-dark font-medium disabled:opacity-40 transition-colors">
-                  {saving ? 'Saving...' : 'Create & Assign'}
+                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 border mr-2 rounded text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">Cancel</button>
+                <button type="submit" disabled={saving || formData.teachers.length === 0} className="px-5 py-2 bg-ruet-blue text-white rounded-md hover:bg-ruet-dark font-medium disabled:opacity-40 transition-colors">
+                  {saving ? 'Saving...' : editingInstance ? 'Save Changes' : 'Create & Assign'}
                 </button>
               </div>
             </form>

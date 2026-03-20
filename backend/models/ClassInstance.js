@@ -9,6 +9,10 @@ const classInstanceSchema = new mongoose.Schema({
     default: 'N/A' 
   },
   teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Referencing User for teacher
+  teachers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   status: { 
     type: String, 
     enum: ['Running', 'Finished'], 
@@ -17,7 +21,15 @@ const classInstanceSchema = new mongoose.Schema({
   coPoMapping: [{
     co: { type: String, required: true }, // e.g., "CO1"
     po: [{ type: String, required: true }] // e.g., ["PO1", "PO2"]
-  }]
+  }],
+  feedbackQuestions: {
+    type: [String],
+    default: []
+  },
+  feedbackPublished: {
+    type: Boolean,
+    default: false
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('ClassInstance', classInstanceSchema);

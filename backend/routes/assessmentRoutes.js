@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/:classInstanceId', verifyToken, async (req, res) => {
   try {
     const assessments = await Assessment.find({ classInstance: req.params.classInstanceId })
-      .sort({ type: 1, title: 1 });
+      .sort({ finalPart: 1, questionNo: 1, type: 1, title: 1 });
     res.json(assessments);
   } catch (error) {
     res.status(500).json({ error: 'Server error fetching assessments' });
@@ -41,11 +41,18 @@ router.put('/:id/marks', verifyToken, requireRole('TEACHER'), async (req, res) =
       return res.status(400).json({ error: 'Marks array is required' });
     }
 
+    const assessment = await Assessment.findById(req.params.id);
+    if (!assessment) {
+      return res.status(404).json({ error: 'Assessment not found' });
+    }
+
+    const classInstanceId = req.body.classInstanceId || assessment.classInstance?.toString();
+
     const results = [];
     for (const entry of marks) {
       const enrollment = await Enrollment.findOne({
         student: entry.studentId,
-        classInstance: req.body.classInstanceId
+        classInstance: classInstanceId
       });
 
       if (enrollment) {

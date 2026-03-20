@@ -13,7 +13,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = await User.findOne({ email }).populate('department', 'name shortName');
+    const user = await User.findOne({ email }).populate('department', 'name shortName hasSections sectionCount');
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
@@ -40,6 +40,9 @@ router.post('/login', async (req, res) => {
         department: user.department,
         rollNumber: user.rollNumber,
         designation: user.designation,
+        teacherType: user.teacherType,
+        onLeave: user.onLeave,
+        leaveReason: user.leaveReason,
         series: user.series,
         section: user.section
       }
@@ -53,7 +56,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
-      .populate('department', 'name shortName')
+      .populate('department', 'name shortName hasSections sectionCount')
       .select('-password -__v');
 
     if (!user) {

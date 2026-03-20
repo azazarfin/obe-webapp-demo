@@ -4,40 +4,18 @@ import { Target, TrendingUp, AlertTriangle, CheckCircle, BarChart3 } from 'lucid
 const StudentOBEAttainment = ({ course }) => {
   if (!course) return null;
 
-  const coEntries = Object.entries(course.obe);
+  const coEntries = Object.entries(course.obe || {});
+  const poEntries = Object.entries(course.poAttainment || {}).map(([po, percentage]) => ({ po, percentage }));
   const totalCOs = coEntries.length;
-  const attainedCOs = coEntries.filter(([, d]) => d.percentage >= d.threshold).length;
-  const overallAttainment = totalCOs > 0 ? Math.round(coEntries.reduce((sum, [, d]) => sum + d.percentage, 0) / totalCOs) : 0;
+  const attainedCOs = coEntries.filter(([, data]) => data.percentage >= data.threshold).length;
+  const overallAttainment = totalCOs > 0 ? Math.round(coEntries.reduce((sum, [, data]) => sum + data.percentage, 0) / totalCOs) : 0;
   const kpi = totalCOs > 0 ? ((attainedCOs / totalCOs) * 100).toFixed(0) : 0;
-
-  const mockPOMappings = {
-    CO1: ['PO1', 'PO2'],
-    CO2: ['PO1', 'PO3'],
-    CO3: ['PO2', 'PO4'],
-    CO4: ['PO3', 'PO5'],
-    CO5: ['PO4', 'PO6'],
-  };
-
-  const poAggregated = {};
-  coEntries.forEach(([co, data]) => {
-    const mappedPOs = mockPOMappings[co] || [];
-    mappedPOs.forEach(po => {
-      if (!poAggregated[po]) poAggregated[po] = { sum: 0, count: 0 };
-      poAggregated[po].sum += data.percentage;
-      poAggregated[po].count += 1;
-    });
-  });
-
-  const poEntries = Object.entries(poAggregated).map(([po, data]) => ({
-    po,
-    percentage: Math.round(data.sum / data.count),
-  }));
 
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">OBE Attainment Info</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{course.code} — {course.name} · Instructor: {course.teacher}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{course.code} - {course.name} · Instructor: {course.teacher}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -58,11 +36,11 @@ const StudentOBEAttainment = ({ course }) => {
         </div>
 
         <div className="bg-white dark:bg-[#1e1e1e] shadow-sm rounded-lg p-5 border border-gray-100 dark:border-gray-800 text-center">
-          <div className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3 ${parseInt(kpi) >= 60 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
-            <TrendingUp size={24} className={parseInt(kpi) >= 60 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} />
+          <div className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3 ${parseInt(kpi, 10) >= 60 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+            <TrendingUp size={24} className={parseInt(kpi, 10) >= 60 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} />
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">KPI Score</p>
-          <p className={`text-3xl font-bold mt-1 ${parseInt(kpi) >= 60 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{kpi}%</p>
+          <p className={`text-3xl font-bold mt-1 ${parseInt(kpi, 10) >= 60 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{kpi}%</p>
         </div>
       </div>
 
@@ -71,21 +49,14 @@ const StudentOBEAttainment = ({ course }) => {
           <Target className="mr-2 text-ruet-blue dark:text-blue-400" size={20} /> Course Outcome (CO) Attainment
         </h3>
         <div className="space-y-3">
-          {coEntries.map(([co, data]) => {
+          {coEntries.length > 0 ? coEntries.map(([co, data]) => {
             const met = data.percentage >= data.threshold;
             return (
               <div key={co} className="flex items-center gap-4">
                 <span className="w-12 text-sm font-bold text-gray-700 dark:text-gray-300">{co}</span>
                 <div className="flex-1 h-6 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden relative">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${met ? 'bg-green-500 dark:bg-green-600' : 'bg-red-500 dark:bg-red-600'}`}
-                    style={{ width: `${Math.min(data.percentage, 100)}%` }}
-                  />
-                  <div
-                    className="absolute top-0 h-full border-l-2 border-dashed border-gray-400 dark:border-gray-500"
-                    style={{ left: `${data.threshold}%` }}
-                    title={`Threshold: ${data.threshold}%`}
-                  />
+                  <div className={`h-full rounded-full transition-all duration-500 ${met ? 'bg-green-500 dark:bg-green-600' : 'bg-red-500 dark:bg-red-600'}`} style={{ width: `${Math.min(data.percentage, 100)}%` }} />
+                  <div className="absolute top-0 h-full border-l-2 border-dashed border-gray-400 dark:border-gray-500" style={{ left: `${data.threshold}%` }} title={`Threshold: ${data.threshold}%`} />
                 </div>
                 <div className="w-16 text-right">
                   <span className={`text-sm font-bold ${met ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{data.percentage}%</span>
@@ -95,9 +66,11 @@ const StudentOBEAttainment = ({ course }) => {
                 </div>
               </div>
             );
-          })}
+          }) : (
+            <p className="text-sm text-gray-500 dark:text-gray-400">No CO-mapped assessments have been recorded yet.</p>
+          )}
         </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Dashed line indicates the threshold target (≥{coEntries[0]?.[1]?.threshold || 60}%).</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Dashed line indicates the threshold target (≥{coEntries[0]?.[1]?.threshold || 50}%).</p>
       </div>
 
       {poEntries.length > 0 && (
@@ -113,7 +86,7 @@ const StudentOBEAttainment = ({ course }) => {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Derived from the CO→PO mapping matrix for this course.</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Derived from the CO-to-PO mapping stored for this class instance.</p>
         </div>
       )}
     </div>

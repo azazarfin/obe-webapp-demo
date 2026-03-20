@@ -1,52 +1,122 @@
-import React, { useState } from 'react';
-import { UserPlus, UserMinus, Search, Eye, EyeOff } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { UserPlus, UserMinus, Search, Eye, EyeOff, Loader2 } from 'lucide-react';
+import api from '../../utils/api';
 
-const initialRoster = [
-  { id: '2103001', name: 'Rahim Uddin', status: 'active', type: 'regular' },
-  { id: '2103002', name: 'Karim Hasan', status: 'active', type: 'regular' },
-  { id: '2103003', name: 'Sadia Rahman', status: 'active', type: 'regular' },
-  { id: '2103004', name: 'Tamim Iqbal', status: 'active', type: 'regular' },
-  { id: '2003015', name: 'Nadia Sultana', status: 'active', type: 'irregular' },
-];
-
-const ModifyStudentRoster = () => {
-  const [roster, setRoster] = useState(initialRoster);
+const ModifyStudentRoster = ({ classInstance }) => {
+  const [enrollments, setEnrollments] = useState([]);
   const [searchRoll, setSearchRoll] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
-  const toggleStatus = (id) => {
-    setRoster(roster.map(student => 
-      student.id === id ? { ...student, status: student.status === 'active' ? 'hidden' : 'active' } : student
-    ));
-  };
+  const fetchRoster = async () => {
+    if (!classInstance?._id) return;
 
-  const handleAddIrregular = (e) => {
-    e.preventDefault();
-    if (searchRoll && !roster.find(s => s.id === searchRoll)) {
-      setRoster([...roster, { id: searchRoll, name: 'New Irregular Student', status: 'active', type: 'irregular' }]);
-      setSearchRoll('');
+    try {
+      setLoading(true);
+      setError('');
+      const data = await api.get(`/enrollments?classInstance=${classInstance._id}`);
+      setEnrollments(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchRoster();
+  }, [classInstance]);
+
+  const roster = useMemo(() => enrollments
+    .map((enrollment) => ({
+      enrollmentId: enrollment._id,
+      studentId: enrollment.student?._id,
+      id: enrollment.student?.rollNumber || '',
+      name: enrollment.student?.name || '',
+      status: enrollment.status || 'active',
+      type: enrollment.type || 'regular'
+    }))
+    .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true, sensitivity: 'base' })), [enrollments]);
+
+  const toggleStatus = async (student) => {
+    try {
+      setSaving(true);
+      setError('');
+      setMessage('');
+      await api.put(`/enrollments/${student.enrollmentId}`, {
+        status: student.status === 'active' ? 'hidden' : 'active'
+      });
+      await fetchRoster();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleAddIrregular = async (e) => {
+    e.preventDefault();
+    if (!searchRoll) return;
+
+    try {
+      setSaving(true);
+      setError('');
+      setMessage('');
+
+      const students = await api.get(`/users?role=STUDENT&rollNumber=${searchRoll}`);
+      if (!Array.isArray(students) || students.length === 0) {
+        throw new Error('No student found with that roll number.');
+      }
+
+      await api.post('/enrollments', {
+        student: students[0]._id,
+        classInstance: classInstance._id,
+        type: 'irregular',
+        status: 'active'
+      });
+
+      setMessage('Irregular student added to the roster.');
+      setSearchRoll('');
+      await fetchRoster();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!classInstance) {
+    return null;
+  }
+
+  if (loading) {
+    return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-ruet-blue" size={28} /></div>;
+  }
 
   return (
     <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
       <div className="mb-6 border-b border-gray-200 dark:border-gray-800 pb-4">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Modify Student Roster</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">Class: CSE 3101 (Section A, 2021 Series)</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Class: {classInstance.course?.courseCode} (Section {classInstance.section}, {classInstance.series} Series)</p>
       </div>
 
+      {message && <div className="bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 p-3 rounded text-sm mb-4">{message}</div>}
+      {error && <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded text-sm mb-4">{error}</div>}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Add Student Section */}
         <div className="bg-gray-50 dark:bg-[#2d2d2d] p-4 rounded-lg border border-gray-200 dark:border-gray-700 col-span-1">
           <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center">
             <UserPlus size={18} className="mr-2 text-ruet-blue" /> Add Irregular Student
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Manually assign a student who is retaking this course or belongs to a different series.</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Assign a student who is retaking this course or belongs to a different series.</p>
           <form onSubmit={handleAddIrregular} className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Student Roll Number</label>
               <div className="relative">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   pattern="^\d{7}$"
                   title="7 Digit Roll (e.g. 1903001)"
                   required
@@ -58,19 +128,18 @@ const ModifyStudentRoster = () => {
                 <Search size={16} className="absolute left-3 top-3 text-gray-400" />
               </div>
             </div>
-            <button type="submit" className="w-full py-2 bg-ruet-blue text-white rounded-md hover:bg-ruet-dark transition-colors font-medium">
-              Search & Assign
+            <button type="submit" disabled={saving} className="w-full py-2 bg-ruet-blue text-white rounded-md hover:bg-ruet-dark transition-colors font-medium disabled:opacity-60">
+              Search &amp; Assign
             </button>
           </form>
         </div>
 
-        {/* Current Roster Section */}
         <div className="col-span-1 md:col-span-2">
           <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
             <UserMinus size={18} className="mr-2 text-orange-500" /> Manage Existing Roster
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Hide students who have dropped out to keep your Attendance and Assessment sheets clean without needing admin intervention.</p>
-          
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Hide dropped students without deleting their enrollment history.</p>
+
           <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-[#2d2d2d]">
@@ -83,8 +152,8 @@ const ModifyStudentRoster = () => {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-[#1e1e1e] divide-y divide-gray-200 dark:divide-gray-700">
-                {roster.map((student) => (
-                  <tr key={student.id} className={student.status === 'hidden' ? 'opacity-50 bg-gray-50 dark:bg-gray-800/20' : ''}>
+                {roster.length > 0 ? roster.map((student) => (
+                  <tr key={student.enrollmentId} className={student.status === 'hidden' ? 'opacity-50 bg-gray-50 dark:bg-gray-800/20' : ''}>
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{student.id}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-400">{student.name}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-center">
@@ -93,21 +162,19 @@ const ModifyStudentRoster = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-center">
-                      {student.status === 'active' 
+                      {student.status === 'active'
                         ? <span className="text-xs text-green-600 dark:text-green-400 font-bold">Active</span>
-                        : <span className="text-xs text-red-500 font-bold">Hidden</span>
-                      }
+                        : <span className="text-xs text-red-500 font-bold">Hidden</span>}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-right">
-                      <button 
-                        onClick={() => toggleStatus(student.id)}
-                        className={`flex items-center justify-end w-full text-sm font-medium ${student.status === 'active' ? 'text-orange-500 hover:text-orange-700' : 'text-green-600 hover:text-green-700'}`}
-                      >
-                        {student.status === 'active' ? <><EyeOff size={16} className="mr-1"/> Hide (Drop)</> : <><Eye size={16} className="mr-1"/> Unhide</>}
+                      <button onClick={() => toggleStatus(student)} disabled={saving} className={`flex items-center justify-end w-full text-sm font-medium ${student.status === 'active' ? 'text-orange-500 hover:text-orange-700' : 'text-green-600 hover:text-green-700'} disabled:opacity-60`}>
+                        {student.status === 'active' ? <><EyeOff size={16} className="mr-1" /> Hide (Drop)</> : <><Eye size={16} className="mr-1" /> Unhide</>}
                       </button>
                     </td>
                   </tr>
-                ))}
+                )) : (
+                  <tr><td colSpan="5" className="px-4 py-8 text-center text-sm text-gray-500">No students are enrolled in this class instance yet.</td></tr>
+                )}
               </tbody>
             </table>
           </div>

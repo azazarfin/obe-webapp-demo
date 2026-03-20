@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BookOpen, Award, ChevronRight, User, GraduationCap } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { BookOpen, Award, ChevronRight, User, GraduationCap, Loader2 } from 'lucide-react';
 import UniversityDirectory from '../student/UniversityDirectory';
 import StudentFeedback from '../student/StudentFeedback';
 import StudentCoursePage from '../student/StudentCoursePage';
@@ -7,18 +7,50 @@ import StudentOBEAttainment from '../student/StudentOBEAttainment';
 import StudentMarksheet from '../student/StudentMarksheet';
 import StudentAttendanceInfo from '../student/StudentAttendanceInfo';
 import { useAuth } from '../../contexts/AuthContext';
+import api from '../../utils/api';
 
-
-
+const initialDashboard = {
+  stats: {
+    runningCourses: 0,
+    finishedCourses: 0,
+    averageAttendance: 0
+  },
+  enrolledCourses: [],
+  finishedCourses: [],
+  globalObe: {}
+};
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [dashboardData, setDashboardData] = useState(initialDashboard);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const { currentUser } = useAuth();
 
-  const mockEnrolledCourses = [];
-  const mockFinishedCourses = [];
-  const mockGlobalObe = {};
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const data = await api.get('/dashboard/student');
+        setDashboardData({
+          stats: data.stats || initialDashboard.stats,
+          enrolledCourses: Array.isArray(data.enrolledCourses) ? data.enrolledCourses : [],
+          finishedCourses: Array.isArray(data.finishedCourses) ? data.finishedCourses : [],
+          globalObe: data.globalObe || {}
+        });
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (currentUser) {
+      fetchDashboard();
+    }
+  }, [currentUser]);
 
   const handleCourseClick = (course) => {
     setSelectedCourse(course);
@@ -35,8 +67,12 @@ const StudentDashboard = () => {
     return 'overview';
   };
 
+  const programOutcomeEntries = useMemo(() => Object.entries(dashboardData.globalObe), [dashboardData.globalObe]);
+
   const renderOverview = () => (
     <div className="space-y-6">
+      {error && <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded text-sm">{error}</div>}
+
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
         <div className="flex items-center gap-4 mb-4">
           <div className="w-14 h-14 rounded-full bg-ruet-blue/10 dark:bg-blue-900/30 flex items-center justify-center">
@@ -44,7 +80,7 @@ const StudentDashboard = () => {
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">{currentUser?.name}</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Roll: {currentUser?.rollNumber} · {currentUser?.department?.shortName || '—'} · Series {currentUser?.series} · Section {currentUser?.section}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Roll: {currentUser?.rollNumber} · {currentUser?.department?.shortName || 'N/A'} · Series {currentUser?.series} · Section {currentUser?.section}</p>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-gray-100 dark:border-gray-800">
@@ -54,15 +90,15 @@ const StudentDashboard = () => {
           </div>
           <div className="text-center p-2">
             <p className="text-xs text-gray-500 uppercase font-medium">Running Courses</p>
-            <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">{mockEnrolledCourses.length}</p>
+            <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">{dashboardData.stats.runningCourses}</p>
           </div>
           <div className="text-center p-2">
             <p className="text-xs text-gray-500 uppercase font-medium">Completed</p>
-            <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">{mockFinishedCourses.length}</p>
+            <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">{dashboardData.stats.finishedCourses}</p>
           </div>
           <div className="text-center p-2">
             <p className="text-xs text-gray-500 uppercase font-medium">Avg. Attendance</p>
-            <p className="text-lg font-bold text-green-600 dark:text-green-400 mt-0.5">{Math.round(mockEnrolledCourses.reduce((s, c) => s + c.attendance, 0) / mockEnrolledCourses.length)}%</p>
+            <p className="text-lg font-bold text-green-600 dark:text-green-400 mt-0.5">{dashboardData.stats.averageAttendance}%</p>
           </div>
         </div>
       </div>
@@ -73,44 +109,58 @@ const StudentDashboard = () => {
             <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200 flex items-center">
               <BookOpen className="mr-2 text-ruet-blue" size={20} /> Running Courses
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {mockEnrolledCourses.map(course => (
-                <div key={course.id} onClick={() => handleCourseClick(course)}
-                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-5 hover:border-ruet-blue dark:hover:border-blue-500 hover:shadow-md transition-all cursor-pointer group bg-gray-50 dark:bg-[#2d2d2d]">
-                  <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-ruet-blue dark:group-hover:text-blue-400 transition-colors">{course.code}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{course.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{course.teacher}</p>
-                  <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
-                    <div>
-                      <span className="text-xs text-gray-500 uppercase font-semibold">Attendance</span>
-                      <p className={`font-bold ${course.attendance >= 75 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{course.attendance}%</p>
+            {dashboardData.enrolledCourses.length === 0 ? (
+              <p className="text-sm text-gray-500 dark:text-gray-400">No running courses are currently enrolled.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {dashboardData.enrolledCourses.map((course) => (
+                  <div
+                    key={course.classInstanceId}
+                    onClick={() => handleCourseClick(course)}
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-5 hover:border-ruet-blue dark:hover:border-blue-500 hover:shadow-md transition-all cursor-pointer group bg-gray-50 dark:bg-[#2d2d2d]"
+                  >
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-ruet-blue dark:group-hover:text-blue-400 transition-colors">{course.code}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{course.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{course.teacher}</p>
+                    <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
+                      <div>
+                        <span className="text-xs text-gray-500 uppercase font-semibold">Attendance</span>
+                        <p className={`font-bold ${course.attendance >= 75 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{course.attendance}%</p>
+                      </div>
+                      <ChevronRight className="text-gray-400 group-hover:text-ruet-blue transition-colors" size={20} />
                     </div>
-                    <ChevronRight className="text-gray-400 group-hover:text-ruet-blue transition-colors" size={20} />
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
             <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200 flex items-center">
               <GraduationCap className="mr-2 text-gray-500" size={20} /> Finished Courses
             </h2>
-            <div className="space-y-2">
-              {mockFinishedCourses.map(course => (
-                <div key={course.id} onClick={() => handleCourseClick({ ...course, attendance: 100, marks: { ct: { earned: 18, total: 20 }, attendance: { earned: 9.5, total: 10 }, assignment: { earned: 9, total: 10 } }, obe: { CO1: { percentage: 92, threshold: 50 }, CO2: { percentage: 81, threshold: 50 }, CO3: { percentage: 78, threshold: 50 } }, isFinished: true })}
-                  className="flex justify-between items-center p-3 rounded-md border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#2d2d2d] hover:border-ruet-blue/30 transition-all cursor-pointer group">
-                  <div>
-                    <p className="font-medium text-gray-800 dark:text-gray-200 group-hover:text-ruet-blue dark:group-hover:text-blue-400 transition-colors">{course.code} — {course.name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{course.teacher}</p>
+            {dashboardData.finishedCourses.length === 0 ? (
+              <p className="text-sm text-gray-500 dark:text-gray-400">Completed courses will appear here once class instances are marked finished.</p>
+            ) : (
+              <div className="space-y-2">
+                {dashboardData.finishedCourses.map((course) => (
+                  <div
+                    key={course.classInstanceId}
+                    onClick={() => handleCourseClick(course)}
+                    className="flex justify-between items-center p-3 rounded-md border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#2d2d2d] hover:border-ruet-blue/30 transition-all cursor-pointer group"
+                  >
+                    <div>
+                      <p className="font-medium text-gray-800 dark:text-gray-200 group-hover:text-ruet-blue dark:group-hover:text-blue-400 transition-colors">{course.code} - {course.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{course.teacher}</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="px-3 py-1 text-sm font-bold text-ruet-blue dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-full">{course.total?.earned?.toFixed ? course.total.earned.toFixed(1) : course.total?.earned}</span>
+                      <ChevronRight className="text-gray-400 group-hover:text-ruet-blue transition-colors" size={16} />
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 text-sm font-bold text-ruet-blue dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-full">{course.grade}</span>
-                    <ChevronRight className="text-gray-400 group-hover:text-ruet-blue transition-colors" size={16} />
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -118,18 +168,22 @@ const StudentDashboard = () => {
           <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200 flex items-center">
             <Award className="mr-2 text-yellow-500" size={20} /> Program Outcomes
           </h2>
-          <div className="space-y-3">
-            {Object.entries(mockGlobalObe).map(([po, val]) => (
-              <div key={po} className="flex justify-between items-center text-sm">
-                <span className="font-medium text-gray-700 dark:text-gray-300 w-10">{po}</span>
-                <div className="flex-1 mx-3 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full ${val >= 60 ? 'bg-ruet-blue dark:bg-blue-500' : 'bg-red-500'}`} style={{ width: `${val}%` }} />
+          {programOutcomeEntries.length === 0 ? (
+            <p className="text-sm text-gray-500 dark:text-gray-400">PO attainment will appear once completed course data is available.</p>
+          ) : (
+            <div className="space-y-3">
+              {programOutcomeEntries.map(([po, value]) => (
+                <div key={po} className="flex justify-between items-center text-sm">
+                  <span className="font-medium text-gray-700 dark:text-gray-300 w-10">{po}</span>
+                  <div className="flex-1 mx-3 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full ${value >= 60 ? 'bg-ruet-blue dark:bg-blue-500' : 'bg-red-500'}`} style={{ width: `${value}%` }} />
+                  </div>
+                  <span className="font-bold text-gray-900 dark:text-white w-10 text-right">{value}%</span>
                 </div>
-                <span className="font-bold text-gray-900 dark:text-white w-10 text-right">{val}%</span>
-              </div>
-            ))}
-          </div>
-          <p className="text-xs text-gray-500 mt-4 text-center italic">Aggregate across all completed courses.</p>
+              ))}
+            </div>
+          )}
+          <p className="text-xs text-gray-500 mt-4 text-center italic">Aggregate across completed courses only.</p>
         </div>
       </div>
     </div>
@@ -137,13 +191,21 @@ const StudentDashboard = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'directory': return <UniversityDirectory />;
-      case 'course_page': return <StudentCoursePage course={selectedCourse} onNavigate={handleSubNavigate} />;
-      case 'attendance_info': return <StudentAttendanceInfo course={selectedCourse} />;
-      case 'marksheet': return <StudentMarksheet course={selectedCourse} />;
-      case 'obe_attainment': return <StudentOBEAttainment course={selectedCourse} />;
-      case 'give_feedback': return <StudentFeedback courseName={selectedCourse ? `${selectedCourse.code} - ${selectedCourse.name}` : ''} onBack={() => setActiveTab('course_page')} />;
-      case 'overview': default: return renderOverview();
+      case 'directory':
+        return <UniversityDirectory />;
+      case 'course_page':
+        return <StudentCoursePage course={selectedCourse} onNavigate={handleSubNavigate} />;
+      case 'attendance_info':
+        return <StudentAttendanceInfo course={selectedCourse} />;
+      case 'marksheet':
+        return <StudentMarksheet course={selectedCourse} />;
+      case 'obe_attainment':
+        return <StudentOBEAttainment course={selectedCourse} />;
+      case 'give_feedback':
+        return <StudentFeedback course={selectedCourse} onBack={() => setActiveTab('course_page')} />;
+      case 'overview':
+      default:
+        return renderOverview();
     }
   };
 
@@ -174,7 +236,11 @@ const StudentDashboard = () => {
         </div>
       </div>
 
-      {renderContent()}
+      {loading ? (
+        <div className="flex justify-center py-20"><Loader2 className="animate-spin text-ruet-blue" size={32} /></div>
+      ) : (
+        renderContent()
+      )}
     </div>
   );
 };

@@ -4,6 +4,7 @@ const courseSchema = new mongoose.Schema({
   courseCode: { type: String, required: true, unique: true },
   courseName: { type: String, required: true },
   credit: { type: Number, required: true },
+  semester: { type: String },
   type: { 
     type: String, 
     enum: ['Theory', 'Sessional'], 

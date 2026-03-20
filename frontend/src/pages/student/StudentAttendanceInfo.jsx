@@ -1,40 +1,23 @@
 import React from 'react';
-import { CalendarCheck, CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 import { getAttendanceMarks, getAttendanceStatus } from '../../utils/attendanceUtils';
-
-const mockAttendanceLog = [
-  { date: '2025-01-05', status: 'present' },
-  { date: '2025-01-08', status: 'present' },
-  { date: '2025-01-12', status: 'absent' },
-  { date: '2025-01-15', status: 'present' },
-  { date: '2025-01-19', status: 'present' },
-  { date: '2025-01-22', status: 'present' },
-  { date: '2025-01-26', status: 'absent' },
-  { date: '2025-01-29', status: 'present' },
-  { date: '2025-02-02', status: 'present' },
-  { date: '2025-02-05', status: 'present' },
-  { date: '2025-02-09', status: 'present' },
-  { date: '2025-02-12', status: 'present' },
-  { date: '2025-02-16', status: 'present' },
-  { date: '2025-02-19', status: 'present' },
-  { date: '2025-02-23', status: 'present' },
-];
 
 const StudentAttendanceInfo = ({ course }) => {
   if (!course) return null;
 
-  const totalClasses = mockAttendanceLog.length;
-  const presentCount = mockAttendanceLog.filter(a => a.status === 'present').length;
+  const attendanceLog = Array.isArray(course.attendanceLog) ? course.attendanceLog : [];
+  const totalClasses = attendanceLog.length;
+  const presentCount = attendanceLog.filter((entry) => entry.status !== 'Absent').length;
   const absentCount = totalClasses - presentCount;
-  const pct = totalClasses > 0 ? ((presentCount / totalClasses) * 100).toFixed(1) : 0;
-  const attendanceMarks = getAttendanceMarks(parseFloat(pct));
-  const attendanceStatusInfo = getAttendanceStatus(parseFloat(pct));
+  const pct = totalClasses > 0 ? Number(((presentCount / totalClasses) * 100).toFixed(1)) : 0;
+  const attendanceMarks = getAttendanceMarks(pct);
+  const attendanceStatusInfo = getAttendanceStatus(pct);
 
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Attendance Info</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{course.code} — {course.name}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{course.code} - {course.name}</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -45,10 +28,11 @@ const StudentAttendanceInfo = ({ course }) => {
         <div className="bg-white dark:bg-[#1e1e1e] shadow-sm rounded-lg p-4 border border-gray-100 dark:border-gray-800 text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">Present</p>
           <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">{presentCount}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Absent: {absentCount}</p>
         </div>
         <div className="bg-white dark:bg-[#1e1e1e] shadow-sm rounded-lg p-4 border border-gray-100 dark:border-gray-800 text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">Attendance %</p>
-          <p className={`text-3xl font-bold mt-1 ${parseFloat(pct) >= 75 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{pct}%</p>
+          <p className={`text-3xl font-bold mt-1 ${pct >= 75 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{pct}%</p>
         </div>
         <div className="bg-white dark:bg-[#1e1e1e] shadow-sm rounded-lg p-4 border border-gray-100 dark:border-gray-800 text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">Marks (/10)</p>
@@ -57,9 +41,9 @@ const StudentAttendanceInfo = ({ course }) => {
         </div>
       </div>
 
-      {parseFloat(pct) < 75 && (
-        <div className={`p-3 rounded-lg border text-sm ${parseFloat(pct) < 50 ? 'bg-red-100 dark:bg-red-900/20 border-red-300 dark:border-red-800 text-red-800 dark:text-red-300' : 'bg-amber-100 dark:bg-amber-900/20 border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-300'}`}>
-          <span className="font-bold">Rule 14.3:</span> {parseFloat(pct) < 50 ? 'You are barred from the Semester Final Examination.' : 'You are not eligible for scholarship/stipend/grant for the following academic session.'}
+      {pct < 75 && (
+        <div className={`p-3 rounded-lg border text-sm ${pct < 50 ? 'bg-red-100 dark:bg-red-900/20 border-red-300 dark:border-red-800 text-red-800 dark:text-red-300' : 'bg-amber-100 dark:bg-amber-900/20 border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-300'}`}>
+          <span className="font-bold">Rule 14.3:</span> {pct < 50 ? 'You are barred from the Semester Final Examination.' : 'You are not eligible for scholarship/stipend/grant for the following academic session.'}
         </div>
       )}
 
@@ -73,23 +57,25 @@ const StudentAttendanceInfo = ({ course }) => {
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-[#1e1e1e] divide-y divide-gray-200 dark:divide-gray-700">
-            {mockAttendanceLog.map((entry, idx) => (
-              <tr key={idx} className={entry.status === 'absent' ? 'bg-red-50/50 dark:bg-red-900/10' : ''}>
-                <td className="px-6 py-3 text-xs text-gray-400 font-mono">{idx + 1}</td>
+            {attendanceLog.length > 0 ? attendanceLog.map((entry, index) => (
+              <tr key={`${entry.date}-${index}`} className={entry.status === 'Absent' ? 'bg-red-50/50 dark:bg-red-900/10' : ''}>
+                <td className="px-6 py-3 text-xs text-gray-400 font-mono">{index + 1}</td>
                 <td className="px-6 py-3 text-sm font-medium text-gray-900 dark:text-white">{entry.date}</td>
                 <td className="px-6 py-3 text-center">
-                  {entry.status === 'present' ? (
-                    <span className="inline-flex items-center text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2.5 py-0.5 rounded-full">
-                      <CheckCircle size={12} className="mr-1" /> Present
-                    </span>
-                  ) : (
+                  {entry.status === 'Absent' ? (
                     <span className="inline-flex items-center text-xs font-semibold text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2.5 py-0.5 rounded-full">
                       <XCircle size={12} className="mr-1" /> Absent
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2.5 py-0.5 rounded-full">
+                      <CheckCircle size={12} className="mr-1" /> {entry.status}
                     </span>
                   )}
                 </td>
               </tr>
-            ))}
+            )) : (
+              <tr><td colSpan="3" className="px-6 py-8 text-center text-sm text-gray-500">No attendance has been recorded for this course yet.</td></tr>
+            )}
           </tbody>
         </table>
       </div>

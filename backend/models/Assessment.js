@@ -9,7 +9,19 @@ const assessmentSchema = new mongoose.Schema({
     required: true 
   },
   totalMarks: { type: Number, required: true },
-  mappedCO: { type: String } // e.g., "CO1", can be array if mapped to multiple, but schema says mappedCO (String)
+  mappedCO: { type: String },
+  mappedPOs: {
+    type: [String],
+    default: []
+  },
+  typeLabel: { type: String },
+  assessmentDate: { type: Date },
+  finalPart: {
+    type: String,
+    enum: ['A', 'B'],
+    default: undefined
+  },
+  questionNo: { type: String }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Assessment', assessmentSchema);

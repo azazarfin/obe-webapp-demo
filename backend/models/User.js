@@ -13,6 +13,20 @@ const userSchema = new mongoose.Schema({
   department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department' },
   rollNumber: { type: String },
   designation: { type: String },
+  teacherType: {
+    type: String,
+    enum: ['Host', 'Guest'],
+    default: 'Host'
+  },
+  onLeave: {
+    type: Boolean,
+    default: false
+  },
+  leaveReason: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   series: { type: Number },
   section: { type: String }
 }, { timestamps: true });
