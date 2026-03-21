@@ -20,7 +20,11 @@ const app = express();
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',') 
-  : ['http://localhost:5173', 'http://localhost:5174'];
+  : [
+      'https://obe-webapp-demo.netlify.app',
+      'http://localhost:5173',
+      'http://localhost:5174'
+    ];
 
 app.use(cors({
   origin: function (origin, callback) {
