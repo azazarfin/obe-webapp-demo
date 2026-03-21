@@ -1,6 +1,10 @@
 const express = require('express');
+const Assessment = require('../models/Assessment');
 const ClassInstance = require('../models/ClassInstance');
 const Course = require('../models/Course');
+const Enrollment = require('../models/Enrollment');
+const Feedback = require('../models/Feedback');
+const InstructorReport = require('../models/InstructorReport');
 const User = require('../models/User');
 const { verifyToken, requireRole } = require('../middleware/authMiddleware');
 const {
@@ -272,6 +276,14 @@ router.delete('/:id', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN'), a
   try {
     const instance = await loadInstanceForAccess(req.params.id);
     await ensureInstanceAccess(req, instance);
+
+    await Promise.all([
+      Assessment.deleteMany({ classInstance: req.params.id }),
+      Enrollment.deleteMany({ classInstance: req.params.id }),
+      Feedback.deleteMany({ classInstance: req.params.id }),
+      InstructorReport.deleteMany({ classInstance: req.params.id })
+    ]);
+
     await ClassInstance.findByIdAndDelete(req.params.id);
     res.json({ message: 'Class instance deleted successfully' });
   } catch (error) {

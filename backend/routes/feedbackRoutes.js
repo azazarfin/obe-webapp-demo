@@ -10,18 +10,10 @@ const {
   syncRegularEnrollmentsForClassInstance
 } = require('../services/analyticsService');
 const { createHttpError, idsEqual } = require('../utils/departmentRules');
+const { getAssignedTeacherIds } = require('../utils/classInstanceUtils');
 
 const router = express.Router();
 const DEPARTMENT_SELECT = 'name shortName hasSections sectionCount';
-
-const getAssignedTeacherIds = (classInstance) => {
-  const teacherIds = [
-    classInstance.teacher?._id || classInstance.teacher,
-    ...((classInstance.teachers || []).map((teacher) => teacher?._id || teacher))
-  ].filter(Boolean);
-
-  return Array.from(new Set(teacherIds.map((teacherId) => String(teacherId))));
-};
 
 const loadClassInstanceForAccess = async (classInstanceId) => {
   const classInstance = await ClassInstance.findById(classInstanceId)

@@ -146,7 +146,8 @@ const syncRegularEnrollmentsForClassInstance = async (classInstanceOrId) => {
     studentFilter.$or = [
       { section: 'N/A' },
       { section: null },
-      { section: '' }
+      { section: '' },
+      { section: { $exists: false } }
     ];
   }
 
@@ -613,7 +614,7 @@ const getStudentDashboardData = async (studentId) => {
       series: student.series,
       $or: student.section && student.section !== 'N/A'
         ? [{ section: student.section }]
-        : [{ section: 'N/A' }, { section: student.section }]
+        : [{ section: 'N/A' }, { section: null }, { section: '' }, { section: { $exists: false } }]
     })
   );
 

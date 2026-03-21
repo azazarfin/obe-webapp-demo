@@ -1,7 +1,9 @@
 const express = require('express');
 const Assessment = require('../models/Assessment');
+const ClassInstance = require('../models/ClassInstance');
 const Enrollment = require('../models/Enrollment');
 const { verifyToken, requireRole } = require('../middleware/authMiddleware');
+const { getAssignedTeacherIds } = require('../utils/classInstanceUtils');
 
 const router = express.Router();
 
@@ -17,7 +19,34 @@ router.get('/:classInstanceId', verifyToken, async (req, res) => {
 
 router.post('/', verifyToken, requireRole('TEACHER', 'DEPT_ADMIN'), async (req, res) => {
   try {
-    const assessment = await Assessment.create(req.body);
+    const classInstance = await ClassInstance.findById(req.body.classInstance).populate('teachers', '_id');
+    if (!classInstance) {
+      return res.status(404).json({ error: 'Class instance not found' });
+    }
+
+    if (req.user.role === 'TEACHER' && !getAssignedTeacherIds(classInstance).includes(String(req.user.id))) {
+      return res.status(403).json({ error: 'Forbidden: You are not assigned to this class instance' });
+    }
+
+    const totalMarks = Number(req.body.totalMarks);
+    if (!Number.isFinite(totalMarks) || totalMarks <= 0) {
+      return res.status(400).json({ error: 'Total marks must be a positive number' });
+    }
+
+    const payload = {
+      classInstance: classInstance._id,
+      title: req.body.title,
+      type: req.body.type,
+      totalMarks,
+      mappedCO: req.body.mappedCO,
+      mappedPOs: req.body.mappedPOs,
+      typeLabel: req.body.typeLabel,
+      assessmentDate: req.body.assessmentDate,
+      finalPart: req.body.finalPart,
+      questionNo: req.body.questionNo
+    };
+
+    const assessment = await Assessment.create(payload);
     res.status(201).json(assessment);
   } catch (error) {
     res.status(500).json({ error: 'Server error creating assessment' });
@@ -79,6 +108,12 @@ router.delete('/:id', verifyToken, requireRole('TEACHER', 'DEPT_ADMIN'), async (
   try {
     const assessment = await Assessment.findByIdAndDelete(req.params.id);
     if (!assessment) return res.status(404).json({ error: 'Assessment not found' });
+
+    await Enrollment.updateMany(
+      { 'marks.assessment': req.params.id },
+      { $pull: { marks: { assessment: req.params.id } } }
+    );
+
     res.json({ message: 'Assessment deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Server error deleting assessment' });

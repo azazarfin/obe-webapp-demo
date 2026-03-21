@@ -1,21 +1,23 @@
 const express = require('express');
 const InstructorReport = require('../models/InstructorReport');
 const ClassInstance = require('../models/ClassInstance');
+const Course = require('../models/Course');
 const { verifyToken, requireRole } = require('../middleware/authMiddleware');
+const { getAssignedTeacherIds } = require('../utils/classInstanceUtils');
 
 const router = express.Router();
-const getAssignedTeacherIds = (classInstance) => {
-  const teacherIds = [
-    classInstance.teacher?._id || classInstance.teacher,
-    ...((classInstance.teachers || []).map((teacher) => teacher?._id || teacher))
-  ].filter(Boolean);
-
-  return Array.from(new Set(teacherIds.map((teacherId) => String(teacherId))));
-};
 
 router.get('/', verifyToken, async (req, res) => {
   try {
-    const reports = await InstructorReport.find()
+    const filter = {};
+
+    if (req.query.department) {
+      const courseIds = await Course.find({ department: req.query.department }).distinct('_id');
+      const classInstanceIds = await ClassInstance.find({ course: { $in: courseIds } }).distinct('_id');
+      filter.classInstance = { $in: classInstanceIds };
+    }
+
+    const reports = await InstructorReport.find(filter)
       .populate({
         path: 'classInstance',
         populate: [
@@ -30,14 +32,7 @@ router.get('/', verifyToken, async (req, res) => {
       .populate('teacher', 'name email designation')
       .sort({ createdAt: -1 });
 
-    const filtered = req.query.department
-      ? reports.filter((report) => {
-          const departmentId = report.classInstance?.course?.department?._id?.toString();
-          return departmentId === req.query.department;
-        })
-      : reports;
-
-    res.json(filtered);
+    res.json(reports);
   } catch (error) {
     res.status(500).json({ error: 'Server error fetching instructor reports' });
   }

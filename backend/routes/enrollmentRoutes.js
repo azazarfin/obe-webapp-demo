@@ -55,9 +55,13 @@ router.post('/', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN', 'TEACHE
 
 router.put('/:id', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN', 'TEACHER'), async (req, res) => {
   try {
+    const allowedFields = {};
+    if (req.body.type !== undefined) allowedFields.type = req.body.type;
+    if (req.body.status !== undefined) allowedFields.status = req.body.status;
+
     const enrollment = await Enrollment.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      allowedFields,
       { new: true, runValidators: true }
     );
 

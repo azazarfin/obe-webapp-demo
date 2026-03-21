@@ -25,7 +25,15 @@ router.get('/:id', verifyToken, async (req, res) => {
 
 router.post('/', verifyToken, requireRole('CENTRAL_ADMIN'), async (req, res) => {
   try {
-    const dept = await Department.create(req.body);
+    const payload = {
+      name: req.body.name,
+      shortName: req.body.shortName,
+      establishedYear: req.body.establishedYear,
+      introduction: req.body.introduction,
+      hasSections: req.body.hasSections,
+      sectionCount: req.body.sectionCount
+    };
+    const dept = await Department.create(payload);
     res.status(201).json(dept);
   } catch (error) {
     if (error.code === 11000) {
@@ -37,7 +45,14 @@ router.post('/', verifyToken, requireRole('CENTRAL_ADMIN'), async (req, res) => 
 
 router.put('/:id', verifyToken, requireRole('CENTRAL_ADMIN'), async (req, res) => {
   try {
-    const dept = await Department.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const payload = {};
+    if (req.body.name !== undefined) payload.name = req.body.name;
+    if (req.body.shortName !== undefined) payload.shortName = req.body.shortName;
+    if (req.body.establishedYear !== undefined) payload.establishedYear = req.body.establishedYear;
+    if (req.body.introduction !== undefined) payload.introduction = req.body.introduction;
+    if (req.body.hasSections !== undefined) payload.hasSections = req.body.hasSections;
+    if (req.body.sectionCount !== undefined) payload.sectionCount = req.body.sectionCount;
+    const dept = await Department.findByIdAndUpdate(req.params.id, payload, { new: true, runValidators: true });
     if (!dept) return res.status(404).json({ error: 'Department not found' });
     res.json(dept);
   } catch (error) {

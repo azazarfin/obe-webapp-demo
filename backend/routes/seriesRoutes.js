@@ -6,7 +6,7 @@ const { verifyToken, requireRole } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-const DEFAULT_SERIES = ['2020', '2021', '2022', '2023', '2024'];
+const DEFAULT_SERIES = [2020, 2021, 2022, 2023, 2024];
 
 const ensureSeriesSeed = async () => {
   const existing = await Series.find().sort({ year: 1 });
@@ -21,9 +21,9 @@ const ensureSeriesSeed = async () => {
 
   const years = Array.from(new Set([
     ...DEFAULT_SERIES,
-    ...userSeries.filter(Boolean).map(String),
-    ...classSeries.filter(Boolean).map(String)
-  ])).sort();
+    ...userSeries.filter(Boolean).map(Number),
+    ...classSeries.filter(Boolean).map(Number)
+  ])).filter(Number.isFinite).sort((a, b) => a - b);
 
   if (years.length === 0) {
     return [];
@@ -44,8 +44,8 @@ router.get('/', verifyToken, async (req, res) => {
 
 router.post('/', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN'), async (req, res) => {
   try {
-    const year = String(req.body.year || '').trim();
-    if (!/^\d{4}$/.test(year)) {
+    const year = Number(req.body.year);
+    if (!Number.isFinite(year) || year < 1000 || year > 9999) {
       return res.status(400).json({ error: 'Series year must be a 4-digit year' });
     }
 

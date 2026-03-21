@@ -1,5 +1,8 @@
 const express = require('express');
+const ClassInstance = require('../models/ClassInstance');
 const Department = require('../models/Department');
+const Enrollment = require('../models/Enrollment');
+const Feedback = require('../models/Feedback');
 const User = require('../models/User');
 const { verifyToken, requireRole } = require('../middleware/authMiddleware');
 const {
@@ -260,6 +263,10 @@ router.put('/:id', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN'), asyn
       const isTeacher = existingUser.role === 'TEACHER';
       const isStudentInDepartment = existingUser.role === 'STUDENT' && isSameDepartment;
 
+      if (isTeacher && existingUser.teacherType === 'Host' && !isSameDepartment) {
+        return res.status(403).json({ error: 'Forbidden: Department admins cannot edit Host teachers from other departments' });
+      }
+
       if (!isTeacher && !isStudentInDepartment) {
         return res.status(403).json({ error: 'Forbidden: You can only update teachers or students from your own department' });
       }
@@ -291,9 +298,29 @@ router.delete('/:id', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN'), a
       const isTeacher = user.role === 'TEACHER';
       const isStudentInDepartment = user.role === 'STUDENT' && isSameDepartment;
 
+      if (isTeacher && user.teacherType === 'Host' && !isSameDepartment) {
+        return res.status(403).json({ error: 'Forbidden: Department admins cannot delete Host teachers from other departments' });
+      }
+
       if (!isTeacher && !isStudentInDepartment) {
         return res.status(403).json({ error: 'Forbidden: You can only delete teachers or students from your own department' });
       }
+    }
+
+    if (user.role === 'STUDENT') {
+      await Promise.all([
+        Enrollment.deleteMany({ student: user._id }),
+        Feedback.deleteMany({ student: user._id })
+      ]);
+    } else if (user.role === 'TEACHER') {
+      await ClassInstance.updateMany(
+        { teachers: user._id },
+        { $pull: { teachers: user._id } }
+      );
+      await ClassInstance.updateMany(
+        { teacher: user._id },
+        [{ $set: { teacher: { $arrayElemAt: ['$teachers', 0] } } }]
+      );
     }
 
     await User.findByIdAndDelete(req.params.id);

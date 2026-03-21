@@ -2,6 +2,8 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const getToken = () => localStorage.getItem('token');
 
+let isRedirecting = false;
+
 const api = async (endpoint, options = {}) => {
   const token = getToken();
   const headers = {
@@ -18,7 +20,10 @@ const api = async (endpoint, options = {}) => {
   if (response.status === 401) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = '/login';
+    if (!isRedirecting) {
+      isRedirecting = true;
+      window.location.href = '/login';
+    }
     throw new Error('Unauthorized');
   }
 

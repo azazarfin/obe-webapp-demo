@@ -1,6 +1,11 @@
 const express = require('express');
+const Assessment = require('../models/Assessment');
+const ClassInstance = require('../models/ClassInstance');
 const Course = require('../models/Course');
 const Department = require('../models/Department');
+const Enrollment = require('../models/Enrollment');
+const Feedback = require('../models/Feedback');
+const InstructorReport = require('../models/InstructorReport');
 const User = require('../models/User');
 const { verifyToken, requireRole } = require('../middleware/authMiddleware');
 const {
@@ -163,6 +168,18 @@ router.delete('/:id', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN'), a
       if (!idsEqual(course.department?._id || course.department, currentUser.department?._id || currentUser.department)) {
         return res.status(403).json({ error: 'Forbidden: You can only delete courses from your own department' });
       }
+    }
+
+    const classInstanceIds = await ClassInstance.find({ course: req.params.id }).distinct('_id');
+
+    if (classInstanceIds.length > 0) {
+      await Promise.all([
+        Assessment.deleteMany({ classInstance: { $in: classInstanceIds } }),
+        Enrollment.deleteMany({ classInstance: { $in: classInstanceIds } }),
+        Feedback.deleteMany({ classInstance: { $in: classInstanceIds } }),
+        InstructorReport.deleteMany({ classInstance: { $in: classInstanceIds } }),
+        ClassInstance.deleteMany({ course: req.params.id })
+      ]);
     }
 
     await Course.findByIdAndDelete(req.params.id);

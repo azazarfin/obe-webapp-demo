@@ -38,25 +38,19 @@ router.get('/department', verifyToken, requireRole('DEPT_ADMIN'), async (req, re
       return res.status(400).json({ error: 'Department admin is not assigned to any department' });
     }
 
-    const [department, courseCount, teacherCount, studentCount, classInstances] = await Promise.all([
+    const departmentCourseIds = await Course.find({ department: departmentId }).distinct('_id');
+
+    const [department, courseCount, teacherCount, studentCount, runningClassInstances, departmentInstanceIds] = await Promise.all([
       Department.findById(departmentId),
       Course.countDocuments({ department: departmentId }),
       User.countDocuments({ role: 'TEACHER', department: departmentId }),
       User.countDocuments({ role: 'STUDENT', department: departmentId }),
-      ClassInstance.find().populate({
-        path: 'course',
-        select: 'department'
-      })
+      ClassInstance.countDocuments({ course: { $in: departmentCourseIds }, status: 'Running' }),
+      ClassInstance.find({ course: { $in: departmentCourseIds } }).distinct('_id')
     ]);
 
-    const departmentInstances = classInstances.filter((instance) => {
-      const courseDepartmentId = instance.course?.department?._id?.toString() || instance.course?.department?.toString();
-      return courseDepartmentId === departmentId;
-    });
-
-    const runningClassInstances = departmentInstances.filter((instance) => instance.status === 'Running').length;
     const reportCount = await InstructorReport.countDocuments({
-      classInstance: { $in: departmentInstances.map((instance) => instance._id) }
+      classInstance: { $in: departmentInstanceIds }
     });
 
     res.json({
