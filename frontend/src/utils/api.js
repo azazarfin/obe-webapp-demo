@@ -1,4 +1,21 @@
-const normalizeApiBase = (value) => value.trim().replace(/\/+$/, '');
+const normalizeApiBase = (value) => {
+  const trimmedValue = value.trim().replace(/\/+$/, '');
+
+  if (!trimmedValue) return '';
+
+  if (trimmedValue === '/api' || trimmedValue.endsWith('/api')) {
+    return trimmedValue;
+  }
+
+  if (/^https?:\/\//i.test(trimmedValue)) {
+    const url = new URL(trimmedValue);
+    const normalizedPath = url.pathname.replace(/\/+$/, '');
+    url.pathname = normalizedPath ? `${normalizedPath}/api` : '/api';
+    return url.toString().replace(/\/$/, '');
+  }
+
+  return `${trimmedValue}/api`;
+};
 
 const envApiBase = import.meta.env.VITE_API_URL
   ? normalizeApiBase(import.meta.env.VITE_API_URL)
