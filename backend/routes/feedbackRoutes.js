@@ -2,22 +2,92 @@ const express = require('express');
 const ClassInstance = require('../models/ClassInstance');
 const Enrollment = require('../models/Enrollment');
 const Feedback = require('../models/Feedback');
+const User = require('../models/User');
 const { verifyToken, requireRole } = require('../middleware/authMiddleware');
 const {
   DEFAULT_FEEDBACK_QUESTIONS,
   sanitizeFeedbackQuestions,
   syncRegularEnrollmentsForClassInstance
 } = require('../services/analyticsService');
+const { createHttpError, idsEqual } = require('../utils/departmentRules');
 
 const router = express.Router();
+const DEPARTMENT_SELECT = 'name shortName hasSections sectionCount';
+
+const getAssignedTeacherIds = (classInstance) => {
+  const teacherIds = [
+    classInstance.teacher?._id || classInstance.teacher,
+    ...((classInstance.teachers || []).map((teacher) => teacher?._id || teacher))
+  ].filter(Boolean);
+
+  return Array.from(new Set(teacherIds.map((teacherId) => String(teacherId))));
+};
+
+const loadClassInstanceForAccess = async (classInstanceId) => {
+  const classInstance = await ClassInstance.findById(classInstanceId)
+    .populate({ path: 'course', populate: { path: 'department', select: DEPARTMENT_SELECT } })
+    .populate('teacher', '_id')
+    .populate('teachers', '_id');
+
+  if (!classInstance) {
+    throw createHttpError(404, 'Class instance not found');
+  }
+
+  return classInstance;
+};
+
+const ensureFeedbackAccess = async (req, classInstance, options = {}) => {
+  const isWriteAction = Boolean(options.write);
+
+  if (req.user.role === 'CENTRAL_ADMIN') {
+    return;
+  }
+
+  if (req.user.role === 'DEPT_ADMIN') {
+    const currentUser = await User.findById(req.user.id).populate('department', DEPARTMENT_SELECT);
+    if (!currentUser) {
+      throw createHttpError(401, 'User not found');
+    }
+
+    if (!idsEqual(classInstance.course?.department?._id || classInstance.course?.department, currentUser.department?._id || currentUser.department)) {
+      throw createHttpError(403, 'Forbidden: This class instance is outside your department');
+    }
+    return;
+  }
+
+  if (req.user.role === 'TEACHER') {
+    if (!getAssignedTeacherIds(classInstance).includes(String(req.user.id))) {
+      throw createHttpError(403, 'Forbidden: You can only manage feedback for your assigned courses');
+    }
+    return;
+  }
+
+  if (req.user.role === 'STUDENT') {
+    if (isWriteAction) {
+      throw createHttpError(403, 'Forbidden: Insufficient permissions');
+    }
+
+    const enrollment = await Enrollment.findOne({
+      classInstance: classInstance._id,
+      student: req.user.id,
+      status: { $ne: 'hidden' }
+    }).select('_id');
+
+    if (!enrollment) {
+      throw createHttpError(403, 'Forbidden: You are not enrolled in this class instance');
+    }
+    return;
+  }
+
+  if (isWriteAction) {
+    throw createHttpError(403, 'Forbidden: Insufficient permissions');
+  }
+};
 
 router.get('/class/:classInstanceId', verifyToken, async (req, res) => {
   try {
-    const classInstance = await ClassInstance.findById(req.params.classInstanceId);
-    if (!classInstance) {
-      return res.status(404).json({ error: 'Class instance not found' });
-    }
-
+    const classInstance = await loadClassInstanceForAccess(req.params.classInstanceId);
+    await ensureFeedbackAccess(req, classInstance);
     await syncRegularEnrollmentsForClassInstance(classInstance);
 
     const [feedbacks, activeEnrollments] = await Promise.all([
@@ -55,12 +125,15 @@ router.get('/class/:classInstanceId', verifyToken, async (req, res) => {
       canSubmit: Boolean(classInstance.feedbackPublished) && !hasSubmitted
     });
   } catch (error) {
-    res.status(500).json({ error: 'Server error fetching feedback data' });
+    res.status(error.status || 500).json({ error: error.message || 'Server error fetching feedback data' });
   }
 });
 
-router.put('/class/:classInstanceId/config', verifyToken, requireRole('TEACHER'), async (req, res) => {
+router.put('/class/:classInstanceId/config', verifyToken, async (req, res) => {
   try {
+    const classInstance = await loadClassInstanceForAccess(req.params.classInstanceId);
+    await ensureFeedbackAccess(req, classInstance, { write: true });
+
     const payload = {};
 
     if (Array.isArray(req.body.questions)) {
@@ -71,22 +144,22 @@ router.put('/class/:classInstanceId/config', verifyToken, requireRole('TEACHER')
       payload.feedbackPublished = req.body.published;
     }
 
-    const classInstance = await ClassInstance.findByIdAndUpdate(
+    const updatedClassInstance = await ClassInstance.findByIdAndUpdate(
       req.params.classInstanceId,
       payload,
       { new: true, runValidators: true }
     );
 
-    if (!classInstance) {
+    if (!updatedClassInstance) {
       return res.status(404).json({ error: 'Class instance not found' });
     }
 
     res.json({
-      questions: sanitizeFeedbackQuestions(classInstance.feedbackQuestions),
-      published: Boolean(classInstance.feedbackPublished)
+      questions: sanitizeFeedbackQuestions(updatedClassInstance.feedbackQuestions),
+      published: Boolean(updatedClassInstance.feedbackPublished)
     });
   } catch (error) {
-    res.status(500).json({ error: 'Server error updating feedback configuration' });
+    res.status(error.status || 500).json({ error: error.message || 'Server error updating feedback configuration' });
   }
 });
 
@@ -95,6 +168,16 @@ router.post('/class/:classInstanceId/submit', verifyToken, requireRole('STUDENT'
     const classInstance = await ClassInstance.findById(req.params.classInstanceId);
     if (!classInstance) {
       return res.status(404).json({ error: 'Class instance not found' });
+    }
+
+    const enrollment = await Enrollment.findOne({
+      classInstance: classInstance._id,
+      student: req.user.id,
+      status: { $ne: 'hidden' }
+    }).select('_id');
+
+    if (!enrollment) {
+      return res.status(403).json({ error: 'Forbidden: You are not enrolled in this class instance' });
     }
 
     if (!classInstance.feedbackPublished) {

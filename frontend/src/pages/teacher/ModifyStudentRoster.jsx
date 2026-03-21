@@ -40,6 +40,11 @@ const ModifyStudentRoster = ({ classInstance }) => {
     }))
     .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true, sensitivity: 'base' })), [enrollments]);
 
+  const activeStudents = useMemo(
+    () => roster.filter((student) => student.status === 'active'),
+    [roster]
+  );
+
   const toggleStatus = async (student) => {
     try {
       setSaving(true);
@@ -48,6 +53,27 @@ const ModifyStudentRoster = ({ classInstance }) => {
       await api.put(`/enrollments/${student.enrollmentId}`, {
         status: student.status === 'active' ? 'hidden' : 'active'
       });
+      await fetchRoster();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const hideAllStudents = async () => {
+    if (activeStudents.length === 0) {
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setError('');
+      setMessage('');
+      await Promise.all(activeStudents.map((student) => (
+        api.put(`/enrollments/${student.enrollmentId}`, { status: 'hidden' })
+      )));
+      setMessage('All active students have been hidden from this roster.');
       await fetchRoster();
     } catch (err) {
       setError(err.message);
@@ -99,7 +125,7 @@ const ModifyStudentRoster = ({ classInstance }) => {
     <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
       <div className="mb-6 border-b border-gray-200 dark:border-gray-800 pb-4">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Modify Student Roster</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">Class: {classInstance.course?.courseCode} (Section {classInstance.section}, {classInstance.series} Series)</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Class: {classInstance.course?.courseCode} ({classInstance.section === 'N/A' ? 'No Section' : `Section ${classInstance.section}`}, {classInstance.series} Series)</p>
       </div>
 
       {message && <div className="bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 p-3 rounded text-sm mb-4">{message}</div>}
@@ -135,10 +161,23 @@ const ModifyStudentRoster = ({ classInstance }) => {
         </div>
 
         <div className="col-span-1 md:col-span-2">
-          <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
-            <UserMinus size={18} className="mr-2 text-orange-500" /> Manage Existing Roster
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Hide dropped students without deleting their enrollment history.</p>
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                <UserMinus size={18} className="mr-2 text-orange-500" /> Manage Existing Roster
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Hide dropped students without deleting their enrollment history.</p>
+            </div>
+            <button
+              type="button"
+              onClick={hideAllStudents}
+              disabled={saving || activeStudents.length === 0}
+              className="inline-flex items-center justify-center rounded-md border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-medium text-orange-700 transition-colors hover:bg-orange-100 disabled:opacity-50 dark:border-orange-900/50 dark:bg-orange-900/20 dark:text-orange-300 dark:hover:bg-orange-900/30"
+            >
+              <EyeOff size={16} className="mr-2" />
+              Hide All
+            </button>
+          </div>
 
           <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

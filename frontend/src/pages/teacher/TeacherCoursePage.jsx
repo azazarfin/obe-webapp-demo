@@ -1,8 +1,29 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ClipboardList, BookOpen, Users, CalendarCheck, BarChart3, FileText, UserCog, MessageSquare, GraduationCap, Loader2 } from 'lucide-react';
+import {
+  BarChart3,
+  BookOpen,
+  CalendarCheck,
+  ClipboardList,
+  FileText,
+  GraduationCap,
+  Loader2,
+  MessageSquare,
+  UserCog,
+  Users
+} from 'lucide-react';
 import api from '../../utils/api';
 
-const TeacherCoursePage = ({ classInstance, onNavigate }) => {
+const actionCardClasses = {
+  blue: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-800 dark:text-blue-300',
+  indigo: 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300',
+  purple: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 text-purple-800 dark:text-purple-300',
+  teal: 'bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800 hover:bg-teal-100 dark:hover:bg-teal-900/40 text-teal-800 dark:text-teal-300',
+  gray: 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-300',
+  green: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/40 text-green-800 dark:text-green-300',
+  orange: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 text-orange-800 dark:text-orange-300'
+};
+
+const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running' }) => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -29,6 +50,7 @@ const TeacherCoursePage = ({ classInstance, onNavigate }) => {
   const course = summary?.classInstance?.course || classInstance?.course;
   const stats = summary?.stats;
   const isTheory = course?.type !== 'Sessional';
+  const sectionLabel = classInstance?.section === 'N/A' ? 'No Section' : `Section ${classInstance?.section}`;
 
   const statTiles = useMemo(() => {
     if (!stats) return [];
@@ -48,6 +70,121 @@ const TeacherCoursePage = ({ classInstance, onNavigate }) => {
         ];
   }, [isTheory, stats]);
 
+  const actionTiles = useMemo(() => {
+    if (mode === 'teacher-finished') {
+      return [
+        {
+          key: 'evaluation',
+          title: 'Evaluation Report',
+          description: 'Marksheet and OBE attainment',
+          icon: <BarChart3 size={22} className="text-green-600 dark:text-green-400 mr-3 group-hover:scale-110 transition-transform" />,
+          tone: 'green'
+        },
+        {
+          key: 'feedback',
+          title: 'Student Feedback',
+          description: 'Publish and review student feedback',
+          icon: <MessageSquare size={22} className="text-orange-600 dark:text-orange-400 mr-3 group-hover:scale-110 transition-transform" />,
+          tone: 'orange'
+        },
+        {
+          key: 'experience_report',
+          title: 'Submit Feedback and Report',
+          description: 'Reserved for the upcoming teacher feedback workflow',
+          icon: <FileText size={22} className="text-indigo-600 dark:text-indigo-400 mr-3 group-hover:scale-110 transition-transform" />,
+          tone: 'indigo'
+        }
+      ];
+    }
+
+    if (mode === 'dept-admin') {
+      return [
+        {
+          key: 'evaluation',
+          title: 'Evaluation Report',
+          description: 'Marksheet and OBE attainment',
+          icon: <BarChart3 size={22} className="text-green-600 dark:text-green-400 mr-3 group-hover:scale-110 transition-transform" />,
+          tone: 'green'
+        },
+        {
+          key: 'feedback',
+          title: 'Student Feedback',
+          description: 'Publish and review student feedback',
+          icon: <MessageSquare size={22} className="text-orange-600 dark:text-orange-400 mr-3 group-hover:scale-110 transition-transform" />,
+          tone: 'orange'
+        },
+        {
+          key: 'experience_report',
+          title: 'Teacher Feedback and Report',
+          description: 'Reserved for the upcoming teacher feedback workflow',
+          icon: <FileText size={22} className="text-indigo-600 dark:text-indigo-400 mr-3 group-hover:scale-110 transition-transform" />,
+          tone: 'indigo'
+        }
+      ];
+    }
+
+    const tiles = [
+      {
+        key: 'attendance',
+        title: 'Take Attendance',
+        description: 'Mark daily class attendance',
+        icon: <CalendarCheck size={22} className="text-blue-600 dark:text-blue-400 mr-3 group-hover:scale-110 transition-transform" />,
+        tone: 'blue'
+      },
+      isTheory
+        ? {
+            key: 'assessment',
+            title: 'Add CT / Assignment',
+            description: 'Theory course assessments',
+            icon: <ClipboardList size={22} className="text-indigo-600 dark:text-indigo-400 mr-3 group-hover:scale-110 transition-transform" />,
+            tone: 'indigo'
+          }
+        : {
+            key: 'sessional_assessment',
+            title: 'Add Assessment',
+            description: 'Lab and sessional assessments',
+            icon: <BookOpen size={22} className="text-purple-600 dark:text-purple-400 mr-3 group-hover:scale-110 transition-transform" />,
+            tone: 'purple'
+          }
+    ];
+
+    if (isTheory) {
+      tiles.push({
+        key: 'semester_final',
+        title: 'Semester Final',
+        description: 'Configure and save final question marks',
+        icon: <GraduationCap size={22} className="text-teal-600 dark:text-teal-400 mr-3 group-hover:scale-110 transition-transform" />,
+        tone: 'teal'
+      });
+    }
+
+    tiles.push(
+      {
+        key: 'roster',
+        title: 'Modify Student Roster',
+        description: 'Add irregular or hide dropped students',
+        icon: <UserCog size={22} className="text-gray-600 dark:text-gray-400 mr-3 group-hover:scale-110 transition-transform" />,
+        tone: 'gray'
+      },
+      {
+        key: 'evaluation',
+        title: 'Evaluation Report',
+        description: 'Marksheet and OBE attainment',
+        icon: <BarChart3 size={22} className="text-green-600 dark:text-green-400 mr-3 group-hover:scale-110 transition-transform" />,
+        tone: 'green'
+      },
+      {
+        key: 'feedback',
+        title: 'Student Feedback',
+        description: 'Publish and review student feedback',
+        icon: <MessageSquare size={22} className="text-orange-600 dark:text-orange-400 mr-3 group-hover:scale-110 transition-transform" />,
+        tone: 'orange'
+      }
+    );
+
+    return tiles;
+  }, [isTheory, mode]);
+
   if (!classInstance) {
     return null;
   }
@@ -64,11 +201,14 @@ const TeacherCoursePage = ({ classInstance, onNavigate }) => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{course?.courseCode} - {course?.courseName}</h2>
-            <div className="flex items-center gap-3 mt-1">
+            <div className="flex items-center gap-3 mt-1 flex-wrap">
               <span className={`px-2.5 py-0.5 rounded text-xs font-semibold ${isTheory ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'}`}>
                 {course?.type}
               </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">Section {classInstance.section} · Series {classInstance.series}</span>
+              <span className={`px-2.5 py-0.5 rounded text-xs font-semibold ${classInstance?.status === 'Finished' ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'}`}>
+                {classInstance?.status || 'Running'}
+              </span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">{sectionLabel} | Series {classInstance?.series}</span>
             </div>
           </div>
         </div>
@@ -87,67 +227,23 @@ const TeacherCoursePage = ({ classInstance, onNavigate }) => {
       </div>
 
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+          {mode === 'teacher-running' ? 'Quick Actions' : 'Course Tools'}
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <button onClick={() => onNavigate('attendance')} className="flex items-center p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors text-left group">
-            <CalendarCheck size={22} className="text-blue-600 dark:text-blue-400 mr-3 group-hover:scale-110 transition-transform" />
-            <div>
-              <span className="block font-semibold text-blue-800 dark:text-blue-300">Take Attendance</span>
-              <span className="text-xs text-blue-600/70 dark:text-blue-400/70">Mark daily class attendance</span>
-            </div>
-          </button>
-
-          {isTheory ? (
-            <button onClick={() => onNavigate('assessment')} className="flex items-center p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors text-left group">
-              <ClipboardList size={22} className="text-indigo-600 dark:text-indigo-400 mr-3 group-hover:scale-110 transition-transform" />
+          {actionTiles.map((tile) => (
+            <button
+              key={tile.key}
+              onClick={() => onNavigate(tile.key)}
+              className={`flex items-center p-4 border rounded-lg transition-colors text-left group ${actionCardClasses[tile.tone]}`}
+            >
+              {tile.icon}
               <div>
-                <span className="block font-semibold text-indigo-800 dark:text-indigo-300">Add CT / Assignment</span>
-                <span className="text-xs text-indigo-600/70 dark:text-indigo-400/70">Theory course assessments</span>
+                <span className="block font-semibold">{tile.title}</span>
+                <span className="text-xs opacity-80">{tile.description}</span>
               </div>
             </button>
-          ) : (
-            <button onClick={() => onNavigate('sessional_assessment')} className="flex items-center p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors text-left group">
-              <BookOpen size={22} className="text-purple-600 dark:text-purple-400 mr-3 group-hover:scale-110 transition-transform" />
-              <div>
-                <span className="block font-semibold text-purple-800 dark:text-purple-300">Add Assessment</span>
-                <span className="text-xs text-purple-600/70 dark:text-purple-400/70">Lab and sessional assessments</span>
-              </div>
-            </button>
-          )}
-
-          {isTheory && (
-            <button onClick={() => onNavigate('semester_final')} className="flex items-center p-4 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors text-left group">
-              <GraduationCap size={22} className="text-teal-600 dark:text-teal-400 mr-3 group-hover:scale-110 transition-transform" />
-              <div>
-                <span className="block font-semibold text-teal-800 dark:text-teal-300">Semester Final</span>
-                <span className="text-xs text-teal-600/70 dark:text-teal-400/70">Configure and save final question marks</span>
-              </div>
-            </button>
-          )}
-
-          <button onClick={() => onNavigate('roster')} className="flex items-center p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left group">
-            <UserCog size={22} className="text-gray-600 dark:text-gray-400 mr-3 group-hover:scale-110 transition-transform" />
-            <div>
-              <span className="block font-semibold text-gray-800 dark:text-gray-300">Modify Student Roster</span>
-              <span className="text-xs text-gray-500 dark:text-gray-400/70">Add irregular or hide dropped students</span>
-            </div>
-          </button>
-
-          <button onClick={() => onNavigate('evaluation')} className="flex items-center p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors text-left group">
-            <BarChart3 size={22} className="text-green-600 dark:text-green-400 mr-3 group-hover:scale-110 transition-transform" />
-            <div>
-              <span className="block font-semibold text-green-800 dark:text-green-300">Evaluation Report</span>
-              <span className="text-xs text-green-600/70 dark:text-green-400/70">Marksheet and OBE attainment</span>
-            </div>
-          </button>
-
-          <button onClick={() => onNavigate('feedback')} className="flex items-center p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors text-left group">
-            <MessageSquare size={22} className="text-orange-600 dark:text-orange-400 mr-3 group-hover:scale-110 transition-transform" />
-            <div>
-              <span className="block font-semibold text-orange-800 dark:text-orange-300">Student Feedback</span>
-              <span className="text-xs text-orange-600/70 dark:text-orange-400/70">Publish and review student feedback</span>
-            </div>
-          </button>
+          ))}
         </div>
       </div>
     </div>

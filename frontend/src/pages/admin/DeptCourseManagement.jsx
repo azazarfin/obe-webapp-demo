@@ -1,9 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CheckCircle, Edit, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
+import { CheckCircle, Edit, Info, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 import { departmentUsesSections, getDepartmentSections, normalizeSectionValue } from '../../utils/departmentUtils';
+import EvaluationReport from '../teacher/EvaluationReport';
+import InstructorExperienceReport from '../teacher/InstructorExperienceReport';
+import ManageCourseFeedback from '../teacher/ManageCourseFeedback';
+import TeacherCoursePage from '../teacher/TeacherCoursePage';
 
 const initialForm = {
   course: '',
@@ -12,6 +16,8 @@ const initialForm = {
   teachers: [],
   teacherSearch: ''
 };
+
+const getSectionLabel = (value) => (value === 'N/A' ? 'No Section' : value);
 
 const DeptCourseManagement = () => {
   const { currentUser } = useAuth();
@@ -27,6 +33,8 @@ const DeptCourseManagement = () => {
   const [formData, setFormData] = useState(initialForm);
   const [filterSection, setFilterSection] = useState('');
   const [confirm, setConfirm] = useState({ open: false, type: '', id: null });
+  const [activeView, setActiveView] = useState('list');
+  const [selectedInstance, setSelectedInstance] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -36,9 +44,11 @@ const DeptCourseManagement = () => {
         api.get('/users?role=TEACHER'),
         api.get('/class-instances')
       ]);
+      const nextInstances = Array.isArray(instanceData) ? instanceData : [];
       setCourses(Array.isArray(courseData) ? courseData : []);
       setTeachers(Array.isArray(teacherData) ? teacherData : []);
-      setInstances(Array.isArray(instanceData) ? instanceData : []);
+      setInstances(nextInstances);
+      setSelectedInstance((prev) => (prev ? nextInstances.find((instance) => instance._id === prev._id) || null : null));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -79,6 +89,15 @@ const DeptCourseManagement = () => {
   const resetForm = () => {
     setEditingInstance(null);
     setFormData(initialForm);
+  };
+
+  const openCoursePage = (instance) => {
+    setSelectedInstance(instance);
+    setActiveView('course_page');
+  };
+
+  const handleBack = () => {
+    setActiveView((currentView) => (currentView === 'course_page' ? 'list' : 'course_page'));
   };
 
   const openCreateModal = () => {
@@ -158,6 +177,10 @@ const DeptCourseManagement = () => {
     try {
       await api.del(`/class-instances/${confirm.id}`);
       await fetchData();
+      if (selectedInstance?._id === confirm.id) {
+        setSelectedInstance(null);
+        setActiveView('list');
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -183,8 +206,56 @@ const DeptCourseManagement = () => {
     }));
   };
 
+  const renderDetailView = () => {
+    if (!selectedInstance) {
+      return null;
+    }
+
+    const courseType = selectedInstance.course?.type || 'Theory';
+
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Department Course Page</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {selectedInstance.course?.courseCode} - {selectedInstance.course?.courseName}
+            </p>
+          </div>
+          <button onClick={handleBack} className="text-sm text-gray-600 dark:text-gray-400 hover:text-ruet-blue dark:hover:text-white font-medium">
+            &larr; {activeView === 'course_page' ? 'Back to Course List' : 'Back to Course Page'}
+          </button>
+        </div>
+
+        {error && <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded text-sm">{error}</div>}
+
+        {activeView === 'course_page' && (
+          <TeacherCoursePage classInstance={selectedInstance} mode="dept-admin" onNavigate={(view) => setActiveView(view)} />
+        )}
+        {activeView === 'evaluation' && (
+          <EvaluationReport courseType={courseType} classInstance={selectedInstance} />
+        )}
+        {activeView === 'feedback' && (
+          <ManageCourseFeedback classInstance={selectedInstance} />
+        )}
+        {activeView === 'experience_report' && (
+          <InstructorExperienceReport
+            classInstance={selectedInstance}
+            title="Teacher Feedback and Report"
+            description="This page will stay blank until the teacher feedback and report workflow is implemented."
+            onBack={() => setActiveView('course_page')}
+          />
+        )}
+      </div>
+    );
+  };
+
   if (loading) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-ruet-blue" size={32} /></div>;
+  }
+
+  if (activeView !== 'list') {
+    return renderDetailView();
   }
 
   return (
@@ -192,7 +263,7 @@ const DeptCourseManagement = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Course Management</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Assign teachers, edit running courses, and finish or delete course instances for your department.</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Assign teachers, inspect course details, edit running courses, and finish or delete course instances for your department.</p>
         </div>
         <button onClick={openCreateModal} className="flex items-center px-4 py-2 bg-ruet-blue text-white rounded-md hover:bg-ruet-dark transition-colors font-medium">
           <Plus size={18} className="mr-2" /> Assign New Course
@@ -235,11 +306,13 @@ const DeptCourseManagement = () => {
               {filteredInstances.length > 0 ? filteredInstances.map((instance) => (
                 <tr key={instance._id}>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <span className="text-sm font-bold text-ruet-blue dark:text-blue-400">{instance.course?.courseCode}</span>
+                    <button type="button" onClick={() => openCoursePage(instance)} className="text-sm font-bold text-ruet-blue dark:text-blue-400 hover:underline">
+                      {instance.course?.courseCode}
+                    </button>
                     <span className="block text-xs text-gray-500 dark:text-gray-400">{instance.course?.courseName}</span>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{instance.series}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{instance.section === 'N/A' ? 'No Section' : instance.section}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{getSectionLabel(instance.section)}</td>
                   <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                     <div className="flex flex-wrap gap-1.5">
                       {(Array.isArray(instance.teachers) && instance.teachers.length > 0 ? instance.teachers : [instance.teacher]).filter(Boolean).map((teacher) => (
@@ -253,6 +326,7 @@ const DeptCourseManagement = () => {
                     </span>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-right text-sm space-x-2">
+                    <button onClick={() => openCoursePage(instance)} className="text-ruet-blue hover:text-ruet-dark dark:text-blue-400" title="Course Info"><Info size={18} /></button>
                     {instance.status === 'Running' && (
                       <>
                         <button onClick={() => openEditModal(instance)} className="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Edit Running Course"><Edit size={18} /></button>
