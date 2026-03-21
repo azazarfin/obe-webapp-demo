@@ -1,0 +1,5151 @@
+[
+    {
+        "name": "Dr. Md. Masud Rana",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "md.masud.rana.ruet@gmail.com",
+            "md.masud.rana@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2006",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/prof.dr.masudrana"
+    },
+    {
+        "name": "Dr. Md. Rafiqul Islam Sheikh",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "mri.sheikh@eee.ruet.ac.bd",
+            "mri.sheikh.eee@gmail.com"
+        ],
+        "joining_year": "1994",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/mri.sheikh"
+    },
+    {
+        "name": "S M Abdur Razzak",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "sma.razzak@eee.ruet.ac.bd",
+            "sma.razzak@ieee.org",
+            "razzak.eeeruet@gmail.com"
+        ],
+        "joining_year": "1999",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/sma.razzak"
+    },
+    {
+        "name": "Dr. Md. Zahurul Islam Sarkar",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "islam89118@gmail.com"
+        ],
+        "joining_year": "1998",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/msarkar01"
+    },
+    {
+        "name": "Ajay Krishno Sarkar",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "aksarkar@eee.ruet.ac.bd",
+            "sarkarajay139@gmail.com"
+        ],
+        "joining_year": "1998",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/aksarkar"
+    },
+    {
+        "name": "Dr. Md. Faruk Hossain",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "engr.mfhossain@eee.ruet.ac.bd",
+            "faruk94_ruet@yahoo.com"
+        ],
+        "joining_year": "2001",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/Prof.Dr.Md.FarukHossain"
+    },
+    {
+        "name": "Dr. Md. Shamim Anower",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "msanower@eee.ruet.ac.bd",
+            "md.shamimanower@yahoo.com"
+        ],
+        "joining_year": "2003",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/Professor%20Dr.%20Md.%20Shamim%20Anower"
+    },
+    {
+        "name": "Dr. Md. Shahidul Islam",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "siruet@gmail.com",
+            "shahidul@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/siruet"
+    },
+    {
+        "name": "Dr. Md. Selim Hossain",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "engg.selim@gmail.com",
+            "prof.selim@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2006",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/enggselim"
+    },
+    {
+        "name": "Dr. Abdul Khaleque",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "abdul.khaleque.eee@gmail.com",
+            "ak03@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2008",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/abdulkhalequeeee"
+    },
+    {
+        "name": "Dr. Md. Sohel Rana",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "sohel.unsw@gmail.com",
+            "sohel@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2008",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/sohel"
+    },
+    {
+        "name": "Dr. Md. Samiul Habib",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "samiul.engieee@gmail.com",
+            "samiul.habib@ruet.ac.bd"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/samiulengieee"
+    },
+    {
+        "name": "Dr. Tanvir Ahmed",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "tanvir_eee_ruet@yahoo.com",
+            "tanvir.ahmed@eee.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/tanvir-eee-ruet"
+    },
+    {
+        "name": "Dr. G.K.M. Hasanuzzaman",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "g.kibria82@yahoo.com",
+            "gkmhasan@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/gkibria82"
+    },
+    {
+        "name": "Dr. Jishan-E-Giti",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "jishan.e.giti@gmail.com",
+            "jishan@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/jishan"
+    },
+    {
+        "name": "Dr. Abu Sadat Md. Sayem",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "sayem@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/sayem-ruet-eee"
+    },
+    {
+        "name": "Dr. Mohammod Abdul Motin",
+        "department": "EEE",
+        "designation": "Associate Professor",
+        "emails": [
+            "motin.eee.06@gmail.com",
+            "mamotin@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/mamotin"
+    },
+    {
+        "name": "Dr. Sumaiya Kabir",
+        "department": "EEE",
+        "designation": "Associate Professor",
+        "emails": [
+            "sumaiyakabir_09@yahoo.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/sumaiyakabir"
+    },
+    {
+        "name": "Subarto Kumar Ghosh",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ghosh.sk@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/ghoshsk"
+    },
+    {
+        "name": "Md. Mamunur Rashid",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mrashid.eee@gmail.com",
+            "mamun@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/mrashideee"
+    },
+    {
+        "name": "Shadhon Chandra Mohonta",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shadhonmohonta@gmail.com",
+            "shadhonmohonta@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/shadhonmohonta"
+    },
+    {
+        "name": "Md. Rashidul Islam",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rashu_ruet@yahoo.com",
+            "rashidul@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/rasu-ruet"
+    },
+    {
+        "name": "Kusum Tara",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "kusum@eee.ruet.ac.bd",
+            "ikusumtara@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/KusumTara"
+    },
+    {
+        "name": "Alok Kumar Paul",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "alokeee10b@gmail.com",
+            "alok@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/alokeee10b"
+    },
+    {
+        "name": "Md. Tarek Hossein",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tarek101008@gmail.com",
+            "tarek101008@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/tarek101008"
+    },
+    {
+        "name": "Md. Ilias Rahman",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "himelmohammad@gmail.com"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/ilias"
+    },
+    {
+        "name": "Md. Ahasan Habib",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "habib.eee.116.ah@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/habibeee"
+    },
+    {
+        "name": "Md. Farhamdur Reza",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "farhamdur@eee.ruet.ac.bd",
+            "farhamdur@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/farhamdur"
+    },
+    {
+        "name": "Md. Razon Chowdhury",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "razonruet@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/razonruet"
+    },
+    {
+        "name": "Reefat Inum",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "romel.eee09@gmail.com",
+            "rinum@ucsc.edu"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/romeleee09"
+    },
+    {
+        "name": "kamrun nahar shushama",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shushamanahar@gmail.com",
+            "shushamanahar@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/shushamanahar1"
+    },
+    {
+        "name": "Md. Ruhul Amin Ratul",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ratuleee11@gmail.com"
+        ],
+        "joining_year": "2018",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/ratuleee11"
+    },
+    {
+        "name": "Belal Hossain",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "belal@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/belalhossain"
+    },
+    {
+        "name": "Md. Abdul Malek",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "m.a.malekb88@gmail.com",
+            "malek@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/mamalekb88"
+    },
+    {
+        "name": "Md. Sarwar Hosen",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sarwar.eee.ruet@gmail.com",
+            "sarwar@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/sarwar_hosen"
+    },
+    {
+        "name": "Md Firoz Mahmud",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "firoz.eee13@gmail.com",
+            "mdfiroz@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/firozmahmud"
+    },
+    {
+        "name": "Md. Arafat Rahman",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "arafat.ruet.eee@gmail.com",
+            "marahman@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/arafatrueteee"
+    },
+    {
+        "name": "Md. Mahmudul Hasan",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mh.mahmud.ruet@gmail.com",
+            "mahmud@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/mahmud"
+    },
+    {
+        "name": "Sarjana Shabab",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sarjana.shabab@gmail.com",
+            "sarjana.shabab@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/sarjanashabab"
+    },
+    {
+        "name": "Sohani Munteha Hiam",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sohanimunteha.8686@gmail.com",
+            "sohani@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/sohanimunteha8686"
+    },
+    {
+        "name": "Sunjidah Hossain",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sunjidahhossain141120@gmail.com",
+            "sunjidah.hossain@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/sunjidahhossain141120"
+    },
+    {
+        "name": "Md Mayenul Islam",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mayenulislam18@gmail.com",
+            "mayenulislam15@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/mayenulislam18"
+    },
+    {
+        "name": "Md. Nuhi-Alamin",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "nuhialaminruet@gmail.com",
+            "nuhialamin@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/nuhialaminruet"
+    },
+    {
+        "name": "Tasnim Sarker Joyeeta",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tasnimjoyeeta@gmail.com",
+            "tasnimsarker@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/tasnimjoyeeta"
+    },
+    {
+        "name": "Sakib Hossen",
+        "department": "EEE",
+        "designation": "Lecturer",
+        "emails": [
+            "sakib.hasan1224@gmail.com",
+            "sakib.hossen@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/sakibhasan1224"
+    },
+    {
+        "name": "Sushanto Bosak",
+        "department": "EEE",
+        "designation": "Lecturer",
+        "emails": [
+            "sushanto.ruet.eee16@gmail.com",
+            "sushanto.bosak@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/sushantobosak"
+    },
+    {
+        "name": "Asif Zaman Rizve",
+        "department": "EEE",
+        "designation": "Lecturer",
+        "emails": [
+            "asifzamanrizve.bd@gmail.com",
+            "asif.zaman@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": true,
+        "profile_url": "https://www.eee.ruet.ac.bd/asifzamanrizve"
+    },
+    {
+        "name": "Md. Ariful Islam",
+        "department": "EEE",
+        "designation": "Lecturer",
+        "emails": [
+            "arif.ruet.eee17@gmail.com",
+            "ariful.islam@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/ariefrose104"
+    },
+    {
+        "name": "Md. Khayrul Islam",
+        "department": "EEE",
+        "designation": "Lecturer",
+        "emails": [
+            "khayrulislam00bd@gmail.com",
+            "khayrul@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/md-khayrul-islam"
+    },
+    {
+        "name": "Md. Roisul Ajom Ruku",
+        "department": "EEE",
+        "designation": "Lecturer",
+        "emails": [
+            "roisul.eee16.ruet@gmail.com",
+            "roisul.ajom@eee.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/roisuleee16ruet"
+    },
+    {
+        "name": "Md. Rakibul Islam",
+        "department": "EEE",
+        "designation": "Lecturer",
+        "emails": [
+            "rakibul.islam@eee.ruet.ac.bd",
+            "rakibul.eee.ruet@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/rakibul.islam"
+    },
+    {
+        "name": "Dr. Kazi Khairul Islam",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "abc@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/abc"
+    },
+    {
+        "name": "Dr. Md . Ashraful Hoque",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "mahoque@iut-dhaka.edu"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/mahoque"
+    },
+    {
+        "name": "Dr. Md. Fayzur Rahman",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "fayzur@eee.green.edu.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/Dr.Md.FayzurRahman"
+    },
+    {
+        "name": "Dr. Md. Mortuza Ali",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "mmali.ruet@gmail.com"
+        ],
+        "joining_year": "1982",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/mmaliruet"
+    },
+    {
+        "name": "Dr. Md. Rabiul Islam",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "rabiulbd@hotmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/rabiulbd"
+    },
+    {
+        "name": "Dr. Md. Ruhul Amin",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "prof.m.r.amin@ieee.org"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/profmramin"
+    },
+    {
+        "name": "Dr. Md. Yeakub Hussain",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "md.yeakubhussain@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/mdyeakubhussain"
+    },
+    {
+        "name": "Dr. Mirza Golam Rabbani",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "rabbaniruet@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/rabbaniruet"
+    },
+    {
+        "name": "Dr. Muhammad Abdul Goffar Khan",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "agmagk@gmail.com",
+            "m.khan.bd@ieee.org"
+        ],
+        "joining_year": "1983",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/agmagk"
+    },
+    {
+        "name": "Prof. A.M. Rezaul Karim Talukder",
+        "department": "EEE",
+        "designation": "Professor",
+        "emails": [
+            "rkt.946@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/rkt946"
+    },
+    {
+        "name": "Dr. Forhad Zaman",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "m.fzaman@yahoo.com",
+            "f.zaman.au@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/fzaman"
+    },
+    {
+        "name": "Md. Shah Alam",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sumon01146@yahoo.com"
+        ],
+        "joining_year": "2007",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/sumon01146"
+    },
+    {
+        "name": "Pejush Chandra Sarkar",
+        "department": "EEE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "pejush01@yahoo.com"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": false,
+        "profile_url": "https://www.eee.ruet.ac.bd/pejush01"
+    },
+    {
+        "name": "Dr. Md. Shahid Uz Zaman",
+        "department": "CSE",
+        "designation": "Professor",
+        "emails": [
+            "szaman22.ruet@gmail.com",
+            "zaman@cse.ruet.ac.bd"
+        ],
+        "joining_year": "1991",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/szaman22ruet"
+    },
+    {
+        "name": "Dr. Md. Nazrul Islam Mondal",
+        "department": "CSE",
+        "designation": "Professor",
+        "emails": [
+            "mondal@cse.ruet.ac.bd",
+            "nimbd109@gmail.com"
+        ],
+        "joining_year": "2001",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/mondal"
+    },
+    {
+        "name": "Dr. Md. Rabiul Islam",
+        "department": "CSE",
+        "designation": "Professor",
+        "emails": [
+            "rabiul_cse@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/rabiul-cse"
+    },
+    {
+        "name": "Prof. Dr. Boshir Ahmed",
+        "department": "CSE",
+        "designation": "Professor",
+        "emails": [
+            "boshir78@gmail.com",
+            "boshir@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2001",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/boshir"
+    },
+    {
+        "name": "Prof. Dr. Md. Al Mamun",
+        "department": "CSE",
+        "designation": "Professor",
+        "emails": [
+            "a.mamun@cse.ruet.ac.bd",
+            "cse_mamun@yahoo.com",
+            "almamun00350@gmail.com"
+        ],
+        "joining_year": "2006",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/dr.almamun"
+    },
+    {
+        "name": "A H M Sarowar Sattar",
+        "department": "CSE",
+        "designation": "Professor",
+        "emails": [
+            "sarowar@cse.ruet.ac.bd",
+            "sarowar@gmail.com"
+        ],
+        "joining_year": "2004",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/sarowar"
+    },
+    {
+        "name": "Dr. Mir Md. Jahangir Kabir",
+        "department": "CSE",
+        "designation": "Professor",
+        "emails": [
+            "mmjahangir.kabir@gmail.com"
+        ],
+        "joining_year": "2004",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/mmjahangirkabir"
+    },
+    {
+        "name": "Dr. Md. Al Mehedi Hasan",
+        "department": "CSE",
+        "designation": "Professor",
+        "emails": [
+            "mehedi_ru@yahoo.com"
+        ],
+        "joining_year": "2007",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/almehedihasan"
+    },
+    {
+        "name": "Professor Dr. Md. Ali Hossain",
+        "department": "CSE",
+        "designation": "Professor",
+        "emails": [
+            "ali.ruet@gmail.com",
+            "Ali.Hossain@cse.ruet.ac.bd",
+            "ali.hossain@cse.ruet.ac.bd",
+            "ali.ruet03@gmail.com"
+        ],
+        "joining_year": "2008",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/aliruet"
+    },
+    {
+        "name": "Dr. Md. Arafat Hossain",
+        "department": "CSE",
+        "designation": "Associate Professor",
+        "emails": [
+            "arafat.ruet03@gmail.com"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/arafatruet03"
+    },
+    {
+        "name": "Shyla Afroge",
+        "department": "CSE",
+        "designation": "Associate Professor",
+        "emails": [
+            "shyla.ruet@gmail.com",
+            "shyla@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/shylaruet"
+    },
+    {
+        "name": "Rizoan Toufiq",
+        "department": "CSE",
+        "designation": "Associate Professor",
+        "emails": [
+            "rizoantoufiq@yahoo.com",
+            "rizoantoufiq@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/rizoantoufiq"
+    },
+    {
+        "name": "Dr. Julia Rahman",
+        "department": "CSE",
+        "designation": "Associate Professor",
+        "emails": [
+            "julia@cse.ruet.ac.bd",
+            "juliacse06@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/julia"
+    },
+    {
+        "name": "Syed Tauhid Zuhori",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tauhid.ruet@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/tauhidruet"
+    },
+    {
+        "name": "Firoz Mahmud",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "fmahmud.ruet@gmail.com",
+            "fmahmud@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/fmahmud"
+    },
+    {
+        "name": "Biprodip Pal",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "biprodip@cse.ruet.ac.bd",
+            "biprodip.cse@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/biprodip"
+    },
+    {
+        "name": "Emrana Kabir Hashi",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "emranakabir@gmail.com",
+            "Emrana.Kabir@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2014",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/emranakabir"
+    },
+    {
+        "name": "Mumu Aktar",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mumu.ruet@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/mumuruet"
+    },
+    {
+        "name": "Sadia Zaman Mishu",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sadia.cse09@gmail.com",
+            "sadia@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/Sadia_cse"
+    },
+    {
+        "name": "Abu Sayeed",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "abusayeed.cse@gmail.com",
+            "abusayeed@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/abusayeedcse"
+    },
+    {
+        "name": "Barshon Sen",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sen.barshon@gmail.com",
+            "barshon.sen@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/BarshonSeN"
+    },
+    {
+        "name": "Mahit Kumar Paul",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mahit.cse@gmail.com",
+            "mahit@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/mahitcse"
+    },
+    {
+        "name": "S. M. Mahedy Hasan",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mahedy@cse.ruet.ac.bd",
+            "mahedyhasanruet@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/mahedycseruet"
+    },
+    {
+        "name": "Suhrid Shakhar Ghosh",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shakhar@cse.ruet.ac.bd",
+            "shakhar.ruet@gmail.com"
+        ],
+        "joining_year": "2018",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/shakhar"
+    },
+    {
+        "name": "Nahin Ul Sadad",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "nahin@cse.ruet.ac.bd",
+            "nahinsd100@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/nahinsd100"
+    },
+    {
+        "name": "Md. Zahirul Islam",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "km.zahir61@gmail.com",
+            "zahirul.islam@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/kmzahir61"
+    },
+    {
+        "name": "Md. Farukuzzaman Faruk",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "faarukuzzaman@gmail.com",
+            "faruk@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/farukuzzaman"
+    },
+    {
+        "name": "Mohiuddin Ahmed",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mohiuddin.nirob.mn@gmail.com",
+            "mohiuddin@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/mohiuddinnirobmn"
+    },
+    {
+        "name": "Md. Azmain Yakin Srizon",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "azmainsrizon@gmail.com",
+            "azmainsrizon@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/azmainsrizon"
+    },
+    {
+        "name": "A. F. M. Minhazur Rahman",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "m.r.saurov@gmail.com",
+            "afm.minhazur@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/mrsaurov"
+    },
+    {
+        "name": "Farjana Parvin",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "farjana.sumona94@gmail.com",
+            "farjana@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/farjanaparvin"
+    },
+    {
+        "name": "Utsha Das",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "utsha.das@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/utshadas5"
+    },
+    {
+        "name": "S.M. Shovan",
+        "department": "CSE",
+        "designation": "Lecturer",
+        "emails": [
+            "me@smshovan.com",
+            "sm.shovan@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/shovan"
+    },
+    {
+        "name": "Md Rakibul Haque",
+        "department": "CSE",
+        "designation": "Lecturer",
+        "emails": [
+            "rakibulhaq56@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/rakibulhaq56"
+    },
+    {
+        "name": "Tasmia Jannat",
+        "department": "CSE",
+        "designation": "Lecturer",
+        "emails": [
+            "jannat22tasmia@gmail.com",
+            "jannat22tasmia@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.cse.ruet.ac.bd/jannat22tasmia"
+    },
+    {
+        "name": "Md. Sozib Hossain",
+        "department": "CSE",
+        "designation": "Lecturer",
+        "emails": [
+            "sozibruet99@gmail.com",
+            "sozib.hossain@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/md.-sozib-hossain"
+    },
+    {
+        "name": "Md. Nasif Osman Khansur",
+        "department": "CSE",
+        "designation": "Lecturer",
+        "emails": [
+            "nasifosman0210@gmail.com",
+            "nasif.khansur@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/nasifosman0210"
+    },
+    {
+        "name": "Md. Mazharul Islam",
+        "department": "CSE",
+        "designation": "Lecturer",
+        "emails": [
+            "mazharultusher111@gmail.com",
+            "mazharul.islam@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/mazharultusher111"
+    },
+    {
+        "name": "Md. Farhan Shakib",
+        "department": "CSE",
+        "designation": "Lecturer",
+        "emails": [
+            "farhan.shakib@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/farhan.shakib"
+    },
+    {
+        "name": "Khaled Zinnurine",
+        "department": "CSE",
+        "designation": "Lecturer",
+        "emails": [
+            "khaled.ruet.26@gmail.com",
+            "khaled@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/khaledruet26"
+    },
+    {
+        "name": "Bayezid Islam",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "bayezid@cse.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/bayezid"
+    },
+    {
+        "name": "Md. Asifur Rahman",
+        "department": "CSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "asifurrahman@cse.ruet.ac.bd",
+            "asifurrahman1@gmail.com"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/asifurrahman"
+    },
+    {
+        "name": "Md. Hedayetul Islam Sovon",
+        "department": "CSE",
+        "designation": "Lecturer",
+        "emails": [
+            "hedayet04@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.cse.ruet.ac.bd/hedayet04"
+    },
+    {
+        "name": "Dr. Md. Kamal Hosain",
+        "department": "ETE",
+        "designation": "Professor",
+        "emails": [
+            "kamaleteruet@gmail.com",
+            "khosain@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2007",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/kamaleteruet"
+    },
+    {
+        "name": "Dr Md Munjure Mowla",
+        "department": "ETE",
+        "designation": "Professor",
+        "emails": [
+            "rimonece@gmail.com",
+            "munjuremowla@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/munjuremowlaete"
+    },
+    {
+        "name": "Dr. Mst. Fateha Samad",
+        "department": "ETE",
+        "designation": "Professor",
+        "emails": [
+            "fatehasamad@ete.ruet.ac.bd",
+            "fatehaeteruet@gmail.com"
+        ],
+        "joining_year": "2009",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/fatehaeteruet"
+    },
+    {
+        "name": "Dr. Shah Ariful Hoque Chowdhury",
+        "department": "ETE",
+        "designation": "Professor",
+        "emails": [
+            "arif.1968.ruet@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/ariful"
+    },
+    {
+        "name": "Dr. Tushar Kanti Roy",
+        "department": "ETE",
+        "designation": "Associate Professor",
+        "emails": [
+            "tkroy@ete.ruet.ac.bd",
+            "roy.kanti03@gmail.com"
+        ],
+        "joining_year": "2008",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/roykanti03"
+    },
+    {
+        "name": "Dr. Md Rabiul Hasan",
+        "department": "ETE",
+        "designation": "Associate Professor",
+        "emails": [
+            "ruetrabu@gmail.com",
+            "rabiul.hasan@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/rabiul_hasan"
+    },
+    {
+        "name": "JANNATUL ROBAIAT MOU",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "jannatulruet@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/jannatulruet"
+    },
+    {
+        "name": "Sham Datto",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shamdatto@ete.ruet.ac.bd",
+            "shamdatto@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/shamdatto"
+    },
+    {
+        "name": "Md. Aslam Mollah",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ruet10aslam@gmail.com"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/Md.%20Aslam%20Mollah"
+    },
+    {
+        "name": "A. S. M. Badrudduza",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "asmb.kanon@gmail.com",
+            "asmb.kanon@ete.ruet.ac.bd",
+            "asmb.kanon@ieee.org"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/asmbkanon"
+    },
+    {
+        "name": "Md. Yeakub Ali",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "yeakub.ruet08@gmail.com",
+            "yeakub@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/yeakubali"
+    },
+    {
+        "name": "Md. Rakib Hossain",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rakib.hossain@ete.ruet.ac.bd",
+            "rakib.hossain.ruet@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/rakibhossain"
+    },
+    {
+        "name": "Shuvra Prokash Biswas",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "spbiswas@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/shuvraprokash"
+    },
+    {
+        "name": "Hasan Sarker",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "hasan.ruet.ete@gmail.com",
+            "hasan_sarker@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/hasansarker"
+    },
+    {
+        "name": "Farzana Akter",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "farzanaeteruet@gmail.com",
+            "farzana@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/farzana"
+    },
+    {
+        "name": "Md Abu Ismail Siddique",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "saif101303@gmail.com",
+            "maisiddique@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/ismail"
+    },
+    {
+        "name": "Sharaf Tasnim",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sharaftasnim786@gmail.com",
+            "sharaftasnim@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/sharaftasnim786"
+    },
+    {
+        "name": "Md. Tarek Hassan",
+        "department": "ETE",
+        "designation": "Lecturer",
+        "emails": [
+            "tarekruet024@gmail.com",
+            "mthassan@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.ete.ruet.ac.bd/tarekhassan"
+    },
+    {
+        "name": "Mohammed Nazmul Islam Nahin",
+        "department": "ETE",
+        "designation": "Lecturer",
+        "emails": [
+            "nahinete.ruet@gmail.com",
+            "nazmul.nahin@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/nahin"
+    },
+    {
+        "name": "Rubaeat Ahammed",
+        "department": "ETE",
+        "designation": "Lecturer",
+        "emails": [
+            "rubaeat.ahammed@ete.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/rubaeatahammed"
+    },
+    {
+        "name": "Rifa Tabassum Mim",
+        "department": "ETE",
+        "designation": "Lecturer",
+        "emails": [
+            "rifa.mim@ete.ruet.ac.bd",
+            "tabassummim604@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/rifamim"
+    },
+    {
+        "name": "Abdulla Al Suman",
+        "department": "ETE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "suman_1321@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ete.ruet.ac.bd/suman-1321"
+    },
+    {
+        "name": "Prof. Dr. Md. Anwar Hossain",
+        "department": "ECE",
+        "designation": "Professor",
+        "emails": [
+            "anwar.hossain@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.ece.ruet.ac.bd/anwarhossain"
+    },
+    {
+        "name": "Md. Habibur Rahaman",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "habib@ece.ruet.ac.bd",
+            "habibruet1@gmail.com"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.ece.ruet.ac.bd/habib"
+    },
+    {
+        "name": "Tasnim Binte Shawkat",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tasnim1457@gmail.com",
+            "m.shawkat.bd@ieee.org"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.ece.ruet.ac.bd/tasnim"
+    },
+    {
+        "name": "Abdul Matin",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ammuaj.cseruet@gmail.com",
+            "matin@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.ece.ruet.ac.bd/AbdulMatin"
+    },
+    {
+        "name": "Sagor Chandro Bakchy",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sagorchandro.10@gmail.com",
+            "sagorchandro.10@ece.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": true,
+        "profile_url": "https://www.ece.ruet.ac.bd/sagorchandro10"
+    },
+    {
+        "name": "Md. Mahabubur Rahman",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mahabubkanon@gmail.com",
+            "mahabubur@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ece.ruet.ac.bd/mahabubur"
+    },
+    {
+        "name": "Milton Kumar Kundu",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mkkeee002@gmail.com",
+            "miltonkumar.kundu.bd@ieee.org",
+            "milton.kundu@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ece.ruet.ac.bd/milton.kumar.kundu"
+    },
+    {
+        "name": "Fariya Tabassum",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tabassum.fariya27@gmail.com",
+            "f.tabassum@ieee.org",
+            "fariya@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.ece.ruet.ac.bd/fariya"
+    },
+    {
+        "name": "Md. Robiul Islam",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "robiul@ece.ruet.ac.bd",
+            "robiulruet00@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ece.ruet.ac.bd/robiul"
+    },
+    {
+        "name": "Rakibul Hassan",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rakibul.hassan@ece.ruet.ac.bd",
+            "ruet.rakib.cse13@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ece.ruet.ac.bd/rakibulhassan"
+    },
+    {
+        "name": "Md. Nahiduzzaman",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "nahiduzzaman@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ece.ruet.ac.bd/mdnahiduzzaman320"
+    },
+    {
+        "name": "Md. Abu Hanif Pramanik",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "abuhanif.ruet13@gmail.com",
+            "abuhanif@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.ece.ruet.ac.bd/abuhanifruet13"
+    },
+    {
+        "name": "Hafsa Binte Kibria",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "hafsabintekibria@gmail.com",
+            "hafsabintekibria@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.ece.ruet.ac.bd/hafsabintekibria"
+    },
+    {
+        "name": "Md. Omaer Faruq Goni",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "omaerfaruq@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.ece.ruet.ac.bd/omaerfaruq"
+    },
+    {
+        "name": "Oishi Jyoti",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "oj.ruet@gmail.com",
+            "oj.ruet@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.ece.ruet.ac.bd/ojruet"
+    },
+    {
+        "name": "Md. Faysal Ahamed",
+        "department": "ECE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "faysal.ahamed@ece.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.ece.ruet.ac.bd/faysalahamed"
+    },
+    {
+        "name": "Moloy Kumar Ghosh",
+        "department": "ECE",
+        "designation": "Lecturer",
+        "emails": [
+            "moloy.kumar@ece.ruet.ac.bd",
+            "moloyghosh126@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.ece.ruet.ac.bd/moloyghosh126"
+    },
+    {
+        "name": "Prof. Dr. S. M. Zahurul Islam",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "zahurul90@gmail.com"
+        ],
+        "joining_year": "1998",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/zahurul90"
+    },
+    {
+        "name": "Dr. Md. Abdul Alim",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "maalim89@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/maalim89"
+    },
+    {
+        "name": "NHM Kamrujjaman Serker",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "kserker@yahoo.com",
+            "kamrujjaman.serker@ce.ruet.ac.bd"
+        ],
+        "joining_year": "1999",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/kserker"
+    },
+    {
+        "name": "Dr. Md. Kumruzzaman",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "kzzaman2000@gmail.com",
+            "kzzaman2020@ce.ruet.ac.bd"
+        ],
+        "joining_year": "1999",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/kzzaman2000"
+    },
+    {
+        "name": "Dr. Md. Niamul Bari",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "niamulbari@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/niamulbari"
+    },
+    {
+        "name": "Dr. Md. Kamruzzaman",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "kzaman@ce.ruet.ac.bd",
+            "kzaman93@gmail.com"
+        ],
+        "joining_year": "2001",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/kzaman93"
+    },
+    {
+        "name": "Dr. Md. Mahmud Sazzad",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "mmsruet@gmail.com",
+            "mms@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2001",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/mmsruet"
+    },
+    {
+        "name": "Dr. Md. Akhtar Hossain",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "akhtar@ce.ruet.ac.bd",
+            "akhtar412002@yahoo.com"
+        ],
+        "joining_year": "2002",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/m.a.hossain"
+    },
+    {
+        "name": "Dr. Md. Shafiqul Islam",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "islam94001@yahoo.com",
+            "islam94001@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2002",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/islam94001"
+    },
+    {
+        "name": "Prof. Dr. Md. Robiul Awall",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "robi95@ce.ruet.ac.bd",
+            "robi95@gmail.com"
+        ],
+        "joining_year": "2002",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/robi95"
+    },
+    {
+        "name": "Dr. Abu Sufian Md. Zia Hasan",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "ziaruet@gmail.com",
+            "ziahasan@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/ziaruet"
+    },
+    {
+        "name": "Dr. H. M. Rasel",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "hmrasel@ruet.ac.bd",
+            "hmrruetce02@gmail.com"
+        ],
+        "joining_year": "2008",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/hmrruet"
+    },
+    {
+        "name": "Dr. Md. Abu Sayeed",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "sayeed.ce00@gmail.com",
+            "MdAbuSayeed@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2006",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/sayeedce00"
+    },
+    {
+        "name": "Dr. Md. Zahanggir Alam",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "zahangir02@gmail.com",
+            "zahanggir@ce.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/zahanggir"
+    },
+    {
+        "name": "Dr. Anupam Chowdhury",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "anupam@ce.ruet.ac.bd",
+            "anupam.19ce@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/anupam19ce"
+    },
+    {
+        "name": "Dr. Bulbul Ahmed",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "bulbulruet@gmail.com",
+            "bulbul@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/bulbulruet"
+    },
+    {
+        "name": "Md Masud Rana",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "masud.ce08@gmail.com",
+            "mrana@mun.ca"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/masud.ce08"
+    },
+    {
+        "name": "Dr. Md. Mintu Miah",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mintu07ruetce@gmail.com",
+            "mdmintu.miah@mavs.uta.edu"
+        ],
+        "joining_year": "2014",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/mintu07ruetce"
+    },
+    {
+        "name": "Ahmed Hossain",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ahmedhossain090001@gmail.com",
+            "c00451287@louisiana.edu"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/ahmedhossain090001"
+    },
+    {
+        "name": "Keya Roy",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "roykeya0944@gmail.com",
+            "keya@student.unimelb.edu.au"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/roykeya0944"
+    },
+    {
+        "name": "G. M. Harun- Or- Rashid",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "gmharun.ruet11@gmail.com",
+            "gmharun@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/gmharunruet11"
+    },
+    {
+        "name": "Zahidul Islam",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "zahid@ce.ruet.ac.bd",
+            "zahidhasance106@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/zahid"
+    },
+    {
+        "name": "Mahmud Hasan",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "masudce120037@gmail.com",
+            "mhasance037@gmail.com",
+            "mahmudhasan@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/masudce120037"
+    },
+    {
+        "name": "Miraz Ahamed",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "miraz@ce.ruet.ac.bd",
+            "maruet004@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/miraz"
+    },
+    {
+        "name": "MD. MOHAYMINUL ISLAM",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mohayminul.islam37@gmail.com",
+            "mohayminul.islam@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/m.m.islam"
+    },
+    {
+        "name": "Mithun Chakrabartty",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mithun.ruetce@gmail.com",
+            "mithun@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/mithunruetce"
+    },
+    {
+        "name": "Md. Sohel Rana",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sohelranace15@gmail.com",
+            "sohelranace15@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/sohelranace"
+    },
+    {
+        "name": "Atika Hossain Akhi",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "atika2012cen@gmail.com",
+            "ahakhi@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/atika2012cen"
+    },
+    {
+        "name": "Md. Rafiul Islam",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rafiulislam.1500080@gmail.com",
+            "mrislam@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/rafiulislam1500080"
+    },
+    {
+        "name": "Sumaya Tabassum",
+        "department": "CE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sumayatabassum161@gmail.com",
+            "sumaya@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/sumayatabassum161"
+    },
+    {
+        "name": "Mohammad Ali",
+        "department": "CE",
+        "designation": "Lecturer",
+        "emails": [
+            "mdali@ce.ruet.ac.bd",
+            "ali433427@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/mdali"
+    },
+    {
+        "name": "Briti Ray",
+        "department": "CE",
+        "designation": "Lecturer",
+        "emails": [
+            "britirayce29@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/britirayce29"
+    },
+    {
+        "name": "Ragib Noor Srijan",
+        "department": "CE",
+        "designation": "Lecturer",
+        "emails": [
+            "ragibnoor7108@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/ragibnoor7108"
+    },
+    {
+        "name": "Md. Nobinur Rahman",
+        "department": "CE",
+        "designation": "Lecturer",
+        "emails": [
+            "mnrahman@ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/mnrahman"
+    },
+    {
+        "name": "Md Ashraful  Imran",
+        "department": "CE",
+        "designation": "Lecturer",
+        "emails": [
+            "imran10ruet@gmail.com",
+            "imran@ce.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.ce.ruet.ac.bd/imran10ruet"
+    },
+    {
+        "name": "Dr. Md. Shafi Uddin Miah",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "shafi@ce.ruet.ac.bd",
+            "shafi_ruet@yahoo.com"
+        ],
+        "joining_year": "1982",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/shafi"
+    },
+    {
+        "name": "Dr. Syed Abdul Mofiz",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "samofiz@gmail.com",
+            "samofiz@yahoo.com"
+        ],
+        "joining_year": "1984",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/samofiz"
+    },
+    {
+        "name": "Dr. Tarif Uddin Ahmed",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "tarif.ruet@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/tarifruet"
+    },
+    {
+        "name": "Dr. Tohur Ahmed",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "tohurruet@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/tohurruet"
+    },
+    {
+        "name": "Iqbal Matin",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "imatinbd@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/imatinbd"
+    },
+    {
+        "name": "Mohd. Abdus Sobhan",
+        "department": "CE",
+        "designation": "Professor",
+        "emails": [
+            "msobhan@yahoo.com",
+            "msobhan78030@gmail.com"
+        ],
+        "joining_year": "1984",
+        "is_on_leave": false,
+        "profile_url": "https://www.ce.ruet.ac.bd/msobhan"
+    },
+    {
+        "name": "Dr. MST ILME FARIDATUL",
+        "department": "URP",
+        "designation": "Professor",
+        "emails": [
+            "mifaridatul@urp.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/ilme0309"
+    },
+    {
+        "name": "Dr. Md. Abdul Wakil",
+        "department": "URP",
+        "designation": "Professor",
+        "emails": [
+            "mawakil.wakil@gmail.com",
+            "mawakil@urp.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/mawakilwakil"
+    },
+    {
+        "name": "Dr. Md. Mostafizur Rahman",
+        "department": "URP",
+        "designation": "Professor",
+        "emails": [
+            "mostafizur@urp.ruet.ac.bd",
+            "mdmostafiz.buet@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/mdmostafizbuet"
+    },
+    {
+        "name": "Nazia Hossain",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "naziaurp@urp.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.urp.ruet.ac.bd/naziaurp"
+    },
+    {
+        "name": "Anutosh Das",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "anutosh@urp.ruet.ac.bd",
+            "anutoshbuet@gmail.com"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.urp.ruet.ac.bd/anutoshdas"
+    },
+    {
+        "name": "Md. Sakib Zubayer",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sakibzubayer@urp.ruet.ac.bd",
+            "sakibzubayer@gmail.com"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/sakibzubayer"
+    },
+    {
+        "name": "Faria Afrin Zinia",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "afrinzinia17@gmail.com"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.urp.ruet.ac.bd/faria.afrin.zinia"
+    },
+    {
+        "name": "Dulal Sarker",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "dulalsarker@urp.ruet.ac.bd",
+            "dulalsarker.ruet@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/dulalsarkerruet"
+    },
+    {
+        "name": "Muhaiminul Islam",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "muhaiminul@urp.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/muhaiminulurp"
+    },
+    {
+        "name": "Sumita Roy",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sumitaroy@urp.ruet.ac.bd",
+            "sumitaroy.urp@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/sumitaroyurp"
+    },
+    {
+        "name": "Md. Shakil Ar Salan",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sarsalan@urp.ruet.ac.bd",
+            "shakil.127005@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/shakilarsalan"
+    },
+    {
+        "name": "Muhammad Waresul Hassan Nipun",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "waresulhassan@urp.ruet.ac.bd",
+            "waresul.urpju@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/waresulurpju"
+    },
+    {
+        "name": "Jahid Hasan",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "h.jaiid01@gmail.com",
+            "jahid@urp.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/hjaiid01"
+    },
+    {
+        "name": "Md. Arshadul Islam",
+        "department": "URP",
+        "designation": "Lecturer",
+        "emails": [
+            "arshad@urp.ruet.ac.bd",
+            "mdarshadulislam01@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/arshad"
+    },
+    {
+        "name": "Yeasin Ahmead",
+        "department": "URP",
+        "designation": "Lecturer",
+        "emails": [
+            "yeasin@urp.ruet.ac.bd",
+            "yeasin.urpruet18@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/yeasin"
+    },
+    {
+        "name": "HOSSAIN MOHIUDDIN",
+        "department": "URP",
+        "designation": "Lecturer",
+        "emails": [
+            "hossain.mohiuddin19@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": true,
+        "profile_url": "https://www.urp.ruet.ac.bd/hossainmohiuddin19"
+    },
+    {
+        "name": "MD. NAIMUR RAHMAN",
+        "department": "URP",
+        "designation": "Lecturer",
+        "emails": [
+            "naimur@urp.ruet.ac.bd",
+            "mdnaimurrahmanndc35@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/mdnaimurrahmanndc35"
+    },
+    {
+        "name": "Ferdous Farhana Huq",
+        "department": "URP",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ferdous.huq08buet@gmail.com",
+            "farhana@urp.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": false,
+        "profile_url": "https://www.urp.ruet.ac.bd/ferdoushuq08buet"
+    },
+    {
+        "name": "Md. Sabbir Ahsan",
+        "department": "ARCH",
+        "designation": "Associate Professor",
+        "emails": [
+            "sabbirahsan@arch.ruet.ac.bd",
+            "sabbirahsan@hotmail.com"
+        ],
+        "joining_year": "2013",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/sabbirahsan"
+    },
+    {
+        "name": "Md. Asaduzzaman",
+        "department": "ARCH",
+        "designation": "Associate Professor",
+        "emails": [
+            "asaduzzamansohag@gmail.com",
+            "md.asaduzzaman@arch.ruet.ac.bd"
+        ],
+        "joining_year": "2013",
+        "is_on_leave": true,
+        "profile_url": "https://www.arch.ruet.ac.bd/Md.%20Asaduzzaman"
+    },
+    {
+        "name": "Z H M Monjur Murshed",
+        "department": "ARCH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "zhm@arch.ruet.ac.bd",
+            "turjo.bogra@hotmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/zhm"
+    },
+    {
+        "name": "Nadia Monzur",
+        "department": "ARCH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "nadiamonzur@gmail.com",
+            "nadiamonzur@arch.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": true,
+        "profile_url": "https://www.arch.ruet.ac.bd/nadiamonzur"
+    },
+    {
+        "name": "Md Samiul Sabbir Islam",
+        "department": "ARCH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "samiul100108@gmail.com",
+            "samiul@arch.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/Samiul"
+    },
+    {
+        "name": "Md. Nazmul Hoda",
+        "department": "ARCH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mnhoda@arch.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": true,
+        "profile_url": "https://www.arch.ruet.ac.bd/mnhoda"
+    },
+    {
+        "name": "Md. Rafsun Jany",
+        "department": "ARCH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "arch.rafsunjany@gmail.com",
+            "md.rafsunjany@arch.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.arch.ruet.ac.bd/archrafsunjany"
+    },
+    {
+        "name": "Tamanna Sultana Swarna",
+        "department": "ARCH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tamannasultana@arch.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/tamannasultana"
+    },
+    {
+        "name": "Farjana Jesmin",
+        "department": "ARCH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "f.jesmin@arch.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/jesminfarjana"
+    },
+    {
+        "name": "Nazia Afrin Trina",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "124arch0801046@gmail.com"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.arch.ruet.ac.bd/naziaafrintrina"
+    },
+    {
+        "name": "Sheikh Hameem",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "sheikh.hameem71@gmail.com",
+            "sheikhhameem@arch.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/sheikhhameem71"
+    },
+    {
+        "name": "MD.EZAJUL ISLAM",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "ezajulislam@arch.ruet.ac.bd",
+            "ezajul.haque670@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/ezajulhaque670"
+    },
+    {
+        "name": "Prianka Das",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "prianka.das@arch.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/priankadas"
+    },
+    {
+        "name": "Nabilah Nargis",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "nabilah.nargis@arch.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/nabilahnargis"
+    },
+    {
+        "name": "Mohammad Rakibul Islam Anik",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "rakibul.islam@arch.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/rakibulislam"
+    },
+    {
+        "name": "Ashiqur Rahman Turjo",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "ashiqur.turjo@arch.ruet.ac.bd",
+            "ashiqturjo39@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/ashiqurturjo"
+    },
+    {
+        "name": "Armin Rahman Mouly",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "moulybuet.24@gmail.com",
+            "mouly_buet@yahoo.com"
+        ],
+        "joining_year": "2018",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/moulybuet24"
+    },
+    {
+        "name": "Lamia Tasnim Ankon",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "ankon0109@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/ankon0109"
+    },
+    {
+        "name": "Shammi Akter Keya",
+        "department": "ARCH",
+        "designation": "Lecturer",
+        "emails": [
+            "keya0801048@gmail.com"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": false,
+        "profile_url": "https://www.arch.ruet.ac.bd/Shammi"
+    },
+    {
+        "name": "Shayla Sharmin",
+        "department": "BECM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shaylasharmin.100016@gmail.com",
+            "shaylasharmin.100016@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": false,
+        "profile_url": "https://www.becm.ruet.ac.bd/shaylasharmin100016"
+    },
+    {
+        "name": "MD. LUTFOR RAHMAN",
+        "department": "BECM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "lutforrony@becm.ruet.ac.bd",
+            "lutforrony22@gmail.com"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.becm.ruet.ac.bd/lutforrony"
+    },
+    {
+        "name": "Ashadul Islam",
+        "department": "BECM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "asadruetce11@gmail.com",
+            "aislam@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.becm.ruet.ac.bd/asadruetce11"
+    },
+    {
+        "name": "Mehedi Hasan",
+        "department": "BECM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mehedi.ruet95@gmail.com",
+            "mehedi@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.becm.ruet.ac.bd/mehedihasan"
+    },
+    {
+        "name": "Aojoy kumar Shuvo",
+        "department": "BECM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "aojoy.ce66@gmail.com",
+            "aojoy@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.becm.ruet.ac.bd/aojoyce66"
+    },
+    {
+        "name": "Faruque Abdullah",
+        "department": "BECM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "abdullahruet13@gmail.com",
+            "abdullah@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.becm.ruet.ac.bd/abdullah"
+    },
+    {
+        "name": "RAKIBUL HASAN",
+        "department": "BECM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rakibulkuet14@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.becm.ruet.ac.bd/rakibulhasan2k14"
+    },
+    {
+        "name": "Md. Ashraful Islam",
+        "department": "BECM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ashraful.ce.ruet13@gmail.com",
+            "ashraful@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.becm.ruet.ac.bd/ashrafulceruet13"
+    },
+    {
+        "name": "Md. Nur Alam Riad",
+        "department": "BECM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "riyadrzs13civilruet@gmail.com",
+            "nuralam.riad@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.becm.ruet.ac.bd/riyadrzs13civilruet"
+    },
+    {
+        "name": "MD. RUMMAN HOWLADER",
+        "department": "BECM",
+        "designation": "Lecturer",
+        "emails": [
+            "rummanruet.ce18@gmail.com",
+            "rumman@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.becm.ruet.ac.bd/rummanruetce18"
+    },
+    {
+        "name": "Showaib Ahmed Chowdhury",
+        "department": "BECM",
+        "designation": "Lecturer",
+        "emails": [
+            "showaib.ruet@gmail.com",
+            "showaib@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.becm.ruet.ac.bd/showaibruet"
+    },
+    {
+        "name": "MD. Mehedi Hassan Galib",
+        "department": "BECM",
+        "designation": "Lecturer",
+        "emails": [
+            "mehedihassangalib@gmail.com",
+            "mhgalib@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.becm.ruet.ac.bd/mehedihassangalib"
+    },
+    {
+        "name": "Md. Towfik Hassan",
+        "department": "BECM",
+        "designation": "Lecturer",
+        "emails": [
+            "mthassan.ruet16@gmail.com",
+            "mthassan@becm.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.becm.ruet.ac.bd/mthassanruet16"
+    },
+    {
+        "name": "Dr. Mohammad Shahed Hasan Khan Tushar",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "shahedhk@gmail.com"
+        ],
+        "joining_year": "2003",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/Mohammad_Shahed"
+    },
+    {
+        "name": "Mohammad Uzzal Hossain Joardder",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "joardder@me.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/joardder"
+    },
+    {
+        "name": "Dr. Mohammad Rofiqul Islam",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "mrislam1987ruet@gmail.com"
+        ],
+        "joining_year": "1994",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/mrislam"
+    },
+    {
+        "name": "Dr. Nirendra Nath Mustafi",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "nnmustafi@gmail.com",
+            "nnmustafi@yahoo.com",
+            "nnmustafi@me.ruet.ac.bd"
+        ],
+        "joining_year": "1995",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/nnmustafi"
+    },
+    {
+        "name": "Dr. Md. Emdadul Hoque",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "emdadulhoque@gmail.com",
+            "mehoque@me.ruet.ac.bd"
+        ],
+        "joining_year": "1998",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/mehoque"
+    },
+    {
+        "name": "Dr. Md. Rokunuzzaman",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "rzaman@me.ruet.ac.bd",
+            "rana92.me.ruet@gmail.com"
+        ],
+        "joining_year": "1999",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/rzaman"
+    },
+    {
+        "name": "Dr. Md. Nurul Islam",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "nurul93213@me.ruet.ac.bd",
+            "nurul93213@yahoo.com",
+            "nurul_93213@hotmail.com"
+        ],
+        "joining_year": "2001",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/nurul93213"
+    },
+    {
+        "name": "Dr. Mhia Md. Zaglul Shahadat",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "mhiashahadat@gmail.com",
+            "zaglul@me.ruet.ac.bd"
+        ],
+        "joining_year": "2003",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/mhiashahadat"
+    },
+    {
+        "name": "Dr. Md Rabiul Islam Sarker",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "islamrabiul@yahoo.com",
+            "islamrabiul@me.ruet.ac.bd"
+        ],
+        "joining_year": "2007",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/islamrabiul98202"
+    },
+    {
+        "name": "Dr. Shahajada Mahmudul Hasan",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "smhasan@me.ruet.ac.bd",
+            "hasansuclab@gmail.com"
+        ],
+        "joining_year": "2008",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/hasansuclab"
+    },
+    {
+        "name": "Dr. Mohammad U. H. Joardder",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "m.joardder@qut.edu.au"
+        ],
+        "joining_year": "2008",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/muhjoardder"
+    },
+    {
+        "name": "Dr. Barun Kumar Das",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "bkdas@me.ruet.ac.bd",
+            "barunruet@gmail.com"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/barunruet"
+    },
+    {
+        "name": "Dr. Md. Shazib Uddin",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "msu@me.ruet.ac.bd",
+            "shazib0397@gmail.com",
+            "st113320@alumni.ait.asia",
+            "m.uddin@uq.net.au"
+        ],
+        "joining_year": "2008",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/shazib0397"
+    },
+    {
+        "name": "Dr. Md. Abdul Kader",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "makader@me.ruet.ac.bd",
+            "kader_042017@yahoo.com"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/kader-042017"
+    },
+    {
+        "name": "Md. Wahedul Islam",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "mdwahedul@gmail.com",
+            "wahedul@me.ruet.ac.bd"
+        ],
+        "joining_year": "2003",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/mdwahedul"
+    },
+    {
+        "name": "Tasnuva Tabashhum Choudhury",
+        "department": "ME",
+        "designation": "Associate Professor",
+        "emails": [
+            "tasnuvac@yahoo.com",
+            "ttcruet@me.ruet.ac.bd"
+        ],
+        "joining_year": "2007",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/tasnuvac"
+    },
+    {
+        "name": "Asma-Ul-Husna",
+        "department": "ME",
+        "designation": "Associate Professor",
+        "emails": [
+            "evume04@gmail.com",
+            "asma.husna@me.ruet.ac.bd"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/evume04"
+    },
+    {
+        "name": "Dr. Syed Mamun R Rasid",
+        "department": "ME",
+        "designation": "Associate Professor",
+        "emails": [
+            "smrasid.me@gmail.com",
+            "mamun@me.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/smrasidme"
+    },
+    {
+        "name": "Dr. Md. Abdur Rahim",
+        "department": "ME",
+        "designation": "Associate Professor",
+        "emails": [
+            "rahimruet05@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/rahimruet05"
+    },
+    {
+        "name": "Dr. Monjur Mourshed",
+        "department": "ME",
+        "designation": "Associate Professor",
+        "emails": [
+            "monjurmourshed@me.ruet.ac.bd",
+            "monjurmourshed.ruet@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/monjurmourshed"
+    },
+    {
+        "name": "Dr. Mahadi Hasan Masud",
+        "department": "ME",
+        "designation": "Associate Professor",
+        "emails": [
+            "masud.08ruet@gmail.com",
+            "masud.08@me.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/masud.08ruet"
+    },
+    {
+        "name": "Md. Riaz Pervez",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "pie_parvez@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/pie-parvez"
+    },
+    {
+        "name": "Md Saiful Islam",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "msislam@me.ruet.ac.bd",
+            "sohag09me@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/msislam"
+    },
+    {
+        "name": "Jannatul Ferdous",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "jfe092016@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/jfe092016"
+    },
+    {
+        "name": "Sumaiya Sadika Tuly",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sstuly09@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/sstuly09"
+    },
+    {
+        "name": "Md. Golam Kibria",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "kibria@me.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/kibriaruet12"
+    },
+    {
+        "name": "Pronob Das",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "pronobdasruet@gmail.com",
+            "pronobdasruet@me.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/pronobdasruet"
+    },
+    {
+        "name": "Abdul mojid parvej",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "parvej@me.ruet.ac.bd",
+            "parvej.ruet@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/parvej"
+    },
+    {
+        "name": "Md. Sanowar Hossain",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sanowar122086@gmail.com",
+            "sanowar@me.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/sanowar122086"
+    },
+    {
+        "name": "Md. Nahid Hossan",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "nahidhossan99@gmail.com",
+            "nahid@me.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/nahid"
+    },
+    {
+        "name": "Md. Bakhtierkhalzi",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "khilzi@me.ruet.ac.bd",
+            "bakhtier.ruet13@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/khilziruet13"
+    },
+    {
+        "name": "Miftahul Mobin Chowdhury Shabdik",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shabdikmobin73@gmail.com",
+            "shabdikmobin308@me.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/shabdikmobin73"
+    },
+    {
+        "name": "Md. Mostafa Kamal",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mostafakamal2048@gmail.com",
+            "mostafa@me.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/mostafakamal"
+    },
+    {
+        "name": "Mim Mashrur Ahmed",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mashrursium@gmail.com",
+            "mashrur@me.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/mashrur.ahmed"
+    },
+    {
+        "name": "Durjoy Kumar Paul",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "durjoy.paul@me.ruet.ac.bd",
+            "durjoy10064@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/durjoypaul"
+    },
+    {
+        "name": "Md. Rasel Ahmed",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "rasel@me.ruet.ac.bd",
+            "raselahmedruet13@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/raselahmedruet13"
+    },
+    {
+        "name": "Md. Mahabur Rahaman",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "mahaburrahaman705@gmail.com",
+            "mahabur@me.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/mahaburrahaman705"
+    },
+    {
+        "name": "Md. Tanjeeb Hossen Akash",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "tanjeeb@me.ruet.ac.bd",
+            "tanjeebakash@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/tanjeeb"
+    },
+    {
+        "name": "FAZLUR RASHID",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "frrashed10@gmail.com",
+            "rashed10@me.ruet.ac.bd"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/rashed10@me.ruet.ac.bd"
+    },
+    {
+        "name": "Oishwarjya Ferdous",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "oishwarjyaferdous@me.ruet.ac.bd",
+            "oishwarjya132033@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.me.ruet.ac.bd/oishwarjyaferdous"
+    },
+    {
+        "name": "Easmin Sultana",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "easmin.sultana@me.ruet.ac.bd",
+            "esprome104@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/easminsultana"
+    },
+    {
+        "name": "Raihan Karal",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "raihan.karal@me.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/raihankaral"
+    },
+    {
+        "name": "SHAH MOHAMMED TAKRIM",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "shahtakrim164@gmail.com",
+            "mohammed.takrim@me.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/shahtakrim"
+    },
+    {
+        "name": "Md. Hasibul Hasan Himel",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "hasibulhasan1602013@gmail.com",
+            "hasibul.hasan@me.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/hasibulhasan1602013"
+    },
+    {
+        "name": "Asma Akhter",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "asma.akhter@me.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/asmaakhter"
+    },
+    {
+        "name": "Dr. Md. Shamim Akhter",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "mdakhter3456@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/mdakhter3456"
+    },
+    {
+        "name": "Dr. Mohd. Rafiqul Alam Beg",
+        "department": "ME",
+        "designation": "Professor",
+        "emails": [
+            "rabeg.meruet@yahoo.com"
+        ],
+        "joining_year": "1984",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/rabeg"
+    },
+    {
+        "name": "Amit Roy",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "royamit.me@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/amitroy"
+    },
+    {
+        "name": "S M NAJMUL HOQUE",
+        "department": "ME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shumon99234@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/smnajmulhoque"
+    },
+    {
+        "name": "Mahmudul Hasan",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "shakil_ruet@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/shakil-ruet"
+    },
+    {
+        "name": "Md. Sazan Rahman",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "sazan.ruet@gmail.com",
+            "md.sazan.rahman@mail.mcgill.ca"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/ms_rahman"
+    },
+    {
+        "name": "Mst.Sharifa Khatun",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "sharifakhatun@me.ruet.ac.bd",
+            "Sharifa.ruet13@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/sharifaruet13"
+    },
+    {
+        "name": "Soumya Mandal",
+        "department": "ME",
+        "designation": "Lecturer",
+        "emails": [
+            "soumyamandal@me.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.me.ruet.ac.bd/soumyamandal"
+    },
+    {
+        "name": "Dr. Md. Asadujjaman",
+        "department": "IPE",
+        "designation": "Professor",
+        "emails": [
+            "jonikhan007@yahoo.com",
+            "asadujjaman@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2013",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/Asadujjaman"
+    },
+    {
+        "name": "Dr. Md. Mosharraf Hossain",
+        "department": "IPE",
+        "designation": "Professor",
+        "emails": [
+            "mosharraf80@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/mosharraf80"
+    },
+    {
+        "name": "Dr. Md. Mohibul Islam",
+        "department": "IPE",
+        "designation": "Professor",
+        "emails": [
+            "mohibul@ipe.ruet.ac.bd",
+            "mohibul05ipe@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/mohibul"
+    },
+    {
+        "name": "Dr. Shahed Mahmud",
+        "department": "IPE",
+        "designation": "Professor",
+        "emails": [
+            "shahed.mahmud@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2013",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/shahedmahmud"
+    },
+    {
+        "name": "Md. Ariful Islam",
+        "department": "IPE",
+        "designation": "Associate Professor",
+        "emails": [
+            "arifulislam@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2007",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/maislam252"
+    },
+    {
+        "name": "Dr. Md. Sanowar Hossain",
+        "department": "IPE",
+        "designation": "Associate Professor",
+        "emails": [
+            "sanowar@ipe.ruet.ac.bd",
+            "m.sanowar.h23@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/sanowar-ruet05"
+    },
+    {
+        "name": "Khairun Nahar",
+        "department": "IPE",
+        "designation": "Associate Professor",
+        "emails": [
+            "khairun.nahar@ipe.ruet.ac.bd",
+            "shapla05.ipe@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/nahar"
+    },
+    {
+        "name": "SONIA AKHTER",
+        "department": "IPE",
+        "designation": "Associate Professor",
+        "emails": [
+            "sonia_ruet@yahoo.com",
+            "sonia@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2013",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/sonia-ruet"
+    },
+    {
+        "name": "Md Mashum Billal",
+        "department": "IPE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mashum.billal@ipe.ruet.ac.bd",
+            "mashum.08ipe@gmail.com",
+            "mdmashum@ualberta.ca"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.ipe.ruet.ac.bd/mashum08ipe"
+    },
+    {
+        "name": "Md. Rakibul Islam",
+        "department": "IPE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rbn_khan@yahoo.com",
+            "rakib@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.ipe.ruet.ac.bd/Md%20Rakibul%20Islam"
+    },
+    {
+        "name": "Md. Rasel Sarkar",
+        "department": "IPE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rasel@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/rasel-ipe"
+    },
+    {
+        "name": "Md. Zahidul Islam",
+        "department": "IPE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "zahid.ruet11@gmail.com",
+            "zahid@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ipe.ruet.ac.bd/zahid1150"
+    },
+    {
+        "name": "Md. Sazol Ahmmed",
+        "department": "IPE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sazolahmmed1@gmail.com",
+            "sazol.ahmmed@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ipe.ruet.ac.bd/sazolahmmed1"
+    },
+    {
+        "name": "Nusrath Zahan",
+        "department": "IPE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "nusrathzahantasnim@gmail.com",
+            "n.zahan@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ipe.ruet.ac.bd/nusrathzahan"
+    },
+    {
+        "name": "Toukir Ahmed",
+        "department": "IPE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ahmedshotez100@gmail.com",
+            "toukir.ahmed@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.ipe.ruet.ac.bd/ahmedshotez100"
+    },
+    {
+        "name": "Md. Ariful Haque",
+        "department": "IPE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "arifulhaque.ruet@gmail.com",
+            "arifulhaque@ipe.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/arifulhaqueruet"
+    },
+    {
+        "name": "Md. Limonur Rahman Lingkon",
+        "department": "IPE",
+        "designation": "Lecturer",
+        "emails": [
+            "limonur.rahman@ipe.ruet.ac.bd",
+            "limonurrahman16@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/limonurrahman16"
+    },
+    {
+        "name": "Jannatul Ferdous Mim",
+        "department": "IPE",
+        "designation": "Lecturer",
+        "emails": [
+            "jannatul.ferdous@ipe.ruet.ac.bd",
+            "mim1605008@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/mim1605008"
+    },
+    {
+        "name": "Khan Md. Ariful Haque",
+        "department": "IPE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "arif99ipe@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.ipe.ruet.ac.bd/arif99ipe"
+    },
+    {
+        "name": "Prof. Dr. Md. Bodiul Islam",
+        "department": "CME",
+        "designation": "Professor",
+        "emails": [
+            "mbi@cme.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/mbi"
+    },
+    {
+        "name": "Professor Dr. Md. Shamimur Rahman",
+        "department": "CME",
+        "designation": "Professor",
+        "emails": [
+            "shamimurgce@gmail.com",
+            "rahman@cme.ruet.ac.bd"
+        ],
+        "joining_year": "1999",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/shamimurgce"
+    },
+    {
+        "name": "Dr. Md. Abdullah Al Mahmood",
+        "department": "CME",
+        "designation": "Professor",
+        "emails": [
+            "abdullah@ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/Abdullah%20Al%20Mahmood"
+    },
+    {
+        "name": "Tasmia Zaman",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tasmia@gce.ruet.ac.bd",
+            "zaman.tasmia@yahoo.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.cme.ruet.ac.bd/zamantasmia"
+    },
+    {
+        "name": "Mst. Sharmin Mostari",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sharmin015@gmail.com",
+            "sharminmostari@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2026",
+        "is_on_leave": true,
+        "profile_url": "https://www.cme.ruet.ac.bd/sharmin015"
+    },
+    {
+        "name": "Aungkan sen",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "senaungkan@gmail.com",
+            "senaungkan@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.cme.ruet.ac.bd/senaungkan"
+    },
+    {
+        "name": "Dr. Md. Rahat Al Hassan",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rahatmme09@cme.ruet.ac.bd",
+            "rahatmme9@gmail.com"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/rahatmme09"
+    },
+    {
+        "name": "Md. Mintu Ali",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "min2.gce11ruet@gmail.com",
+            "mintu@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/min2gce11ruet"
+    },
+    {
+        "name": "Md. Abdul Kaiyum",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "a.kaiyum.ruet11@gmail.com",
+            "kaiyum@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.cme.ruet.ac.bd/akaiyumruet11"
+    },
+    {
+        "name": "Md. Humayan Kabir",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mhk.gce11@gmail.com",
+            "mhk@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.cme.ruet.ac.bd/mhkgce11"
+    },
+    {
+        "name": "Shamima Akhter Urmi",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "urmisheikh125@gmail.com",
+            "urmi@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/urmisheikh125"
+    },
+    {
+        "name": "Md. Khairul Islam",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ikhairul277@gmail.com",
+            "mki@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/ikhairul1277"
+    },
+    {
+        "name": "Md. Jahidul Haque",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mjh.ruet26@gmail.com",
+            "mjh@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/mjhruet26"
+    },
+    {
+        "name": "Mst. Esmotara Begum",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "esmotara.ruet13@gmail.com",
+            "meb@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/esmotararuet13"
+    },
+    {
+        "name": "Hasnat Jahan Sumona",
+        "department": "CME",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sumona77777@gmail.com",
+            "HJsumona@gce.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/sumona77777"
+    },
+    {
+        "name": "Shah Sadia Rahman Joya",
+        "department": "CME",
+        "designation": "Lecturer",
+        "emails": [
+            "sadia.joya@cme.ruet.ac.bd",
+            "sadia.joya@gce.ruet.ac.bd",
+            "sadiajoya05@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/sadiajoya05"
+    },
+    {
+        "name": "Md. Sidratul Montaha Hossain",
+        "department": "CME",
+        "designation": "Lecturer",
+        "emails": [
+            "sidratul.montaha@gce.ruet.ac.bd",
+            "sidratulatruet17@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/sidratulmontaha"
+    },
+    {
+        "name": "Redwanul Haque",
+        "department": "CME",
+        "designation": "Lecturer",
+        "emails": [
+            "redwan@cme.ruet.ac.bd",
+            "redwanruet@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/redwan"
+    },
+    {
+        "name": "Md. Rakibul Islam Bilash",
+        "department": "CME",
+        "designation": "Lecturer",
+        "emails": [
+            "bis@cme.ruet.ac.bd",
+            "rakibulislambilash134@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.cme.ruet.ac.bd/rakibulislambilash134"
+    },
+    {
+        "name": "Md. Firoj Ali",
+        "department": "MTE",
+        "designation": "Associate Professor",
+        "emails": [
+            "firoj@mte.ruet.ac.bd",
+            "firoj_eee_ruet@yahoo.com",
+            "eeemfa07@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/mfa_mte"
+    },
+    {
+        "name": "Dr. Sajal Kumar Das",
+        "department": "MTE",
+        "designation": "Associate Professor",
+        "emails": [
+            "sajal.das@mte.ruet.ac.bd",
+            "das.k.sajal@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.mte.ruet.ac.bd/sajal.das"
+    },
+    {
+        "name": "Dr. Zinat Tasneem",
+        "department": "MTE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "zinattasneem@mte.ruet.ac.bd",
+            "tasneemzinatbd@ieee.org"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/tasneemzinat"
+    },
+    {
+        "name": "Md Manirul Islam",
+        "department": "MTE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "manirul@mte.ruet.ac.bd",
+            "islam9@ualberta.ca"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.mte.ruet.ac.bd/manirul"
+    },
+    {
+        "name": "Md. Robiul Islam",
+        "department": "MTE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "robiulislamme07@gmail.com",
+            "robiulislamme07@mte.ruet.ac.bd"
+        ],
+        "joining_year": "2018",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/robiulislamme07"
+    },
+    {
+        "name": "Dr. Dip Kumar Saha",
+        "department": "MTE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "dip07me@mte.ruet.ac.bd",
+            "dip07me@gmail.com"
+        ],
+        "joining_year": "2018",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/dip07me"
+    },
+    {
+        "name": "Sumaya Ishrat Moyeen",
+        "department": "MTE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sumaya.ishrat.ruet@gmail.com",
+            "sumaya@mte.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/sumayaishrat"
+    },
+    {
+        "name": "Md. Hafiz Ahamed",
+        "department": "MTE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "hafiz.mte13.ruet@gmail.com",
+            "hafiz@mte.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/hafiz"
+    },
+    {
+        "name": "Md. Faisal Rahman Badal",
+        "department": "MTE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "faisalrahman@mte.ruet.ac.bd",
+            "faisalrahman1312@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/faisalrahman"
+    },
+    {
+        "name": "Md. Mehedi Hasan",
+        "department": "MTE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mmehedihasann@gmail.com",
+            "mehedi@mte.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.mte.ruet.ac.bd/mehedi"
+    },
+    {
+        "name": "Sarafat Hussain Abhi",
+        "department": "MTE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sarafat.rueteee@gmail.com",
+            "abhi@mte.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/sarafatrueteee"
+    },
+    {
+        "name": "Subrata Kumar Sarker",
+        "department": "MTE",
+        "designation": "Lecturer",
+        "emails": [
+            "subrata@mte.ruet.ac.bd",
+            "skshuvo138008@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/skshuvo138008"
+    },
+    {
+        "name": "Prangon Das",
+        "department": "MTE",
+        "designation": "Lecturer",
+        "emails": [
+            "prangon.ruet.mte@gmail.com",
+            "prangon@mte.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/prangon"
+    },
+    {
+        "name": "Md. Sakib Hassan Chowdhury",
+        "department": "MTE",
+        "designation": "Lecturer",
+        "emails": [
+            "sakib.mte.ruet@gmail.com",
+            "sakib.chowdhury@mte.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/sakib"
+    },
+    {
+        "name": "Safwat Mukarrama Choudhury",
+        "department": "MTE",
+        "designation": "Lecturer",
+        "emails": [
+            "safwat.shifa@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/safwatshifa"
+    },
+    {
+        "name": "Md Zunaid Hossen",
+        "department": "MTE",
+        "designation": "Lecturer",
+        "emails": [
+            "zunaid.hossen@mte.ruet.ac.bd",
+            "zunaid153525@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/zunaid"
+    },
+    {
+        "name": "Md. Meraj Ahmed",
+        "department": "MTE",
+        "designation": "Lecturer",
+        "emails": [
+            "meraj@mte.ruet.ac.bd",
+            "meraj159@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.mte.ruet.ac.bd/meraj159"
+    },
+    {
+        "name": "Dr. Md. Aminul Islam",
+        "department": "MSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "aminul@mse.ruet.ac.bd",
+            "aminulmse@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.mse.ruet.ac.bd/aminulmse"
+    },
+    {
+        "name": "Md. Anisul Islam",
+        "department": "MSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "anisulislam@mse.ruet.ac.bd",
+            "anisul663@gmail.com"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.mse.ruet.ac.bd/anisulislam"
+    },
+    {
+        "name": "Ayeman Mazdi Nahin",
+        "department": "MSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ayemanmazdinahin@gmail.com",
+            "ayeman@mse.ruet.ac.bd"
+        ],
+        "joining_year": "2018",
+        "is_on_leave": true,
+        "profile_url": "https://www.mse.ruet.ac.bd/ayemanmazdinahin"
+    },
+    {
+        "name": "Asrafuzzaman",
+        "department": "MSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "asrafuzzaman@mse.ruet.ac.bd",
+            "asrafuzzaman.buet09@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.mse.ruet.ac.bd/asrafuzzaman"
+    },
+    {
+        "name": "S. M. Nasim Rokon",
+        "department": "MSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rokon@mse.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.mse.ruet.ac.bd/smnrokon"
+    },
+    {
+        "name": "Umme Salma Mst. Mahmuda",
+        "department": "MSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shimu.mse.ru@gmail.com",
+            "mahmuda@mse.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.mse.ruet.ac.bd/shimumseru"
+    },
+    {
+        "name": "Moumita Tasnim Meem",
+        "department": "MSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "moumitatasnim01@gmail.com",
+            "moumita@mse.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.mse.ruet.ac.bd/moumitatasnim"
+    },
+    {
+        "name": "Pabitro Prosad Mondal",
+        "department": "MSE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "pabitroprosad2014@gmail.com",
+            "pabitroprosad@mse.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.mse.ruet.ac.bd/pabitroprosad"
+    },
+    {
+        "name": "Ratul Islam Antor",
+        "department": "MSE",
+        "designation": "Lecturer",
+        "emails": [
+            "ratul@mse.ruet.ac.bd",
+            "ratulislamantor20@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.mse.ruet.ac.bd/ratulislamantor20"
+    },
+    {
+        "name": "Md  Rafsan Jani Rudro",
+        "department": "MSE",
+        "designation": "Lecturer",
+        "emails": [
+            "rafsanjanirudro@gmail.com",
+            "rafsanjanirudro@mse.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.mse.ruet.ac.bd/rafsanjanirudro"
+    },
+    {
+        "name": "Abdullah-Al-Mazed Khan",
+        "department": "MSE",
+        "designation": "Lecturer",
+        "emails": [
+            "abdullah1613002@gmail.com",
+            "abdullah.khan@mse.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.mse.ruet.ac.bd/abdullah1613002"
+    },
+    {
+        "name": "Dr. Mohammad Nurur Rahman",
+        "department": "CHE",
+        "designation": "Associate Professor",
+        "emails": [
+            "nurur@che.ruet.ac.bd",
+            "m.n.rahman84@gmail.com"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": false,
+        "profile_url": "https://www.che.ruet.ac.bd/nurur"
+    },
+    {
+        "name": "Dr. Mohammad Nurur Rahman",
+        "department": "CHE",
+        "designation": "Associate Professor",
+        "emails": [
+            "m.n.rahman84@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.che.ruet.ac.bd/mnrahman84"
+    },
+    {
+        "name": "Pabitra Chandra Das",
+        "department": "CHE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "pabitra@cfpe.ruet.ac.bd",
+            "pabitra.ftri@gmail.com"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.che.ruet.ac.bd/pabitra"
+    },
+    {
+        "name": "Sadia Sattar",
+        "department": "CHE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sadia@cfpe.ruet.ac.bd",
+            "pinky.bau@gmail.com"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": true,
+        "profile_url": "https://www.che.ruet.ac.bd/sadia"
+    },
+    {
+        "name": "Sajib Dey",
+        "department": "CHE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sajibdey@che.ruet.ac.bd",
+            "sajibche13@gmail.com",
+            "sajibdey@cfpe.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.che.ruet.ac.bd/sajibdey"
+    },
+    {
+        "name": "Md. Sajjad Hossain",
+        "department": "CHE",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sajjad.hossain@cfpe.ruet.ac.bd",
+            "sajjad.bau@gmail.com",
+            "sajjad.hossain@che.ruet.ac.bd"
+        ],
+        "joining_year": "2018",
+        "is_on_leave": true,
+        "profile_url": "https://www.che.ruet.ac.bd/sajjadhossain"
+    },
+    {
+        "name": "Maisa Rahman",
+        "department": "CHE",
+        "designation": "Lecturer",
+        "emails": [
+            "maisa.rahman@cfpe.ruet.ac.bd",
+            "maisasakura97@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.che.ruet.ac.bd/maisarahman"
+    },
+    {
+        "name": "Safat Anam",
+        "department": "CHE",
+        "designation": "Lecturer",
+        "emails": [
+            "anamsafat@gmail.com",
+            "safat.anam@cfpe.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.che.ruet.ac.bd/anamsafat"
+    },
+    {
+        "name": "RUNA AFROZ RINTU",
+        "department": "CHE",
+        "designation": "Lecturer",
+        "emails": [
+            "runaraihan117@gmail.com",
+            "runa.afroz@cfpe.ruet.ac.bd"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.che.ruet.ac.bd/runaraihan117"
+    },
+    {
+        "name": "Mst.Morium khatun",
+        "department": "CHE",
+        "designation": "Lecturer",
+        "emails": [
+            "morium@che.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.che.ruet.ac.bd/morium"
+    },
+    {
+        "name": "Nisat Tasnim Songeeta",
+        "department": "CHE",
+        "designation": "Lecturer",
+        "emails": [
+            "songeeta@che.ruet.ac.bd",
+            "songeeta1715@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.che.ruet.ac.bd/songeeta"
+    },
+    {
+        "name": "Dr. Md. Mayeedul Islam",
+        "department": "CHEM",
+        "designation": "Professor",
+        "emails": [
+            "mayeedulmst@gmail.com",
+            "mayeedul@chem.ruet.ac.bd",
+            "mayeedul180@yahoo.com"
+        ],
+        "joining_year": "2006",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/mayeedul"
+    },
+    {
+        "name": "Dr. Md. Ashraful Alam",
+        "department": "CHEM",
+        "designation": "Professor",
+        "emails": [
+            "maalam_ruet@yahoo.com",
+            "maalam@chem.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/maalam@chem.ruet.ac.bd"
+    },
+    {
+        "name": "Dr. Md. Abbas Ali",
+        "department": "CHEM",
+        "designation": "Professor",
+        "emails": [
+            "radwiya44@yahoo.com"
+        ],
+        "joining_year": "1998",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/abbas"
+    },
+    {
+        "name": "Dr. Md. Al-Amin-Al-Azadul Islam",
+        "department": "CHEM",
+        "designation": "Professor",
+        "emails": [
+            "aamin@chem.ruet.ac.bd",
+            "aaminruet@gmail.com"
+        ],
+        "joining_year": "2001",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/aamin"
+    },
+    {
+        "name": "Dr. Tarun Kumar Pal",
+        "department": "CHEM",
+        "designation": "Professor",
+        "emails": [
+            "tkpchem@gmail.com",
+            "tkpal@chem.ruet.ac.bd"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/tkpchem@gmail.com"
+    },
+    {
+        "name": "Dr. Md. Anwar Hossain",
+        "department": "CHEM",
+        "designation": "Professor",
+        "emails": [
+            "anwarruet10@gmail.com",
+            "mah.dr_nanocat@yahoo.com"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/anwarruet10"
+    },
+    {
+        "name": "Dr. Mst. Nahid Farha",
+        "department": "CHEM",
+        "designation": "Associate Professor",
+        "emails": [
+            "nfarha@chem.ruet.ac.bd",
+            "nahid.farha10@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/nfarha10"
+    },
+    {
+        "name": "Dr. Jewel Hossen",
+        "department": "CHEM",
+        "designation": "Associate Professor",
+        "emails": [
+            "jewelhossenruet@gmail.com",
+            "jhossen@chem.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/Jewel%20Hossen"
+    },
+    {
+        "name": "Siddhartha Sankar Saha",
+        "department": "CHEM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "01677143500.sss@gmail.com",
+            "sankar_1182@ymail.com",
+            "Sankar_1182@chem.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/01677143500sss"
+    },
+    {
+        "name": "Md. Shamsul Alam",
+        "department": "CHEM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "samsul.ch34.ru@gmail.com"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": true,
+        "profile_url": "https://www.chem.ruet.ac.bd/samsulch34ru"
+    },
+    {
+        "name": "Aktarun Nahar",
+        "department": "CHEM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "a.nahar@chem.ruet.ac.bd",
+            "nahar.ruet@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/naharruet"
+    },
+    {
+        "name": "Sultana Razia",
+        "department": "CHEM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "razias2015@gmail.com",
+            "srkhan@chem.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/razias2015"
+    },
+    {
+        "name": "MD. AHAD ALI",
+        "department": "CHEM",
+        "designation": "Lecturer",
+        "emails": [
+            "maahaddu@gmail.com",
+            "ahad@chem.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/ahadali"
+    },
+    {
+        "name": "Omeo Kumar Ghosh",
+        "department": "CHEM",
+        "designation": "Lecturer",
+        "emails": [
+            "omeo@chem.ruet.ac.bd"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/omeo"
+    },
+    {
+        "name": "Md. Ahad Ali",
+        "department": "CHEM",
+        "designation": "Lecturer",
+        "emails": [
+            "ahad@chem.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/ahad"
+    },
+    {
+        "name": "Md. Abdullah Al Mamun",
+        "department": "CHEM",
+        "designation": "Lecturer",
+        "emails": [
+            "almamun723@yahoo.com",
+            "abdullahalmamun@chem.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.chem.ruet.ac.bd/almamun723"
+    },
+    {
+        "name": "Dr. Md. Helal Uddin Molla",
+        "department": "MATH",
+        "designation": "Professor",
+        "emails": [
+            "helal.mathru@yahoo.com",
+            "helal.mathruet@gmail.com"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/helalmathru"
+    },
+    {
+        "name": "Dr. Md. Shamsul Alam",
+        "department": "MATH",
+        "designation": "Professor",
+        "emails": [
+            "msalam1964@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/msalam1964"
+    },
+    {
+        "name": "Dr. Md. Bellal Hossain",
+        "department": "MATH",
+        "designation": "Professor",
+        "emails": [
+            "hossain.bellal62@yahoo.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/hossainbellal62"
+    },
+    {
+        "name": "Dr. Mohammad Kamrul Hasan",
+        "department": "MATH",
+        "designation": "Professor",
+        "emails": [
+            "mkh2502@yahoo.com",
+            "mkh2502@gmail.com"
+        ],
+        "joining_year": "2006",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/mkh2502"
+    },
+    {
+        "name": "Dr. Md Saifur Rahman",
+        "department": "MATH",
+        "designation": "Professor",
+        "emails": [
+            "msr_math_1980@yahoo.com",
+            "saifur@math.ruet.ac.bd"
+        ],
+        "joining_year": "2006",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/saifur"
+    },
+    {
+        "name": "Dr. Md. Alal Hosen",
+        "department": "MATH",
+        "designation": "Professor",
+        "emails": [
+            "alal_ruet@yahoo.com",
+            "alal@math.ruet.ac.bd"
+        ],
+        "joining_year": "2008",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/alalhosen"
+    },
+    {
+        "name": "Dr. Ismot Ara Yeasmin",
+        "department": "MATH",
+        "designation": "Professor",
+        "emails": [
+            "ismot.yeasmin@yahoo.com",
+            "ismot.yeasmin@math.ruet.ac.bd"
+        ],
+        "joining_year": "2009",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/ismotyeasmin"
+    },
+    {
+        "name": "Md. Abdur Razzak",
+        "department": "MATH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "raz_ruet@yahoo.com",
+            "md.abdur.razzak@umontreal.ca"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.math.ruet.ac.bd/raz_ruet@yahoo.com"
+    },
+    {
+        "name": "Md Suzan Ahamed",
+        "department": "MATH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mdsuzanahamed@my.unt.edu",
+            "suzan@math.ruet.ac.bd"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.math.ruet.ac.bd/mdsuzanahamed"
+    },
+    {
+        "name": "Md. Nazmul Sharif",
+        "department": "MATH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "nazmul06024160@gmail.com",
+            "nazmul@math.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.math.ruet.ac.bd/nazmul06024160"
+    },
+    {
+        "name": "Mst. Rupale Khatun",
+        "department": "MATH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rupalemathru@gmail.com",
+            "rupale@math.ruet.ac.bd"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/rupalemathru"
+    },
+    {
+        "name": "Md. Zahangir Alam",
+        "department": "MATH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "zahangiramth@gmail.com",
+            "zahangir@math.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": true,
+        "profile_url": "https://www.math.ruet.ac.bd/zahangirmath"
+    },
+    {
+        "name": "Md. Dalim Haque",
+        "department": "MATH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "dalimru10@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.math.ruet.ac.bd/dalimru10"
+    },
+    {
+        "name": "Tamanna Tasnim Prova",
+        "department": "MATH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tprova.ku@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/tprova"
+    },
+    {
+        "name": "Md. Abdul Alim",
+        "department": "MATH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "aabdulali2-c@my.cityu.edu.hk",
+            "alim@math.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.math.ruet.ac.bd/alimmathiu"
+    },
+    {
+        "name": "MOMINUL ISLAM",
+        "department": "MATH",
+        "designation": "Lecturer",
+        "emails": [
+            "mominul@math.ruet.ac.bd",
+            "mominul125267@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/mominul"
+    },
+    {
+        "name": "Dr. Md. Feruj Alam",
+        "department": "MATH",
+        "designation": "Professor",
+        "emails": [
+            "ferujalam60@gmail.com"
+        ],
+        "joining_year": "1990",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/ferujalam60"
+    },
+    {
+        "name": "Dr. Md. Majedur Rahman",
+        "department": "MATH",
+        "designation": "Professor",
+        "emails": [
+            "md.majedurr@yahoo.com",
+            "md.majedurr@math.ruet.ac.bd"
+        ],
+        "joining_year": "1994",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/mdmajedurr"
+    },
+    {
+        "name": "Md. Nuruzzaman",
+        "department": "MATH",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mnuruzzaman94@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.math.ruet.ac.bd/mnzaman20"
+    },
+    {
+        "name": "Dr. Md. Nuruzzaman",
+        "department": "PHY",
+        "designation": "Professor",
+        "emails": [
+            "nzaman79@gmail.com",
+            "nzaman@phy.ruet.ac.bd"
+        ],
+        "joining_year": "2013",
+        "is_on_leave": false,
+        "profile_url": "https://www.phy.ruet.ac.bd/nzaman79"
+    },
+    {
+        "name": "Dr. Md. Sazzad Hossain",
+        "department": "PHY",
+        "designation": "Professor",
+        "emails": [
+            "sazzadphys@gmail.com"
+        ],
+        "joining_year": "1994",
+        "is_on_leave": false,
+        "profile_url": "https://www.phy.ruet.ac.bd/sazzadphys"
+    },
+    {
+        "name": "Dr. Md. Abdul Kader Zilani",
+        "department": "PHY",
+        "designation": "Professor",
+        "emails": [
+            "zilani03@gmail.com"
+        ],
+        "joining_year": "1998",
+        "is_on_leave": false,
+        "profile_url": "https://www.phy.ruet.ac.bd/zilani03"
+    },
+    {
+        "name": "Dr. Md. Johirul Islam",
+        "department": "PHY",
+        "designation": "Professor",
+        "emails": [
+            "johirulap@gmail.com",
+            "johirul@phy.ruet.ac.bd"
+        ],
+        "joining_year": "2016",
+        "is_on_leave": false,
+        "profile_url": "https://www.phy.ruet.ac.bd/johirul"
+    },
+    {
+        "name": "Md. Abdul Hadi Shah",
+        "department": "PHY",
+        "designation": "Associate Professor",
+        "emails": [
+            "hadiphys@gmail.com",
+            "hadi@phy.ruet.ac.bd"
+        ],
+        "joining_year": "2010",
+        "is_on_leave": true,
+        "profile_url": "https://www.phy.ruet.ac.bd/hadi"
+    },
+    {
+        "name": "Dr. Md. Faruk Hossain",
+        "department": "PHY",
+        "designation": "Associate Professor",
+        "emails": [
+            "faruk.apee@gmail.com",
+            "faruk@phy.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.phy.ruet.ac.bd/faruk.apee@gmail.com"
+    },
+    {
+        "name": "Md. Ariful Islam",
+        "department": "PHY",
+        "designation": "Assistant Professor",
+        "emails": [
+            "arif@phy.ruet.ac.bd",
+            "arifapee19@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.phy.ruet.ac.bd/arif"
+    },
+    {
+        "name": "Al Momin Md. Tanveer Karim",
+        "department": "PHY",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tanveer@phy.ruet.ac.bd",
+            "tanveerruphy@gmail.com"
+        ],
+        "joining_year": "2012",
+        "is_on_leave": true,
+        "profile_url": "https://www.phy.ruet.ac.bd/tanveer"
+    },
+    {
+        "name": "Md. Jubair",
+        "department": "PHY",
+        "designation": "Assistant Professor",
+        "emails": [
+            "jubair016@gmail.com",
+            "jubair@phy.ruet.ac.bd"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.phy.ruet.ac.bd/jubair016"
+    },
+    {
+        "name": "Md. Sarwar Pervez",
+        "department": "PHY",
+        "designation": "Assistant Professor",
+        "emails": [
+            "sarwar.pervez@gmail.com",
+            "sarwar@phy.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": true,
+        "profile_url": "https://www.phy.ruet.ac.bd/sarwarpervez"
+    },
+    {
+        "name": "Md. Rahat Ali",
+        "department": "PHY",
+        "designation": "Assistant Professor",
+        "emails": [
+            "rahatku44@gmail.com",
+            "rahat@phy.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": true,
+        "profile_url": "https://www.phy.ruet.ac.bd/rahatku44"
+    },
+    {
+        "name": "Md. Abdullah-Al-Mamun",
+        "department": "PHY",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mamunruphysics4304@gmail.com",
+            "mamun@phy.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.phy.ruet.ac.bd/mamunruphysics4304"
+    },
+    {
+        "name": "Md. Sajidul Islam",
+        "department": "PHY",
+        "designation": "Lecturer",
+        "emails": [
+            "sajidul@phy.ruet.ac.bd",
+            "sajidul.ru.phy@gmail.com"
+        ],
+        "joining_year": "2025",
+        "is_on_leave": false,
+        "profile_url": "https://www.phy.ruet.ac.bd/sajidul"
+    },
+    {
+        "name": "Md. Raihan Islam",
+        "department": "PHY",
+        "designation": "Lecturer",
+        "emails": [
+            "raihan@phy.ruet.ac.bd"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.phy.ruet.ac.bd/raihan"
+    },
+    {
+        "name": "Dr. Saila Ahmed",
+        "department": "HUM",
+        "designation": "Professor",
+        "emails": [
+            "saila@hum.ruet.ac.bd",
+            "saila_ahmed@yahoo.com"
+        ],
+        "joining_year": "2007",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/saila-ahmed"
+    },
+    {
+        "name": "Md. Abu Bokar Siddique",
+        "department": "HUM",
+        "designation": "Professor",
+        "emails": [
+            "abshum_ruet@yahoo.com"
+        ],
+        "joining_year": "1996",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/Md.%20Abu%20Bokar%20Siddique"
+    },
+    {
+        "name": "Dr. Kaniz Fatema",
+        "department": "HUM",
+        "designation": "Professor",
+        "emails": [
+            "kanizfatema8220@yahoo.com",
+            "kanizfatema@hum.ruet.ac.bd"
+        ],
+        "joining_year": "2009",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/kanizfatema8220"
+    },
+    {
+        "name": "Md. Golam Mostakim",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mgm1976ruet@gmail.com",
+            "mostakim@hum.ruet.ac.bd"
+        ],
+        "joining_year": "2007",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/mgm1976ruet"
+    },
+    {
+        "name": "Mohammad Harun Or Rashid",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "harunmr9@gmail.com",
+            "harun@hum.ruet.ac.bd",
+            "harun@ruet.ac.bd"
+        ],
+        "joining_year": "2014",
+        "is_on_leave": true,
+        "profile_url": "https://www.hum.ruet.ac.bd/harunmr9"
+    },
+    {
+        "name": "Mohammad Didar Hossain",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "didarhum@hum.ruet.ac.bd",
+            "didarsw@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/didarsw"
+    },
+    {
+        "name": "Tahmina Khatun",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "tahmina16swapna@gmail.com"
+        ],
+        "joining_year": "N/A",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/tahmina16swapna"
+    },
+    {
+        "name": "Md Sayeed Anwar",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "anwar@hum.ruet.ac.bd",
+            "anwar.eng.ju@gmail.com"
+        ],
+        "joining_year": "2015",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/anwarengju"
+    },
+    {
+        "name": "Abdulla-All-Mijan",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mijan89.engju@gmail.com",
+            "mijan@hum.ruet.ac.bd"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/mijan"
+    },
+    {
+        "name": "Monira Parvin Kona",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "monira@hum.ruet.ac.bd",
+            "mkonaeco@gmail.com"
+        ],
+        "joining_year": "2017",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/monira"
+    },
+    {
+        "name": "Kashfia Reza Tonni",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "kashfia.reza@gmail.com",
+            "kashfia@hum.ruet.ac.bd"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/kashfiareza"
+    },
+    {
+        "name": "Ahsan Habib",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "habib.edru@gmail.com"
+        ],
+        "joining_year": "2019",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/habibedru"
+    },
+    {
+        "name": "Mst. Mitu Pervin",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "mitupervin24@gmail.com",
+            "mitu@hum.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/mitupervin24"
+    },
+    {
+        "name": "Shoaib Islam",
+        "department": "HUM",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shoaibshakil78@gmail.com",
+            "shoaib@hum.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/shoaib@hum.ruet.ac.bd"
+    },
+    {
+        "name": "Dr. Md. Rabiul Islam",
+        "department": "HUM",
+        "designation": "Professor",
+        "emails": [
+            "rabiul@hum.ruet.ac.bd",
+            "rabi54mba@yahoo.com"
+        ],
+        "joining_year": "2009",
+        "is_on_leave": false,
+        "profile_url": "https://www.hum.ruet.ac.bd/rabiul"
+    },
+    {
+        "name": "Md. Shoaib Akther",
+        "department": "IICT",
+        "designation": "Assistant Professor",
+        "emails": [
+            "shoaibkiron@iict.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.iict.ruet.ac.bd/shoaibkiron"
+    },
+    {
+        "name": "Afsana Afrin",
+        "department": "IICT",
+        "designation": "Assistant Professor",
+        "emails": [
+            "afsana_afrin@iict.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.iict.ruet.ac.bd/afrinarshi6"
+    },  
+    {
+        "name": "Md. Ibrahim",
+        "department": "IICT",
+        "designation": "Assistant Professor",
+        "emails": [
+            "ibrahimruet.007@gmail.com"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.iict.ruet.ac.bd/ibrahimruet007"
+    },   
+    {
+        "name": "Mst. Farzana Khatun",
+        "department": "IEES",
+        "designation": "Assistant Professor",
+        "emails": [
+            "farzana@iees.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.iees.ruet.ac.bd/mfk.ruet"
+    },
+    {
+        "name": "Robel Ahmed",
+        "department": "IEES",
+        "designation": "Lecturer",
+        "emails": [
+            "robel@iees.ruet.ac.bd"
+        ],
+        "joining_year": "2021",
+        "is_on_leave": false,
+        "profile_url": "https://www.iees.ruet.ac.bd/robel.ruet"
+    },
+    {
+        "name": "Md. Rejuan Ahmed",
+        "department": "IEES",
+        "designation": "Lecturer",
+        "emails": [
+            "rejuan.ruet@gmail.com"
+        ],
+        "joining_year": "2024",
+        "is_on_leave": false,
+        "profile_url": "https://www.iees.ruet.ac.bd/rejuanruet"
+    }
+]

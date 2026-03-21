@@ -25,7 +25,7 @@ const Layout = () => {
             <img 
               src="src/assets/logo.png" 
               alt="RUET Logo" 
-              className="h-10 w-10 object-contain bg-white rounded-full p-0.5" 
+              className="h-11 w-11 object-contain bg-white rounded-lg p-1 shadow-sm" 
             />
             <h1 className="text-xl font-bold truncate">RUET OBE Evaluation System</h1>
           </div>

@@ -10,6 +10,7 @@ import api from '../../utils/api';
 const initialSummary = {
   department: null,
   runningClassInstances: 0,
+  totalStudents: 0,
   reportCount: 0
 };
 
@@ -34,6 +35,7 @@ const DeptAdminDashboard = () => {
         setSummary({
           department: data.department || null,
           runningClassInstances: data.runningClassInstances || 0,
+          totalStudents: data.totalStudents || 0,
           reportCount: data.reportCount || 0
         });
       } catch (err) {
@@ -81,14 +83,14 @@ const DeptAdminDashboard = () => {
         <button
           type="button"
           className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800 cursor-pointer hover:shadow-md transition-shadow group text-left"
-          onClick={() => setActiveTab('reviews')}
+          onClick={() => setActiveTab('students')}
         >
-          <h3 className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-ruet-blue transition-colors">Course Review Hub</h3>
+          <h3 className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-ruet-blue transition-colors">Total Students</h3>
           {loadingSummary ? (
-            <Loader2 className="animate-spin text-green-600 mt-3" size={20} />
+            <Loader2 className="animate-spin text-blue-600 mt-3" size={20} />
           ) : (
-            <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">
-              {summary.reportCount} <span className="text-sm font-medium text-gray-500">Reports</span>
+            <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 mt-1">
+              {summary.totalStudents} <span className="text-sm font-medium text-gray-500 uppercase">Enrolled</span>
             </p>
           )}
         </button>

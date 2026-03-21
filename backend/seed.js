@@ -153,8 +153,24 @@ const RUET_DEPARTMENTS = [
     shortName: 'Hum', 
     establishedYear: 2003, 
     hasSections: false, 
-    sectionCount: 0,
-    introduction: 'Providing social and ethical context for technical education.'
+    sectionCount: 0, 
+    introduction: 'Providing social and ethical context for technical education.' 
+  },
+  { 
+    name: 'Institute of Energy and Environmental Studies', 
+    shortName: 'IEES', 
+    establishedYear: 2014, 
+    hasSections: false, 
+    sectionCount: 0, 
+    introduction: 'IEES focuses on sustainable energy solutions and environmental preservation.' 
+  },
+  { 
+    name: 'Institute of Information and Communication Technology', 
+    shortName: 'IICT', 
+    establishedYear: 2016, 
+    hasSections: false, 
+    sectionCount: 0, 
+    introduction: 'IICT provides a platform for teaching, learning and research in ICT.' 
   },
 ];
 
