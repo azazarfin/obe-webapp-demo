@@ -23,7 +23,7 @@ const Layout = () => {
           
           <div className="flex items-center space-x-3">
             <img 
-              src="src/assets/logo.png" 
+              src="/logo.png" 
               alt="RUET Logo" 
               className="h-11 w-11 object-contain bg-white rounded-lg p-1 shadow-sm" 
             />
