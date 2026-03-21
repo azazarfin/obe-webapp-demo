@@ -1,7 +1,15 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const normalizeApiBase = (value) => value.trim().replace(/\/+$/, '');
 
-if (!import.meta.env.VITE_API_URL && import.meta.env.PROD) {
-  console.warn('VITE_API_URL is not defined in production environment!');
+const envApiBase = import.meta.env.VITE_API_URL
+  ? normalizeApiBase(import.meta.env.VITE_API_URL)
+  : '';
+
+const API_BASE = envApiBase || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+
+if (!envApiBase && import.meta.env.PROD) {
+  console.warn(
+    'VITE_API_URL is not defined in production. Falling back to same-origin /api; set VITE_API_URL if the backend is hosted on a different domain.'
+  );
 }
 
 const getToken = () => localStorage.getItem('token');
@@ -16,10 +24,16 @@ const api = async (endpoint, options = {}) => {
     ...options.headers,
   };
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  let response;
+
+  try {
+    response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers,
+    });
+  } catch {
+    throw new Error('Unable to reach the API server. Check the deployed API URL and CORS configuration.');
+  }
 
   if (response.status === 401) {
     localStorage.removeItem('token');
@@ -31,10 +45,13 @@ const api = async (endpoint, options = {}) => {
     throw new Error('Unauthorized');
   }
 
-  const data = await response.json();
+  const contentType = response.headers.get('content-type') || '';
+  const data = contentType.includes('application/json')
+    ? await response.json()
+    : null;
 
   if (!response.ok) {
-    throw new Error(data.error || 'Something went wrong');
+    throw new Error(data?.error || `Request failed with status ${response.status}`);
   }
 
   return data;

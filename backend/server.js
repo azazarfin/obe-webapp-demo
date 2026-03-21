@@ -18,26 +18,39 @@ const seriesRoutes = require('./routes/seriesRoutes');
 
 const app = express();
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',') 
-  : [
-      'https://obe-webapp-demo.netlify.app',
-      'http://localhost:5173',
-      'http://localhost:5174'
-    ];
+const defaultAllowedOrigins = [
+  'https://obe-webapp-demo.netlify.app',
+  'http://localhost:5173',
+  'http://localhost:5174'
+];
 
-app.use(cors({
-  origin: function (origin, callback) {
+const allowedOrigins = (process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : defaultAllowedOrigins
+)
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const corsErrorMessage = 'The CORS policy for this site does not allow access from the specified Origin.';
+
+const corsOptions = {
+  origin(origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
+
+    if (!allowedOrigins.includes(origin)) {
+      return callback(new Error(corsErrorMessage));
     }
+
     return callback(null, true);
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
 
 const authLimiter = rateLimit({
@@ -65,6 +78,14 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/instructor-reports', instructorReportRoutes);
 app.use('/api/series', seriesRoutes);
+
+app.use((err, req, res, next) => {
+  if (err.message === corsErrorMessage) {
+    return res.status(403).json({ error: corsErrorMessage });
+  }
+
+  return next(err);
+});
 
 mongoose.connect(process.env.MONGO_URI, {})
   .then(() => console.log('MongoDB connected successfully'))
