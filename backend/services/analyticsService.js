@@ -107,20 +107,15 @@ const ensureClassInstance = async (classInstanceOrId) => {
     throw new Error('Class instance is required');
   }
 
-  if (typeof classInstanceOrId === 'string') {
-    const instance = await populateClassInstance(ClassInstance.findById(classInstanceOrId));
+  if (typeof classInstanceOrId === 'string' || !classInstanceOrId.course?.courseCode) {
+    const instanceId = typeof classInstanceOrId === 'string'
+      ? classInstanceOrId
+      : classInstanceOrId._id;
+    const instance = await populateClassInstance(ClassInstance.findById(instanceId));
     if (!instance) {
       throw new Error('Class instance not found');
     }
     return instance;
-  }
-
-  if (classInstanceOrId.populate && !classInstanceOrId.course?.courseCode) {
-    await classInstanceOrId.populate([
-      { path: 'course', populate: { path: 'department', select: 'name shortName' } },
-      { path: 'teacher', select: 'name email designation teacherType onLeave leaveReason' },
-      { path: 'teachers', select: 'name email designation teacherType onLeave leaveReason' }
-    ]);
   }
 
   return classInstanceOrId;

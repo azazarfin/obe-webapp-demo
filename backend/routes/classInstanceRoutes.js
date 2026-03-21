@@ -85,6 +85,14 @@ const loadInstanceForAccess = async (instanceId) => {
   return instance;
 };
 
+const syncRegularEnrollmentsSafely = async (classInstanceId) => {
+  try {
+    await syncRegularEnrollmentsForClassInstance(String(classInstanceId));
+  } catch (error) {
+    console.error(`Enrollment sync failed for class instance ${classInstanceId}:`, error);
+  }
+};
+
 const ensureInstanceAccess = async (req, instance) => {
   if (req.user.role === 'DEPT_ADMIN') {
     const currentUser = await getScopedCurrentUser(req);
@@ -194,12 +202,8 @@ router.post('/', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN'), async 
     };
 
     const instance = await ClassInstance.create(payload);
-    await syncRegularEnrollmentsForClassInstance(instance);
-    const populated = await instance.populate([
-      { path: 'course', populate: { path: 'department', select: DEPARTMENT_SELECT } },
-      { path: 'teacher', select: TEACHER_SELECT },
-      { path: 'teachers', select: TEACHER_SELECT }
-    ]);
+    await syncRegularEnrollmentsSafely(instance._id);
+    const populated = await loadInstanceForAccess(instance._id);
 
     res.status(201).json(populated);
   } catch (error) {
@@ -257,15 +261,13 @@ router.put('/:id', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN', 'TEAC
       updateData.course = course._id;
     }
 
-    const instance = await ClassInstance.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true })
-      .populate({ path: 'course', populate: { path: 'department', select: DEPARTMENT_SELECT } })
-      .populate('teacher', TEACHER_SELECT);
-    await instance.populate('teachers', TEACHER_SELECT);
+    await ClassInstance.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
 
     if (req.body.course || req.body.series || req.body.section) {
-      await syncRegularEnrollmentsForClassInstance(instance);
+      await syncRegularEnrollmentsSafely(req.params.id);
     }
 
+    const instance = await loadInstanceForAccess(req.params.id);
     res.json(instance);
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message || 'Server error updating class instance' });
