@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CheckCircle, Edit, Info, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
+import SeriesSelectField from '../../components/SeriesSelectField';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 import { departmentUsesSections, getDepartmentSections, normalizeSectionValue } from '../../utils/departmentUtils';
+import { normalizeSeriesYears } from '../../utils/seriesUtils';
 import EvaluationReport from '../teacher/EvaluationReport';
 import InstructorExperienceReport from '../teacher/InstructorExperienceReport';
 import ManageCourseFeedback from '../teacher/ManageCourseFeedback';
@@ -23,6 +25,7 @@ const DeptCourseManagement = () => {
   const { currentUser } = useAuth();
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
+  const [seriesList, setSeriesList] = useState([]);
   const [instances, setInstances] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -31,6 +34,7 @@ const DeptCourseManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingInstance, setEditingInstance] = useState(null);
   const [formData, setFormData] = useState(initialForm);
+  const [filterSeries, setFilterSeries] = useState('');
   const [filterSection, setFilterSection] = useState('');
   const [confirm, setConfirm] = useState({ open: false, type: '', id: null });
   const [activeView, setActiveView] = useState('list');
@@ -39,14 +43,20 @@ const DeptCourseManagement = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [courseData, teacherData, instanceData] = await Promise.all([
+      const [courseData, teacherData, instanceData, seriesData] = await Promise.all([
         api.get('/courses'),
         api.get('/users?role=TEACHER'),
-        api.get('/class-instances')
+        api.get('/class-instances'),
+        api.get('/series')
       ]);
       const nextInstances = Array.isArray(instanceData) ? instanceData : [];
+      const nextSeries = Array.isArray(seriesData) ? seriesData.map((series) => String(series.year)) : [];
       setCourses(Array.isArray(courseData) ? courseData : []);
       setTeachers(Array.isArray(teacherData) ? teacherData : []);
+      setSeriesList(normalizeSeriesYears([
+        ...nextSeries,
+        ...nextInstances.map((instance) => String(instance.series || ''))
+      ]));
       setInstances(nextInstances);
       setSelectedInstance((prev) => (prev ? nextInstances.find((instance) => instance._id === prev._id) || null : null));
     } catch (err) {
@@ -82,9 +92,20 @@ const DeptCourseManagement = () => {
     [currentUser]
   );
 
-  const filteredInstances = filterSection
-    ? instances.filter((instance) => instance.section === filterSection)
-    : instances;
+  const filteredInstances = useMemo(() => instances.filter((instance) => (
+    (!filterSeries || String(instance.series || '') === String(filterSeries)) &&
+    (!filterSection || instance.section === filterSection)
+  )), [filterSection, filterSeries, instances]);
+
+  const runningInstances = useMemo(
+    () => filteredInstances.filter((instance) => instance.status === 'Running'),
+    [filteredInstances]
+  );
+
+  const finishedInstances = useMemo(
+    () => filteredInstances.filter((instance) => instance.status === 'Finished'),
+    [filteredInstances]
+  );
 
   const resetForm = () => {
     setEditingInstance(null);
@@ -206,6 +227,69 @@ const DeptCourseManagement = () => {
     }));
   };
 
+  const handleAddSeries = async (seriesYear) => {
+    const normalizedSeries = String(seriesYear || '').trim();
+    const createdSeries = await api.post('/series', { year: normalizedSeries });
+    const nextSeries = String(createdSeries?.year || normalizedSeries);
+    setSeriesList((prev) => normalizeSeriesYears([...prev, nextSeries]));
+    return nextSeries;
+  };
+
+  const renderCourseTable = (rows, emptyMessage) => (
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead className="bg-gray-50 dark:bg-[#2d2d2d]">
+          <tr>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Course</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Series</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Section</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Teachers</th>
+            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
+            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white dark:bg-[#1e1e1e] divide-y divide-gray-200 dark:divide-gray-700">
+          {rows.length > 0 ? rows.map((instance) => (
+            <tr key={instance._id}>
+              <td className="px-4 py-3 whitespace-nowrap">
+                <button type="button" onClick={() => openCoursePage(instance)} className="text-sm font-bold text-ruet-blue dark:text-blue-400 hover:underline">
+                  {instance.course?.courseCode}
+                </button>
+                <span className="block text-xs text-gray-500 dark:text-gray-400">{instance.course?.courseName}</span>
+              </td>
+              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{instance.series}</td>
+              <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{getSectionLabel(instance.section)}</td>
+              <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex flex-wrap gap-1.5">
+                  {(Array.isArray(instance.teachers) && instance.teachers.length > 0 ? instance.teachers : [instance.teacher]).filter(Boolean).map((teacher) => (
+                    <span key={teacher._id} className="inline-block bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs px-2 py-0.5 rounded-full">{teacher.name}</span>
+                  ))}
+                </div>
+              </td>
+              <td className="px-4 py-3 whitespace-nowrap text-center">
+                <span className={`text-xs px-2 py-1 rounded font-semibold ${instance.status === 'Running' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'}`}>
+                  {instance.status}
+                </span>
+              </td>
+              <td className="px-4 py-3 whitespace-nowrap text-right text-sm space-x-2">
+                <button onClick={() => openCoursePage(instance)} className="text-ruet-blue hover:text-ruet-dark dark:text-blue-400" title="Course Info"><Info size={18} /></button>
+                {instance.status === 'Running' && (
+                  <>
+                    <button onClick={() => openEditModal(instance)} className="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Edit Running Course"><Edit size={18} /></button>
+                    <button onClick={() => setConfirm({ open: true, type: 'finish', id: instance._id })} className="text-orange-500 hover:text-orange-700" title="Mark Finished"><CheckCircle size={18} /></button>
+                  </>
+                )}
+                <button onClick={() => setConfirm({ open: true, type: 'delete', id: instance._id })} className="text-red-500 hover:text-red-700" title="Delete"><Trash2 size={18} /></button>
+              </td>
+            </tr>
+          )) : (
+            <tr><td colSpan="6" className="px-4 py-8 text-center text-sm text-gray-500">{emptyMessage}</td></tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+
   const renderDetailView = () => {
     if (!selectedInstance) {
       return null;
@@ -278,70 +362,50 @@ const DeptCourseManagement = () => {
       )}
 
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg border border-gray-100 dark:border-gray-800">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
-          <h3 className="font-semibold text-gray-800 dark:text-gray-200">Running & Finished Courses</h3>
-          {departmentSections.length > 0 && (
-            <select value={filterSection} onChange={(event) => setFilterSection(event.target.value)} className="text-sm p-1.5 border border-gray-300 dark:border-gray-600 rounded bg-transparent dark:text-white outline-none">
-              <option value="">All Sections</option>
-              {departmentSections.map((section) => (
-                <option key={section} value={section}>{section}</option>
-              ))}
-            </select>
-          )}
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div>
+            <h3 className="font-semibold text-gray-800 dark:text-gray-200">Course Filters</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Narrow the running and finished course sections by series and section.</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <div className="min-w-[180px]">
+              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">Series</label>
+              <select value={filterSeries} onChange={(event) => setFilterSeries(event.target.value)} className="w-full text-sm p-2 border border-gray-300 dark:border-gray-600 rounded bg-transparent dark:text-white outline-none">
+                <option value="">All Series</option>
+                {seriesList.map((series) => (
+                  <option key={series} value={series}>{series}</option>
+                ))}
+              </select>
+            </div>
+            {departmentSections.length > 0 && (
+              <div className="min-w-[180px]">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">Section</label>
+                <select value={filterSection} onChange={(event) => setFilterSection(event.target.value)} className="w-full text-sm p-2 border border-gray-300 dark:border-gray-600 rounded bg-transparent dark:text-white outline-none">
+                  <option value="">All Sections</option>
+                  {departmentSections.map((section) => (
+                    <option key={section} value={section}>{section}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
         </div>
+      </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-[#2d2d2d]">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Course</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Series</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Section</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Teachers</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-[#1e1e1e] divide-y divide-gray-200 dark:divide-gray-700">
-              {filteredInstances.length > 0 ? filteredInstances.map((instance) => (
-                <tr key={instance._id}>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <button type="button" onClick={() => openCoursePage(instance)} className="text-sm font-bold text-ruet-blue dark:text-blue-400 hover:underline">
-                      {instance.course?.courseCode}
-                    </button>
-                    <span className="block text-xs text-gray-500 dark:text-gray-400">{instance.course?.courseName}</span>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{instance.series}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{getSectionLabel(instance.section)}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                    <div className="flex flex-wrap gap-1.5">
-                      {(Array.isArray(instance.teachers) && instance.teachers.length > 0 ? instance.teachers : [instance.teacher]).filter(Boolean).map((teacher) => (
-                        <span key={teacher._id} className="inline-block bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs px-2 py-0.5 rounded-full">{teacher.name}</span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-center">
-                    <span className={`text-xs px-2 py-1 rounded font-semibold ${instance.status === 'Running' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'}`}>
-                      {instance.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-right text-sm space-x-2">
-                    <button onClick={() => openCoursePage(instance)} className="text-ruet-blue hover:text-ruet-dark dark:text-blue-400" title="Course Info"><Info size={18} /></button>
-                    {instance.status === 'Running' && (
-                      <>
-                        <button onClick={() => openEditModal(instance)} className="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Edit Running Course"><Edit size={18} /></button>
-                        <button onClick={() => setConfirm({ open: true, type: 'finish', id: instance._id })} className="text-orange-500 hover:text-orange-700" title="Mark Finished"><CheckCircle size={18} /></button>
-                      </>
-                    )}
-                    <button onClick={() => setConfirm({ open: true, type: 'delete', id: instance._id })} className="text-red-500 hover:text-red-700" title="Delete"><Trash2 size={18} /></button>
-                  </td>
-                </tr>
-              )) : (
-                <tr><td colSpan="6" className="px-4 py-8 text-center text-sm text-gray-500">No course instances found.</td></tr>
-              )}
-            </tbody>
-          </table>
+      <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg border border-gray-100 dark:border-gray-800">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="font-semibold text-gray-800 dark:text-gray-200">Running Courses</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage active course instances for your department.</p>
         </div>
+        {renderCourseTable(runningInstances, 'No running course instances found for the selected filters.')}
+      </div>
+
+      <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg border border-gray-100 dark:border-gray-800">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="font-semibold text-gray-800 dark:text-gray-200">Finished Courses</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Browse completed course instances and their reports.</p>
+        </div>
+        {renderCourseTable(finishedInstances, 'No finished course instances found for the selected filters.')}
       </div>
 
       {showModal && (
@@ -365,8 +429,14 @@ const DeptCourseManagement = () => {
 
               <div className={`grid gap-3 ${showSectionSelect ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5 text-gray-700 dark:text-gray-300">Series</label>
-                  <input type="number" required placeholder="Series Year (e.g. 2021)" value={formData.series} onChange={(event) => setFormData((prev) => ({ ...prev, series: event.target.value }))} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue" />
+                  <SeriesSelectField
+                    label="Series"
+                    required
+                    value={formData.series}
+                    options={seriesList}
+                    onChange={(series) => setFormData((prev) => ({ ...prev, series }))}
+                    onAddSeries={handleAddSeries}
+                  />
                 </div>
 
                 {showSectionSelect && (

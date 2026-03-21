@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowUpDown, Building2, Edit, FileSpreadsheet, Filter, Loader2, Plus, Trash2, X } from 'lucide-react';
+import SeriesSelectField from '../../components/SeriesSelectField';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -10,6 +11,7 @@ import {
   getDepartmentSections,
   normalizeSectionValue
 } from '../../utils/departmentUtils';
+import { normalizeSeriesYears } from '../../utils/seriesUtils';
 
 const SORT_OPTIONS = [
   { value: 'rollNumber-asc', label: 'ID (Ascending)' },
@@ -28,6 +30,8 @@ const emptyForm = {
 };
 
 const buildStudentEmail = (rollNumber) => (/^\d{7}$/.test(rollNumber) ? `${rollNumber}@student.ruet.ac.bd` : '');
+const sanitizeRollNumber = (rollNumber) => String(rollNumber || '').replace(/\D/g, '').slice(0, 7);
+const mergeSeriesYears = (...groups) => normalizeSeriesYears(groups.flat());
 
 const StudentManagementPanel = ({ departmentOnly = false }) => {
   const { currentUser } = useAuth();
@@ -104,10 +108,10 @@ const StudentManagementPanel = ({ departmentOnly = false }) => {
 
       setDepartments(nextDepartments);
       setStudents(nextStudents);
-      setSeriesList(Array.from(new Set([
-        ...nextSeries,
-        ...nextStudents.map((student) => String(student.series || '')).filter(Boolean)
-      ])).sort());
+      setSeriesList(mergeSeriesYears(
+        nextSeries,
+        nextStudents.map((student) => String(student.series || ''))
+      ));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -195,11 +199,21 @@ const StudentManagementPanel = ({ departmentOnly = false }) => {
   };
 
   const handleRollChange = (rollNumber) => {
+    const normalizedRollNumber = sanitizeRollNumber(rollNumber);
     setFormData((prev) => ({
       ...prev,
-      rollNumber,
-      email: buildStudentEmail(rollNumber)
+      rollNumber: normalizedRollNumber,
+      email: buildStudentEmail(normalizedRollNumber)
     }));
+  };
+
+  const handleAddSeries = async (seriesYear) => {
+    const normalizedSeries = String(seriesYear || '').trim();
+
+    const createdSeries = await api.post('/series', { year: normalizedSeries });
+    const nextSeries = String(createdSeries?.year || normalizedSeries);
+    setSeriesList((prev) => mergeSeriesYears(prev, [nextSeries]));
+    return nextSeries;
   };
 
   const handleSaveSingle = (event) => {
@@ -436,8 +450,13 @@ const StudentManagementPanel = ({ departmentOnly = false }) => {
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Series (Year)</label>
-                  <input type="number" required placeholder="e.g. 2021" className="w-full p-2 border rounded dark:bg-[#2d2d2d] dark:border-gray-700 outline-none focus:border-ruet-blue" value={formData.series} onChange={(event) => setFormData((prev) => ({ ...prev, series: event.target.value }))} />
+                  <SeriesSelectField
+                    required
+                    value={formData.series}
+                    options={seriesList}
+                    onChange={(series) => setFormData((prev) => ({ ...prev, series }))}
+                    onAddSeries={handleAddSeries}
+                  />
                 </div>
               </div>
 
@@ -455,7 +474,7 @@ const StudentManagementPanel = ({ departmentOnly = false }) => {
 
                 <div>
                   <label className="block text-sm font-medium mb-1">Roll / ID</label>
-                  <input type="text" pattern="^\\d{7}$" required className="w-full p-2 border rounded dark:bg-[#2d2d2d] dark:border-gray-700 outline-none focus:border-ruet-blue font-mono" value={formData.rollNumber} onChange={(event) => handleRollChange(event.target.value)} placeholder="7-digit ID" />
+                  <input type="text" inputMode="numeric" maxLength={7} pattern="[0-9]{7}" required className="w-full p-2 border rounded dark:bg-[#2d2d2d] dark:border-gray-700 outline-none focus:border-ruet-blue font-mono" value={formData.rollNumber} onChange={(event) => handleRollChange(event.target.value)} placeholder="7-digit ID" />
                 </div>
               </div>
 
@@ -512,8 +531,13 @@ const StudentManagementPanel = ({ departmentOnly = false }) => {
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Series (Year)</label>
-                    <input type="number" required placeholder="e.g. 2021" className="w-full p-2 border rounded dark:bg-[#2d2d2d] dark:border-gray-700 outline-none focus:border-ruet-blue" value={bulkData.series} onChange={(event) => setBulkData((prev) => ({ ...prev, series: event.target.value }))} />
+                    <SeriesSelectField
+                      required
+                      value={bulkData.series}
+                      options={seriesList}
+                      onChange={(series) => setBulkData((prev) => ({ ...prev, series }))}
+                      onAddSeries={handleAddSeries}
+                    />
                   </div>
                 </div>
 

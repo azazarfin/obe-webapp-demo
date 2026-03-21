@@ -42,7 +42,7 @@ router.get('/', verifyToken, async (req, res) => {
   }
 });
 
-router.post('/', verifyToken, requireRole('CENTRAL_ADMIN'), async (req, res) => {
+router.post('/', verifyToken, requireRole('CENTRAL_ADMIN', 'DEPT_ADMIN'), async (req, res) => {
   try {
     const year = String(req.body.year || '').trim();
     if (!/^\d{4}$/.test(year)) {

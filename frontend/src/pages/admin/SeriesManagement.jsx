@@ -78,7 +78,7 @@ const SeriesManagement = () => {
       <form onSubmit={handleAdd} className="flex items-end gap-3">
         <div className="flex-1 max-w-xs">
           <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">New Series Year</label>
-          <input type="text" pattern="^\d{4}$" title="Enter a 4-digit year (e.g. 2025)" required placeholder="e.g. 2025" value={newSeries} onChange={(e) => setNewSeries(e.target.value)} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue dark:bg-[#2d2d2d]" />
+          <input type="text" inputMode="numeric" maxLength={4} pattern="[0-9]{4}" title="Enter a 4-digit year (e.g. 2025)" required placeholder="e.g. 2025" value={newSeries} onChange={(e) => setNewSeries(e.target.value.replace(/\D/g, '').slice(0, 4))} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue dark:bg-[#2d2d2d]" />
         </div>
         <button type="submit" disabled={saving} className="flex items-center px-4 py-2.5 bg-ruet-blue text-white rounded-md hover:bg-ruet-dark transition-colors font-medium disabled:opacity-60">
           <Plus size={18} className="mr-2" /> Add Series

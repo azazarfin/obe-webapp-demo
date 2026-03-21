@@ -143,12 +143,14 @@ const ModifyStudentRoster = ({ classInstance }) => {
               <div className="relative">
                 <input
                   type="text"
-                  pattern="^\d{7}$"
+                  inputMode="numeric"
+                  maxLength={7}
+                  pattern="[0-9]{7}"
                   title="7 Digit Roll (e.g. 1903001)"
                   required
                   placeholder="e.g. 1903001"
                   value={searchRoll}
-                  onChange={(e) => setSearchRoll(e.target.value)}
+                  onChange={(e) => setSearchRoll(e.target.value.replace(/\D/g, '').slice(0, 7))}
                   className="w-full pl-9 p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-[#1e1e1e] text-gray-900 dark:text-white focus:ring-2 focus:ring-ruet-blue outline-none"
                 />
                 <Search size={16} className="absolute left-3 top-3 text-gray-400" />
