@@ -32,11 +32,10 @@ const classInstanceSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-classInstanceSchema.pre('save', function(next) {
+classInstanceSchema.pre('save', function() {
   if (Array.isArray(this.teachers) && this.teachers.length > 0) {
     this.teacher = this.teachers[0];
   }
-  next();
 });
 
 module.exports = mongoose.model('ClassInstance', classInstanceSchema);
