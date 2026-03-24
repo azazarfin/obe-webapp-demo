@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertCircle, Lock, ShieldCheck } from 'lucide-react';
+import { AlertCircle, Lock, ShieldCheck, Users } from 'lucide-react';
 import { getGrade, getGPA } from '../../utils/gradeUtils';
 
 const labelMap = {
@@ -33,6 +33,12 @@ const StudentMarksheet = ({ course }) => {
         <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Marksheet</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">{course.code} - {course.name} · Instructor: {course.teacher}</p>
+          {Array.isArray(course.teachers) && course.teachers.length > 1 && (
+            <div className="flex items-center mt-1 text-xs text-indigo-500 dark:text-indigo-400">
+              <Users size={12} className="mr-1.5" />
+              <span className="font-medium">Teachers: {course.teachers.map((t) => t.name).join(', ')}</span>
+            </div>
+          )}
           <span className="inline-block mt-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">Sessional</span>
         </div>
 
@@ -101,6 +107,12 @@ const StudentMarksheet = ({ course }) => {
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Marksheet</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">{course.code} - {course.name} · Instructor: {course.teacher}</p>
+        {Array.isArray(course.teachers) && course.teachers.length > 1 && (
+          <div className="flex items-center mt-1 text-xs text-indigo-500 dark:text-indigo-400">
+            <Users size={12} className="mr-1.5" />
+            <span className="font-medium">Teachers: {course.teachers.map((t) => t.name).join(', ')}</span>
+          </div>
+        )}
         <span className="inline-block mt-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">Theory</span>
       </div>
 

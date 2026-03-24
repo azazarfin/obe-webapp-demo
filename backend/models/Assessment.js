@@ -21,7 +21,8 @@ const assessmentSchema = new mongoose.Schema({
     enum: ['A', 'B'],
     default: undefined
   },
-  questionNo: { type: String }
+  questionNo: { type: String },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Assessment', assessmentSchema);

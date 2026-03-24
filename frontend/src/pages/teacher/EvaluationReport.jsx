@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Download, FileText, Target, Loader2 } from 'lucide-react';
+import { Download, FileText, Target, Loader2, Users } from 'lucide-react';
 import { getGrade, getGPA } from '../../utils/gradeUtils';
 import { exportToExcel, exportToPDF } from '../../utils/exportUtils';
 import api from '../../utils/api';
@@ -269,6 +269,14 @@ const EvaluationReport = ({ courseType = 'Theory', classInstance }) => {
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Evaluation Report</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">Class: {courseCode} - {courseName} (Section {section}, {series} Series)</p>
+          {evaluation?.classInstance?.teachers?.length > 1 && (
+            <div className="flex items-center mt-1 text-xs text-indigo-500 dark:text-indigo-400">
+              <Users size={12} className="mr-1.5" />
+              <span className="font-medium">
+                {evaluation.classInstance.teachers.map((t) => t.name).join(', ')}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="flex space-x-2">

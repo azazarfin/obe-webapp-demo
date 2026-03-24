@@ -1,11 +1,21 @@
-import React from 'react';
-import { CheckCircle, XCircle } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { CheckCircle, XCircle, Filter } from 'lucide-react';
 import { getAttendanceMarks, getAttendanceStatus } from '../../utils/attendanceUtils';
 
 const StudentAttendanceInfo = ({ course }) => {
+  const [teacherFilter, setTeacherFilter] = useState('');
+
   if (!course) return null;
 
-  const attendanceLog = Array.isArray(course.attendanceLog) ? course.attendanceLog : [];
+  const teachers = Array.isArray(course.teachers) ? course.teachers : [];
+  const isMultiTeacher = teachers.length > 1;
+
+  const attendanceLog = useMemo(() => {
+    const log = Array.isArray(course.attendanceLog) ? course.attendanceLog : [];
+    if (!teacherFilter) return log;
+    return log.filter((entry) => entry.takenBy && String(entry.takenBy) === teacherFilter);
+  }, [course.attendanceLog, teacherFilter]);
+
   const totalClasses = attendanceLog.length;
   const presentCount = attendanceLog.filter((entry) => entry.status !== 'Absent').length;
   const absentCount = totalClasses - presentCount;
@@ -18,11 +28,28 @@ const StudentAttendanceInfo = ({ course }) => {
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Attendance Info</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">{course.code} - {course.name}</p>
+        {isMultiTeacher && (
+          <div className="mt-3 flex items-center space-x-2">
+            <Filter size={14} className="text-gray-500 dark:text-gray-400" />
+            <select
+              value={teacherFilter}
+              onChange={(e) => setTeacherFilter(e.target.value)}
+              className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-transparent text-gray-700 dark:text-gray-200 outline-none focus:ring-2 focus:ring-ruet-blue"
+            >
+              <option value="" className="dark:bg-gray-800">All Teachers</option>
+              {teachers.map((teacher) => (
+                <option key={teacher._id} value={teacher._id} className="dark:bg-gray-800">
+                  {teacher.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-[#1e1e1e] shadow-sm rounded-lg p-4 border border-gray-100 dark:border-gray-800 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">Total Classes</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">Total Classes{teacherFilter ? ' (Filtered)' : ''}</p>
           <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{totalClasses}</p>
         </div>
         <div className="bg-white dark:bg-[#1e1e1e] shadow-sm rounded-lg p-4 border border-gray-100 dark:border-gray-800 text-center">
@@ -54,6 +81,9 @@ const StudentAttendanceInfo = ({ course }) => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase w-16">#</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Date</th>
               <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
+              {isMultiTeacher && (
+                <th className="px-6 py-3 text-center text-xs font-medium text-indigo-500 dark:text-indigo-400 uppercase">Taken By</th>
+              )}
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-[#1e1e1e] divide-y divide-gray-200 dark:divide-gray-700">
@@ -72,9 +102,14 @@ const StudentAttendanceInfo = ({ course }) => {
                     </span>
                   )}
                 </td>
+                {isMultiTeacher && (
+                  <td className="px-6 py-3 text-center text-xs text-indigo-500 dark:text-indigo-400 font-medium">
+                    {entry.takenByName || '-'}
+                  </td>
+                )}
               </tr>
             )) : (
-              <tr><td colSpan="3" className="px-6 py-8 text-center text-sm text-gray-500">No attendance has been recorded for this course yet.</td></tr>
+              <tr><td colSpan={isMultiTeacher ? 4 : 3} className="px-6 py-8 text-center text-sm text-gray-500">No attendance has been recorded for this course yet.</td></tr>
             )}
           </tbody>
         </table>

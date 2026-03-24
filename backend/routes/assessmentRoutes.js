@@ -10,6 +10,7 @@ const router = express.Router();
 router.get('/:classInstanceId', verifyToken, async (req, res) => {
   try {
     const assessments = await Assessment.find({ classInstance: req.params.classInstanceId })
+      .populate('createdBy', 'name email')
       .sort({ finalPart: 1, questionNo: 1, type: 1, title: 1 });
     res.json(assessments);
   } catch (error) {
@@ -43,7 +44,8 @@ router.post('/', verifyToken, requireRole('TEACHER', 'DEPT_ADMIN'), async (req, 
       typeLabel: req.body.typeLabel,
       assessmentDate: req.body.assessmentDate,
       finalPart: req.body.finalPart,
-      questionNo: req.body.questionNo
+      questionNo: req.body.questionNo,
+      createdBy: req.user.id
     };
 
     const assessment = await Assessment.create(payload);

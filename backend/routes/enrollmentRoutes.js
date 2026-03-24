@@ -10,10 +10,12 @@ const populateEnrollment = (query) => query
     path: 'classInstance',
     populate: [
       { path: 'course', populate: { path: 'department', select: 'name shortName' } },
-      { path: 'teacher', select: 'name email designation' }
+      { path: 'teacher', select: 'name email designation' },
+      { path: 'teachers', select: 'name email designation' }
     ]
   })
-  .populate('marks.assessment');
+  .populate('marks.assessment')
+  .populate('attendanceRecord.takenBy', 'name email');
 
 router.get('/', verifyToken, async (req, res) => {
   try {
@@ -83,6 +85,7 @@ router.post('/:id/attendance', verifyToken, requireRole('TEACHER'), async (req, 
       return res.status(400).json({ error: 'Date and records array are required' });
     }
 
+    const takenBy = req.user.id;
     const results = [];
     for (const record of records) {
       const enrollment = await Enrollment.findOne({
@@ -101,8 +104,9 @@ router.post('/:id/attendance', verifyToken, requireRole('TEACHER'), async (req, 
 
         if (existingRecord) {
           existingRecord.status = normalizedStatus;
+          existingRecord.takenBy = takenBy;
         } else {
-          enrollment.attendanceRecord.push({ date: new Date(date), status: normalizedStatus });
+          enrollment.attendanceRecord.push({ date: new Date(date), status: normalizedStatus, takenBy });
         }
         await enrollment.save();
         results.push({ studentId: record.studentId, status: 'saved' });

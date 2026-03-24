@@ -15,7 +15,8 @@ const enrollmentSchema = new mongoose.Schema({
   },
   attendanceRecord: [{
     date: { type: Date, required: true },
-    status: { type: String, enum: ['Present', 'Absent'], required: true }
+    status: { type: String, enum: ['Present', 'Absent'], required: true },
+    takenBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   }],
   marks: [{
     assessment: { type: mongoose.Schema.Types.ObjectId, ref: 'Assessment', required: true },

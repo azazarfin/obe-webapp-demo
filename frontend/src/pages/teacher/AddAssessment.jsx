@@ -257,6 +257,9 @@ const AddAssessment = ({ classInstance }) => {
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">Marks Entry - {resolvedType}: {formData.title}</h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">{formData.co} -&gt; {formData.po} | Total: {formData.totalMarks} marks | Date: {formData.date}</p>
+              {classInstance.teachers?.length > 1 && (
+                <p className="text-xs text-indigo-500 dark:text-indigo-400 mt-0.5 font-medium">Created by you (recorded automatically)</p>
+              )}
             </div>
             <button onClick={handleSave} disabled={saving} className="flex items-center px-4 py-2 bg-ruet-blue text-white rounded-md text-sm font-medium hover:bg-ruet-dark transition-colors disabled:opacity-60">
               {saving ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Save size={16} className="mr-2" />} Save Assessment
