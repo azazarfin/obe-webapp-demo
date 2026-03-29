@@ -1,18 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { BookOpen, UserCheck, GraduationCap, ClipboardList, Building2, Loader2 } from 'lucide-react';
 import CourseReviewHub from '../admin/CourseReviewHub';
 import DeptCourseManagement from '../admin/DeptCourseManagement';
 import DeptStudentInfo from '../admin/DeptStudentInfo';
 import DeptAddCourse from '../admin/DeptAddCourse';
 import TeacherInfo from '../admin/TeacherInfo';
-import api from '../../utils/api';
+import { useGetDeptDashboardQuery } from '../../store/slices/dashboardSlice';
+import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
 
-const initialSummary = {
-  department: null,
-  runningClassInstances: 0,
-  totalStudents: 0,
-  reportCount: 0
-};
+const INITIAL_DASHBOARD_STATE = { activeTab: 'overview' };
 
 const actionTiles = [
   { title: 'Course Management', desc: 'Assign teachers to courses', icon: <ClipboardList size={22} />, iconClass: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400', tab: 'course_mgmt' },
@@ -22,46 +18,29 @@ const actionTiles = [
 ];
 
 const DeptAdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [summary, setSummary] = useState(initialSummary);
-  const [loadingSummary, setLoadingSummary] = useState(true);
-  const [error, setError] = useState('');
-
-  const tabHistoryRef = useRef([]);
+  const {
+    state: dashboardState,
+    pushState: pushDashboardState,
+    goBack
+  } = useHistoryBackedState('dept-admin-dashboard', INITIAL_DASHBOARD_STATE);
 
   const navigateTab = (newTab) => {
-    tabHistoryRef.current.push(activeTab);
-    setActiveTab(newTab);
+    pushDashboardState((currentState) => ({
+      ...currentState,
+      activeTab: newTab
+    }));
   };
 
-  const goBack = () => {
-    const history = tabHistoryRef.current;
-    if (history.length > 0) {
-      const prevTab = history.pop();
-      setActiveTab(prevTab);
-    }
-  };
-
-  useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        setLoadingSummary(true);
-        const data = await api.get('/dashboard/department');
-        setSummary({
-          department: data.department || null,
-          runningClassInstances: data.runningClassInstances || 0,
-          totalStudents: data.totalStudents || 0,
-          reportCount: data.reportCount || 0
-        });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoadingSummary(false);
-      }
-    };
-
-    fetchSummary();
-  }, []);
+  const { data: dashboardResp, isLoading, error: fetchError } = useGetDeptDashboardQuery();
+  const activeTab = dashboardState.activeTab;
+  const loadingSummary = isLoading;
+  const error = fetchError?.data?.error || fetchError?.message || '';
+  const summary = useMemo(() => ({
+    department: dashboardResp?.department || null,
+    runningClassInstances: dashboardResp?.runningClassInstances || 0,
+    totalStudents: dashboardResp?.totalStudents || 0,
+    reportCount: dashboardResp?.reportCount || 0
+  }), [dashboardResp]);
 
   const renderOverview = () => (
     <div className="space-y-6">

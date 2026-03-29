@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Save, Loader2, Filter } from 'lucide-react';
 import { getAttendanceMarks, getAttendanceStatus } from '../../utils/attendanceUtils';
 import { useAuth } from '../../contexts/AuthContext';
-import api from '../../utils/api';
+import { useGetEnrollmentsQuery, useSaveAttendanceMutation } from '../../store/slices/enrollmentSlice';
 
 const buildAttendanceState = (enrollments) => {
   const dates = new Set();
@@ -56,30 +56,33 @@ const TakeAttendance = ({ classInstance }) => {
 
   const isMultiTeacher = teachers.length > 1;
 
+  const { data: enrollmentsData, isLoading: loadingEnrollments, error: errorEnrollments } = useGetEnrollmentsQuery(
+    { classInstance: classInstance?._id },
+    { skip: !classInstance?._id }
+  );
+  
+  const [saveAttendance] = useSaveAttendanceMutation();
+
   useEffect(() => {
-    const fetchEnrollments = async () => {
-      if (!classInstance?._id) return;
+    if (loadingEnrollments) {
+      setLoading(true);
+      return;
+    }
+    setLoading(false);
 
-      try {
-        setLoading(true);
-        setError('');
-        const data = await api.get(`/enrollments?classInstance=${classInstance._id}`);
-        const activeEnrollments = (Array.isArray(data) ? data : []).filter((enrollment) => enrollment.status !== 'hidden');
-        setEnrollments(activeEnrollments);
+    if (errorEnrollments) {
+      setError(errorEnrollments?.data?.error || errorEnrollments?.message || 'Failed to fetch enrollments');
+      return;
+    }
 
-        const { dates: existingDates, attendanceData: existingAttendance, takenByMap: existingTakenBy } = buildAttendanceState(activeEnrollments);
-        setDates(existingDates.length > 0 ? existingDates : [new Date().toISOString().split('T')[0]]);
-        setAttendanceData(existingAttendance);
-        setTakenByMap(existingTakenBy);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const activeEnrollments = (Array.isArray(enrollmentsData?.data) ? enrollmentsData.data : []).filter((enrollment) => enrollment.status !== 'hidden');
+    setEnrollments(activeEnrollments);
 
-    fetchEnrollments();
-  }, [classInstance]);
+    const { dates: existingDates, attendanceData: existingAttendance, takenByMap: existingTakenBy } = buildAttendanceState(activeEnrollments);
+    setDates(existingDates.length > 0 ? existingDates : [new Date().toISOString().split('T')[0]]);
+    setAttendanceData(existingAttendance);
+    setTakenByMap(existingTakenBy);
+  }, [enrollmentsData, loadingEnrollments, errorEnrollments]);
 
   const filteredDates = useMemo(() => {
     if (!teacherFilter) return dates;
@@ -136,17 +139,18 @@ const TakeAttendance = ({ classInstance }) => {
       setError('');
       setMessage('');
 
-      await Promise.all(dates.map((date) => api.post(`/enrollments/${classInstance._id}/attendance`, {
+      await Promise.all(dates.map((date) => saveAttendance({
+        classInstanceId: classInstance._id,
         date,
         records: enrollments.map((enrollment) => ({
           studentId: enrollment.student?._id,
           status: attendanceData[enrollment.student?._id]?.[date] || 'P'
         }))
-      })));
+      }).unwrap()));
 
       setMessage('Attendance saved successfully.');
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Error saving attendance');
     } finally {
       setSaving(false);
     }

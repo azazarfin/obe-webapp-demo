@@ -57,7 +57,7 @@ const api = async (endpoint, options = {}) => {
     localStorage.removeItem('user');
     if (!isRedirecting) {
       isRedirecting = true;
-      window.location.href = '/login';
+      window.location.replace('/login');
     }
     throw new Error('Unauthorized');
   }

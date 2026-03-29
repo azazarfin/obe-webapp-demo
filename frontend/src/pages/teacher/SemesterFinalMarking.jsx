@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Save, Plus, X, AlertCircle, Loader2 } from 'lucide-react';
-import api from '../../utils/api';
+import { useGetClassSummaryQuery, useUpdateClassInstanceMutation } from '../../store/slices/classInstanceSlice';
+import { useGetEnrollmentsQuery } from '../../store/slices/enrollmentSlice';
+import { useCreateAssessmentMutation, useSaveMarksMutation, useDeleteAssessmentMutation } from '../../store/slices/assessmentSlice';
 
 const PO_OPTIONS = Array.from({ length: 12 }, (_, index) => `PO${index + 1}`);
 
@@ -18,18 +20,25 @@ const getNextCONumber = (coList) => {
   return numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
 };
 
-const persistCO = async (classInstance, summary, co, defaultPO) => {
+const INITIAL_NEW_QUESTION = {
+  no: '',
+  co: 'CO1',
+  po: 'PO1',
+  totalMarks: ''
+};
+
+const persistCO = async (classInstance, summary, co, defaultPO, updateClassInstance) => {
   const nextMapping = summary?.classInstance?.coPoMapping
     ? [...summary.classInstance.coPoMapping]
     : [];
   const existing = nextMapping.find((entry) => entry.co === co);
   if (!existing) {
     nextMapping.push({ co, po: [defaultPO] });
-    await api.put(`/class-instances/${classInstance._id}`, { coPoMapping: nextMapping });
+    await updateClassInstance({ id: classInstance._id, coPoMapping: nextMapping }).unwrap();
   }
 };
 
-const ensureMapping = async (classInstance, summary, co, po) => {
+const ensureMapping = async (classInstance, summary, co, po, updateClassInstance) => {
   const existing = (summary?.classInstance?.coPoMapping || []).find((entry) => entry.co === co);
   const nextMapping = summary?.classInstance?.coPoMapping ? [...summary.classInstance.coPoMapping] : [];
 
@@ -44,57 +53,56 @@ const ensureMapping = async (classInstance, summary, co, po) => {
     return;
   }
 
-  await api.put(`/class-instances/${classInstance._id}`, { coPoMapping: nextMapping });
+  await updateClassInstance({ id: classInstance._id, coPoMapping: nextMapping }).unwrap();
 };
 
 const SemesterFinalMarking = ({ classInstance }) => {
-  const [summary, setSummary] = useState(null);
+  const { data: summary, isLoading: loadingSummary, error: errorSummary } = useGetClassSummaryQuery(classInstance?._id, { skip: !classInstance?._id });
+  const { data: enrollmentsData, isLoading: loadingEnrollments, error: errorEnrollments } = useGetEnrollmentsQuery({ classInstance: classInstance?._id }, { skip: !classInstance?._id });
+
+  const [updateClassInstance] = useUpdateClassInstanceMutation();
+  const [createAssessment] = useCreateAssessmentMutation();
+  const [saveMarksMutation] = useSaveMarksMutation();
+  const [deleteAssessment] = useDeleteAssessmentMutation();
   const [enrollments, setEnrollments] = useState([]);
   const [marksData, setMarksData] = useState({});
-  const [showAddForm, setShowAddForm] = useState(null);
+  const [newQuestion, setNewQuestion] = useState(INITIAL_NEW_QUESTION);
   const [showAddCO, setShowAddCO] = useState(false);
-  const [newQuestion, setNewQuestion] = useState({ no: '', co: 'CO1', po: 'PO1', totalMarks: '' });
+  const [showAddForm, setShowAddForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const fetchData = async () => {
-    if (!classInstance?._id) return;
-
-    try {
-      setLoading(true);
-      setError('');
-      const [summaryData, enrollmentData] = await Promise.all([
-        api.get(`/class-instances/${classInstance._id}/summary`),
-        api.get(`/enrollments?classInstance=${classInstance._id}`)
-      ]);
-      setSummary(summaryData);
-      const activeEnrollments = (Array.isArray(enrollmentData) ? enrollmentData : []).filter((enrollment) => enrollment.status !== 'hidden');
-      setEnrollments(activeEnrollments);
-
-      const initialMarks = {};
-      activeEnrollments.forEach((enrollment) => {
-        const studentId = enrollment.student?._id;
-        if (!studentId) return;
-        initialMarks[studentId] = {};
-        (enrollment.marks || []).forEach((mark) => {
-          if (mark.assessment?.type === 'Final') {
-            initialMarks[studentId][mark.assessment._id] = String(mark.rawScore);
-          }
-        });
-      });
-      setMarksData(initialMarks);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
-  }, [classInstance]);
+    if (loadingSummary || loadingEnrollments) {
+      setLoading(true);
+      return;
+    }
+    setLoading(false);
+
+    if (errorSummary || errorEnrollments) {
+      setError((errorSummary?.data?.error || errorSummary?.message) || (errorEnrollments?.data?.error || errorEnrollments?.message) || 'Failed to fetch data');
+      return;
+    }
+    setError('');
+
+    const activeEnrollments = (Array.isArray(enrollmentsData?.data) ? enrollmentsData.data : []).filter((enrollment) => enrollment.status !== 'hidden');
+    setEnrollments(activeEnrollments);
+
+    const initialMarks = {};
+    activeEnrollments.forEach((enrollment) => {
+      const studentId = enrollment.student?._id;
+      if (!studentId) return;
+      initialMarks[studentId] = {};
+      (enrollment.marks || []).forEach((mark) => {
+        if (mark.assessment?.type === 'Final') {
+          initialMarks[studentId][mark.assessment._id] = String(mark.rawScore);
+        }
+      });
+    });
+    setMarksData((prev) => Object.keys(prev).length > 0 ? prev : initialMarks);
+  }, [summary, enrollmentsData, loadingSummary, loadingEnrollments, errorSummary, errorEnrollments]);
 
   const finalQuestions = useMemo(() => sortQuestions((summary?.assessments || []).filter((assessment) => assessment.type === 'Final')), [summary]);
   const partAQuestions = useMemo(() => finalQuestions.filter((question) => question.finalPart === 'A'), [finalQuestions]);
@@ -117,13 +125,11 @@ const SemesterFinalMarking = ({ classInstance }) => {
 
     try {
       setError('');
-      await persistCO(classInstance, summary, newCO, 'PO1');
-      const refreshed = await api.get(`/class-instances/${classInstance._id}/summary`);
-      setSummary(refreshed);
+      await persistCO(classInstance, summary, newCO, 'PO1', updateClassInstance);
       setNewQuestion((prev) => ({ ...prev, co: newCO }));
       setShowAddCO(false);
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Failed to add CO');
     }
   };
 
@@ -134,8 +140,8 @@ const SemesterFinalMarking = ({ classInstance }) => {
       setSaving(true);
       setError('');
       setSuccess('');
-      await ensureMapping(classInstance, summary, newQuestion.co, newQuestion.po);
-      await api.post('/assessments', {
+      await ensureMapping(classInstance, summary, newQuestion.co, newQuestion.po, updateClassInstance);
+      await createAssessment({
         classInstance: classInstance._id,
         title: `Final ${part}-${newQuestion.no}`,
         type: 'Final',
@@ -145,14 +151,13 @@ const SemesterFinalMarking = ({ classInstance }) => {
         totalMarks: parseFloat(newQuestion.totalMarks),
         finalPart: part,
         questionNo: newQuestion.no
-      });
-      const refreshedSummary = await api.get(`/class-instances/${classInstance._id}/summary`);
-      setSummary(refreshedSummary);
-      setNewQuestion({ no: '', co: coOptions[0] || 'CO1', po: 'PO1', totalMarks: '' });
+      }).unwrap();
+      
+      setNewQuestion({ ...INITIAL_NEW_QUESTION, co: coOptions[0] || 'CO1' });
       setShowAddForm(null);
       setSuccess('Final question added successfully.');
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Error adding question');
     } finally {
       setSaving(false);
     }
@@ -162,9 +167,7 @@ const SemesterFinalMarking = ({ classInstance }) => {
     try {
       setSaving(true);
       setError('');
-      await api.del(`/assessments/${id}`);
-      const refreshedSummary = await api.get(`/class-instances/${classInstance._id}/summary`);
-      setSummary(refreshedSummary);
+      await deleteAssessment(id).unwrap();
       setMarksData((prev) => {
         const next = { ...prev };
         Object.keys(next).forEach((studentId) => {
@@ -176,7 +179,7 @@ const SemesterFinalMarking = ({ classInstance }) => {
         return next;
       });
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Error removing question');
     } finally {
       setSaving(false);
     }
@@ -197,7 +200,8 @@ const SemesterFinalMarking = ({ classInstance }) => {
       setSaving(true);
       setError('');
       setSuccess('');
-      await Promise.all(finalQuestions.map((question) => api.put(`/assessments/${question._id}/marks`, {
+      await Promise.all(finalQuestions.map((question) => saveMarksMutation({
+        assessmentId: question._id,
         classInstanceId: classInstance._id,
         marks: roster.map((student) => {
           const val = marksData[student.studentId]?.[question._id];
@@ -206,10 +210,10 @@ const SemesterFinalMarking = ({ classInstance }) => {
             rawScore: val === 'A' || !val ? 0 : Number(val)
           };
         })
-      })));
+      }).unwrap()));
       setSuccess('Semester final marks saved successfully.');
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Error saving marks');
     } finally {
       setSaving(false);
     }
@@ -233,7 +237,7 @@ const SemesterFinalMarking = ({ classInstance }) => {
         <button 
           onClick={() => { 
             setShowAddForm(part); 
-            setNewQuestion({ no: '', co: coOptions[0] || 'CO1', po: 'PO1', totalMarks: '' }); 
+            setNewQuestion({ ...INITIAL_NEW_QUESTION, co: coOptions[0] || 'CO1' }); 
           }} 
           className="flex items-center px-3 py-1.5 bg-ruet-blue text-white rounded-md text-sm font-medium hover:bg-ruet-dark transition-colors"
         >

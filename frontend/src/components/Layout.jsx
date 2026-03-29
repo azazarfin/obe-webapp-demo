@@ -7,12 +7,13 @@ import { useAuth } from '../contexts/AuthContext';
 const Layout = () => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  const { currentUser, logout } = useAuth();
+  const { logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    setIsMobileMenuOpen(false);
+    navigate('/login', { replace: true });
   };
 
   return (

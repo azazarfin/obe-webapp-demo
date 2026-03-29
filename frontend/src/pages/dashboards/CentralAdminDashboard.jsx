@@ -1,13 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import CentralDashboardOverview from '../admin/CentralDashboardOverview';
 import DepartmentInfo from '../admin/DepartmentInfo';
 import CourseInfo from '../admin/CourseInfo';
 import TeacherInfo from '../admin/TeacherInfo';
 import StudentInfo from '../admin/StudentInfo';
 import SeriesManagement from '../admin/SeriesManagement';
+import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
+
+const INITIAL_DASHBOARD_STATE = { activeTab: 'overview' };
 
 const CentralAdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const {
+    state: dashboardState,
+    pushState: pushDashboardState,
+    goBack
+  } = useHistoryBackedState('central-admin-dashboard', INITIAL_DASHBOARD_STATE);
+  const activeTab = dashboardState.activeTab;
+
+  const navigateTab = (newTab) => {
+    pushDashboardState((currentState) => ({
+      ...currentState,
+      activeTab: newTab
+    }));
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -23,7 +38,7 @@ const CentralAdminDashboard = () => {
         return <SeriesManagement />;
       case 'overview':
       default:
-        return <CentralDashboardOverview setActiveTab={setActiveTab} />;
+        return <CentralDashboardOverview setActiveTab={navigateTab} />;
     }
   };
 
@@ -32,7 +47,7 @@ const CentralAdminDashboard = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-200 dark:border-gray-800 pb-4 gap-4">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Central Admin Panel</h1>
         {activeTab !== 'overview' && (
-          <button onClick={() => setActiveTab('overview')} className="text-sm text-gray-600 dark:text-gray-400 hover:text-ruet-blue dark:hover:text-white font-medium flex items-center">
+          <button onClick={goBack} className="text-sm text-gray-600 dark:text-gray-400 hover:text-ruet-blue dark:hover:text-white font-medium flex items-center">
             &larr; Back to Overview
           </button>
         )}

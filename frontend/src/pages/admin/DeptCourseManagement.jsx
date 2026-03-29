@@ -10,6 +10,7 @@ import EvaluationReport from '../teacher/EvaluationReport';
 import InstructorExperienceReport from '../teacher/InstructorExperienceReport';
 import ManageCourseFeedback from '../teacher/ManageCourseFeedback';
 import TeacherCoursePage from '../teacher/TeacherCoursePage';
+import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
 
 const initialForm = {
   course: '',
@@ -18,7 +19,7 @@ const initialForm = {
   teachers: [],
   teacherSearch: ''
 };
-
+const INITIAL_VIEW_STATE = { activeView: 'list', selectedInstance: null };
 const getSectionLabel = (value) => (value === 'N/A' ? 'No Section' : value);
 
 const DeptCourseManagement = () => {
@@ -37,8 +38,14 @@ const DeptCourseManagement = () => {
   const [filterSeries, setFilterSeries] = useState('');
   const [filterSection, setFilterSection] = useState('');
   const [confirm, setConfirm] = useState({ open: false, type: '', id: null });
-  const [activeView, setActiveView] = useState('list');
-  const [selectedInstance, setSelectedInstance] = useState(null);
+  const {
+    state: viewState,
+    pushState: pushViewState,
+    replaceState: replaceViewState,
+    goBack
+  } = useHistoryBackedState('dept-course-management', INITIAL_VIEW_STATE);
+  const activeView = viewState.activeView;
+  const selectedInstance = viewState.selectedInstance;
 
   const fetchData = async () => {
     try {
@@ -58,7 +65,19 @@ const DeptCourseManagement = () => {
         ...nextInstances.map((instance) => String(instance.series || ''))
       ]));
       setInstances(nextInstances);
-      setSelectedInstance((prev) => (prev ? nextInstances.find((instance) => instance._id === prev._id) || null : null));
+      replaceViewState((currentState) => {
+        if (!currentState.selectedInstance) {
+          return currentState;
+        }
+
+        const nextSelectedInstance = nextInstances.find((instance) => instance._id === currentState.selectedInstance._id) || null;
+
+        return {
+          ...currentState,
+          activeView: nextSelectedInstance ? currentState.activeView : 'list',
+          selectedInstance: nextSelectedInstance
+        };
+      });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -113,12 +132,15 @@ const DeptCourseManagement = () => {
   };
 
   const openCoursePage = (instance) => {
-    setSelectedInstance(instance);
-    setActiveView('course_page');
+    pushViewState((currentState) => ({
+      ...currentState,
+      activeView: 'course_page',
+      selectedInstance: instance
+    }));
   };
 
   const handleBack = () => {
-    setActiveView((currentView) => (currentView === 'course_page' ? 'list' : 'course_page'));
+    goBack();
   };
 
   const openCreateModal = () => {
@@ -199,8 +221,11 @@ const DeptCourseManagement = () => {
       await api.del(`/class-instances/${confirm.id}`);
       await fetchData();
       if (selectedInstance?._id === confirm.id) {
-        setSelectedInstance(null);
-        setActiveView('list');
+        replaceViewState((currentState) => ({
+          ...currentState,
+          activeView: 'list',
+          selectedInstance: null
+        }));
       }
     } catch (err) {
       setError(err.message);
@@ -314,7 +339,14 @@ const DeptCourseManagement = () => {
         {error && <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded text-sm">{error}</div>}
 
         {activeView === 'course_page' && (
-          <TeacherCoursePage classInstance={selectedInstance} mode="dept-admin" onNavigate={(view) => setActiveView(view)} />
+          <TeacherCoursePage
+            classInstance={selectedInstance}
+            mode="dept-admin"
+            onNavigate={(view) => pushViewState((currentState) => ({
+              ...currentState,
+              activeView: view
+            }))}
+          />
         )}
         {activeView === 'evaluation' && (
           <EvaluationReport courseType={courseType} classInstance={selectedInstance} />
@@ -327,7 +359,7 @@ const DeptCourseManagement = () => {
             classInstance={selectedInstance}
             title="Teacher Feedback and Report"
             description="This page will stay blank until the teacher feedback and report workflow is implemented."
-            onBack={() => setActiveView('course_page')}
+            onBack={goBack}
           />
         )}
       </div>
@@ -338,7 +370,7 @@ const DeptCourseManagement = () => {
     return <div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-ruet-blue" size={32} /></div>;
   }
 
-  if (activeView !== 'list') {
+  if (activeView !== 'list' && selectedInstance) {
     return renderDetailView();
   }
 

@@ -1,42 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { Send, PieChart, Clock, PenTool, Loader2 } from 'lucide-react';
 import api from '../../utils/api';
+import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
+
+const INITIAL_FEEDBACK_STATE = { activeTab: 'setup' };
 
 const ManageCourseFeedback = ({ classInstance }) => {
   const [isPublished, setIsPublished] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState('');
-  const [activeTab, setActiveTab] = useState('setup');
   const [results, setResults] = useState({ participation: 0, totalStudents: 0, averages: [] });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-
-  const fetchFeedbackData = async () => {
-    if (!classInstance?._id) return;
-
-    try {
-      setLoading(true);
-      setError('');
-      const data = await api.get(`/feedback/class/${classInstance._id}`);
-      setQuestions(Array.isArray(data.questions) ? data.questions : []);
-      setIsPublished(Boolean(data.published));
-      setResults({
-        participation: data.participation || 0,
-        totalStudents: data.totalStudents || 0,
-        averages: Array.isArray(data.averages) ? data.averages : []
-      });
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const historyKey = `course-feedback-${classInstance?._id || 'default'}`;
+  const { state: feedbackState, pushState: pushFeedbackState } = useHistoryBackedState(historyKey, INITIAL_FEEDBACK_STATE);
+  const activeTab = feedbackState.activeTab;
 
   useEffect(() => {
+    const fetchFeedbackData = async () => {
+      if (!classInstance?._id) return;
+
+      try {
+        setLoading(true);
+        setError('');
+        const data = await api.get(`/feedback/class/${classInstance._id}`);
+        setQuestions(Array.isArray(data.questions) ? data.questions : []);
+        setIsPublished(Boolean(data.published));
+        setResults({
+          participation: data.participation || 0,
+          totalStudents: data.totalStudents || 0,
+          averages: Array.isArray(data.averages) ? data.averages : []
+        });
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchFeedbackData();
-  }, [classInstance]);
+  }, [classInstance?._id]);
 
   const handleAddQuestion = (e) => {
     e.preventDefault();
@@ -63,7 +68,14 @@ const ManageCourseFeedback = ({ classInstance }) => {
       });
       setIsPublished(published);
       setMessage(published ? 'Feedback form published successfully.' : 'Feedback configuration saved.');
-      await fetchFeedbackData();
+      const data = await api.get(`/feedback/class/${classInstance._id}`);
+      setQuestions(Array.isArray(data.questions) ? data.questions : []);
+      setIsPublished(Boolean(data.published));
+      setResults({
+        participation: data.participation || 0,
+        totalStudents: data.totalStudents || 0,
+        averages: Array.isArray(data.averages) ? data.averages : []
+      });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -91,8 +103,8 @@ const ManageCourseFeedback = ({ classInstance }) => {
           <p className="text-sm text-gray-500 dark:text-gray-400">Class: {classInstance.course?.courseCode} (Section {classInstance.section}, {classInstance.series} Series)</p>
         </div>
         <div className="flex space-x-2">
-          <button onClick={() => setActiveTab('setup')} className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${activeTab === 'setup' ? 'bg-ruet-blue text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'}`}>Form Setup</button>
-          <button onClick={() => setActiveTab('results')} className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${activeTab === 'results' ? 'bg-ruet-blue text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'}`}>View Results</button>
+          <button onClick={() => pushFeedbackState((currentState) => ({ ...currentState, activeTab: 'setup' }))} className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${activeTab === 'setup' ? 'bg-ruet-blue text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'}`}>Form Setup</button>
+          <button onClick={() => pushFeedbackState((currentState) => ({ ...currentState, activeTab: 'results' }))} className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${activeTab === 'results' ? 'bg-ruet-blue text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'}`}>View Results</button>
         </div>
       </div>
 

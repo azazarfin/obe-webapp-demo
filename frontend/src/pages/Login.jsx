@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
@@ -10,7 +9,6 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { theme } = useTheme();
   const { login } = useAuth();
 
   const handleLogin = async (e) => {
@@ -21,11 +19,11 @@ const Login = () => {
     try {
       const user = await login(email, password);
 
-      if (user.role === 'CENTRAL_ADMIN') navigate('/central-admin');
-      else if (user.role === 'DEPT_ADMIN') navigate('/dept-admin');
-      else if (user.role === 'TEACHER') navigate('/teacher');
-      else if (user.role === 'STUDENT') navigate('/student');
-      else navigate('/unauthorized');
+      if (user.role === 'CENTRAL_ADMIN') navigate('/central-admin', { replace: true });
+      else if (user.role === 'DEPT_ADMIN') navigate('/dept-admin', { replace: true });
+      else if (user.role === 'TEACHER') navigate('/teacher', { replace: true });
+      else if (user.role === 'STUDENT') navigate('/student', { replace: true });
+      else navigate('/unauthorized', { replace: true });
     } catch (err) {
       setError(err.message || 'Failed to log in. Please check your credentials.');
     } finally {

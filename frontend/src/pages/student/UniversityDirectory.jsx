@@ -2,9 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Search, MapPin, Book, Users, Briefcase, FileText, Loader2 } from 'lucide-react';
 import { SEMESTERS } from '../../utils/semesterUtils';
 import api from '../../utils/api';
+import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
+
+const INITIAL_DIRECTORY_STATE = { activeTab: 'courses' };
 
 const UniversityDirectory = () => {
-  const [activeTab, setActiveTab] = useState('courses');
   const [filterDept, setFilterDept] = useState('All');
   const [filterSemester, setFilterSemester] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,6 +15,8 @@ const UniversityDirectory = () => {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { state: directoryState, pushState: pushDirectoryState } = useHistoryBackedState('university-directory', INITIAL_DIRECTORY_STATE);
+  const activeTab = directoryState.activeTab;
 
   useEffect(() => {
     const fetchDirectory = async () => {
@@ -101,13 +105,13 @@ const UniversityDirectory = () => {
 
         <div className="flex border-b border-gray-200 dark:border-gray-700">
           <button
-            onClick={() => setActiveTab('courses')}
+            onClick={() => pushDirectoryState((currentState) => ({ ...currentState, activeTab: 'courses' }))}
             className={`px-6 py-3 font-medium text-sm flex items-center border-b-2 transition-colors ${activeTab === 'courses' ? 'border-ruet-blue text-ruet-blue dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200'}`}
           >
             <Book size={16} className="mr-2" /> Course Directory
           </button>
           <button
-            onClick={() => setActiveTab('teachers')}
+            onClick={() => pushDirectoryState((currentState) => ({ ...currentState, activeTab: 'teachers' }))}
             className={`px-6 py-3 font-medium text-sm flex items-center border-b-2 transition-colors ${activeTab === 'teachers' ? 'border-ruet-blue text-ruet-blue dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200'}`}
           >
             <Users size={16} className="mr-2" /> Faculty Directory

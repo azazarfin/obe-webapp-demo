@@ -11,7 +11,9 @@ import {
   Trash2,
   X
 } from 'lucide-react';
-import api from '../../utils/api';
+import { useGetClassSummaryQuery } from '../../store/slices/classInstanceSlice';
+import { useGetEnrollmentsQuery } from '../../store/slices/enrollmentSlice';
+import { useUpdateAssessmentMutation, useSaveMarksMutation, useDeleteAssessmentMutation } from '../../store/slices/assessmentSlice';
 
 const PO_OPTIONS = Array.from({ length: 12 }, (_, index) => `PO${index + 1}`);
 
@@ -39,42 +41,48 @@ const TYPE_COLORS = {
   Custom: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
 };
 
+const INITIAL_EDIT_FORM = {
+  title: '',
+  mappedCO: 'CO1',
+  mappedPOs: 'PO1',
+  totalMarks: '',
+  assessmentDate: ''
+};
+
 const ManageAssessments = ({ classInstance }) => {
-  const [summary, setSummary] = useState(null);
+  const { data: summary, isLoading: loadingSummary, error: errorSummary } = useGetClassSummaryQuery(classInstance?._id, { skip: !classInstance?._id });
+  const { data: enrollmentsData, isLoading: loadingEnrollments, error: errorEnrollments } = useGetEnrollmentsQuery({ classInstance: classInstance?._id }, { skip: !classInstance?._id });
+
+  const [updateAssessment] = useUpdateAssessmentMutation();
+  const [saveMarksMutation] = useSaveMarksMutation();
+  const [deleteAssessment] = useDeleteAssessmentMutation();
   const [enrollments, setEnrollments] = useState([]);
+  const [expandedId, setExpandedId] = useState(null);
+  const [marksData, setMarksData] = useState({});
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState(INITIAL_EDIT_FORM);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [expandedId, setExpandedId] = useState(null);
-  const [editingId, setEditingId] = useState(null);
-  const [editForm, setEditForm] = useState({});
-  const [marksData, setMarksData] = useState({});
-  const [saving, setSaving] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
-
-  const fetchData = async () => {
-    if (!classInstance?._id) return;
-
-    try {
-      setLoading(true);
-      setError('');
-      const [summaryData, enrollmentData] = await Promise.all([
-        api.get(`/class-instances/${classInstance._id}/summary`),
-        api.get(`/enrollments?classInstance=${classInstance._id}`)
-      ]);
-      setSummary(summaryData);
-      const active = (Array.isArray(enrollmentData) ? enrollmentData : []).filter((e) => e.status !== 'hidden');
-      setEnrollments(active);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchData();
-  }, [classInstance]);
+    if (loadingSummary || loadingEnrollments) {
+      setLoading(true);
+      return;
+    }
+    setLoading(false);
+
+    if (errorSummary || errorEnrollments) {
+      setError((errorSummary?.data?.error || errorSummary?.message) || (errorEnrollments?.data?.error || errorEnrollments?.message) || 'Failed to fetch data');
+      return;
+    }
+    setError('');
+
+    const active = (Array.isArray(enrollmentsData?.data) ? enrollmentsData.data : []).filter((e) => e.status !== 'hidden');
+    setEnrollments(active);
+  }, [summary, enrollmentsData, loadingSummary, loadingEnrollments, errorSummary, errorEnrollments]);
 
   const assessments = useMemo(() =>
     (summary?.assessments || []).slice().sort((a, b) => {
@@ -140,12 +148,11 @@ const ManageAssessments = ({ classInstance }) => {
         assessmentDate: editForm.assessmentDate || undefined
       };
 
-      await api.put(`/assessments/${assessmentId}`, payload);
+      await updateAssessment({ id: assessmentId, ...payload }).unwrap();
       setEditingId(null);
-      await fetchData();
       setSuccess('Assessment updated successfully.');
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Failed to update assessment');
     } finally {
       setSaving(false);
     }
@@ -164,18 +171,18 @@ const ManageAssessments = ({ classInstance }) => {
       setError('');
       setSuccess('');
 
-      await api.put(`/assessments/${assessmentId}/marks`, {
+      await saveMarksMutation({
+        assessmentId: assessmentId,
         classInstanceId: classInstance._id,
         marks: roster.map((student) => ({
           studentId: student.studentId,
           rawScore: marksData[student.studentId] === 'A' || !marksData[student.studentId] ? 0 : Number(marksData[student.studentId])
         }))
-      });
+      }).unwrap();
 
-      await fetchData();
       setSuccess('Marks updated successfully.');
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Failed to update marks');
     } finally {
       setSaving(false);
     }
@@ -186,13 +193,12 @@ const ManageAssessments = ({ classInstance }) => {
       setSaving(true);
       setError('');
       setSuccess('');
-      await api.del(`/assessments/${assessmentId}`);
+      await deleteAssessment(assessmentId).unwrap();
       setDeleteConfirm(null);
       if (expandedId === assessmentId) setExpandedId(null);
-      await fetchData();
       setSuccess('Assessment deleted successfully.');
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Failed to delete assessment');
     } finally {
       setSaving(false);
     }

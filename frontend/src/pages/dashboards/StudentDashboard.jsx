@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { BookOpen, Award, ChevronRight, User, GraduationCap, Loader2 } from 'lucide-react';
 import UniversityDirectory from '../student/UniversityDirectory';
 import StudentFeedback from '../student/StudentFeedback';
@@ -7,7 +7,8 @@ import StudentOBEAttainment from '../student/StudentOBEAttainment';
 import StudentMarksheet from '../student/StudentMarksheet';
 import StudentAttendanceInfo from '../student/StudentAttendanceInfo';
 import { useAuth } from '../../contexts/AuthContext';
-import api from '../../utils/api';
+import { useGetStudentDashboardQuery } from '../../store/slices/dashboardSlice';
+import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
 
 const initialDashboard = {
   stats: {
@@ -19,57 +20,54 @@ const initialDashboard = {
   finishedCourses: [],
   globalObe: {}
 };
+const INITIAL_DASHBOARD_STATE = { activeTab: 'overview', selectedCourse: null };
 
 const StudentDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [dashboardData, setDashboardData] = useState(initialDashboard);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const { currentUser } = useAuth();
-
-  const tabHistoryRef = useRef([]);
+  const {
+    state: dashboardState,
+    pushState: pushDashboardState,
+    goBack
+  } = useHistoryBackedState('student-dashboard', INITIAL_DASHBOARD_STATE);
 
   const navigateTab = (newTab) => {
-    tabHistoryRef.current.push(activeTab);
-    setActiveTab(newTab);
+    pushDashboardState((currentState) => ({
+      ...currentState,
+      activeTab: newTab
+    }));
   };
 
-  const goBack = () => {
-    const history = tabHistoryRef.current;
-    if (history.length > 0) {
-      const prevTab = history.pop();
-      setActiveTab(prevTab);
+  const { data: dashboardResp, isLoading, error: fetchError } = useGetStudentDashboardQuery(undefined, {
+    skip: !currentUser
+  });
+  const activeTab = dashboardState.activeTab;
+  const selectedCourseState = dashboardState.selectedCourse;
+  const loading = isLoading;
+  const error = fetchError?.data?.error || fetchError?.message || '';
+  const dashboardData = useMemo(() => ({
+    stats: dashboardResp?.stats || initialDashboard.stats,
+    enrolledCourses: Array.isArray(dashboardResp?.enrolledCourses) ? dashboardResp.enrolledCourses : [],
+    finishedCourses: Array.isArray(dashboardResp?.finishedCourses) ? dashboardResp.finishedCourses : [],
+    globalObe: dashboardResp?.globalObe || {}
+  }), [dashboardResp]);
+  const selectedCourse = useMemo(() => {
+    if (!selectedCourseState) {
+      return null;
     }
-  };
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        setLoading(true);
-        setError('');
-        const data = await api.get('/dashboard/student');
-        setDashboardData({
-          stats: data.stats || initialDashboard.stats,
-          enrolledCourses: Array.isArray(data.enrolledCourses) ? data.enrolledCourses : [],
-          finishedCourses: Array.isArray(data.finishedCourses) ? data.finishedCourses : [],
-          globalObe: data.globalObe || {}
-        });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const selectedClassInstanceId = selectedCourseState.classInstanceId || selectedCourseState.id;
+    const latestMatch = [...dashboardData.enrolledCourses, ...dashboardData.finishedCourses]
+      .find((course) => (course.classInstanceId || course.id) === selectedClassInstanceId);
 
-    if (currentUser) {
-      fetchDashboard();
-    }
-  }, [currentUser]);
+    return latestMatch || selectedCourseState;
+  }, [dashboardData.enrolledCourses, dashboardData.finishedCourses, selectedCourseState]);
 
   const handleCourseClick = (course) => {
-    setSelectedCourse(course);
-    navigateTab('course_page');
+    pushDashboardState((currentState) => ({
+      ...currentState,
+      activeTab: 'course_page',
+      selectedCourse: course
+    }));
   };
 
   const handleSubNavigate = (tab) => {
@@ -204,15 +202,17 @@ const StudentDashboard = () => {
       case 'directory':
         return <UniversityDirectory />;
       case 'course_page':
-        return <StudentCoursePage course={selectedCourse} onNavigate={handleSubNavigate} />;
+        return selectedCourse
+          ? <StudentCoursePage course={selectedCourse} onNavigate={handleSubNavigate} />
+          : renderOverview();
       case 'attendance_info':
-        return <StudentAttendanceInfo course={selectedCourse} />;
+        return selectedCourse ? <StudentAttendanceInfo course={selectedCourse} /> : renderOverview();
       case 'marksheet':
-        return <StudentMarksheet course={selectedCourse} />;
+        return selectedCourse ? <StudentMarksheet course={selectedCourse} /> : renderOverview();
       case 'obe_attainment':
-        return <StudentOBEAttainment course={selectedCourse} />;
+        return selectedCourse ? <StudentOBEAttainment course={selectedCourse} /> : renderOverview();
       case 'give_feedback':
-        return <StudentFeedback course={selectedCourse} onBack={() => navigateTab('course_page')} />;
+        return selectedCourse ? <StudentFeedback course={selectedCourse} onBack={goBack} /> : renderOverview();
       case 'overview':
       default:
         return renderOverview();
@@ -232,7 +232,11 @@ const StudentDashboard = () => {
         </div>
         <div className="flex bg-gray-100 dark:bg-[#2d2d2d] p-1 rounded-lg">
           <button
-            onClick={() => { tabHistoryRef.current = []; setActiveTab('overview'); setSelectedCourse(null); }}
+            onClick={() => pushDashboardState((currentState) => ({
+              ...currentState,
+              activeTab: 'overview',
+              selectedCourse: null
+            }))}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab !== 'directory' ? 'bg-white dark:bg-[#1e1e1e] shadow text-ruet-blue dark:text-blue-400' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
           >
             My Academic Hub

@@ -12,6 +12,12 @@ const DEFAULT_FEEDBACK_QUESTIONS = [
 ];
 
 const OBE_THRESHOLD = 50;
+const THEORY_COMPONENT_WEIGHTS = {
+  attendance: 10,
+  ct: 20,
+  assignment: 10,
+  final: 60
+};
 
 const populateTeacherFields = (query) => query
   .populate('teacher', 'name email designation teacherType onLeave leaveReason')
@@ -68,6 +74,23 @@ const getGPA = (total) => {
 };
 
 const round = (value, digits = 1) => Number(Number(value || 0).toFixed(digits));
+
+const normalizeComponentToWeight = (component, weight) => {
+  const earned = Number(component?.earned) || 0;
+  const total = Number(component?.total) || 0;
+
+  if (total <= 0) {
+    return {
+      earned: 0,
+      total: 0
+    };
+  }
+
+  return {
+    earned: round(Math.min((earned / total) * weight, weight), 1),
+    total: weight
+  };
+};
 
 const sanitizeFeedbackQuestions = (questions = []) => {
   const cleaned = questions
@@ -415,6 +438,16 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
     component.earned = round(component.earned, 1);
     component.total = round(component.total, 1);
   });
+
+  if (courseType === 'Theory') {
+    components.attendance = {
+      earned: round(components.attendance.earned, 1),
+      total: THEORY_COMPONENT_WEIGHTS.attendance
+    };
+    components.ct = normalizeComponentToWeight(components.ct, THEORY_COMPONENT_WEIGHTS.ct);
+    components.assignment = normalizeComponentToWeight(components.assignment, THEORY_COMPONENT_WEIGHTS.assignment);
+    components.final = normalizeComponentToWeight(components.final, THEORY_COMPONENT_WEIGHTS.final);
+  }
 
   const coTotals = {};
   const coScores = {};
@@ -802,6 +835,7 @@ const getStudentDashboardData = async (studentId) => {
       isBarred: metrics.isBarred,
       marks: metrics.marks,
       total: metrics.total,
+      assessments: metrics.assessments,
       obe: metrics.obe,
       poAttainment: metrics.poAttainment,
       isFinished: classInstance.status === 'Finished'

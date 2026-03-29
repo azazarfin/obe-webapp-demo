@@ -1,33 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Download, FileText, Target, Loader2, Users } from 'lucide-react';
-import { getGrade, getGPA } from '../../utils/gradeUtils';
+import { getGrade } from '../../utils/gradeUtils';
 import { exportToExcel, exportToPDF } from '../../utils/exportUtils';
-import api from '../../utils/api';
+import { useGetClassEvaluationQuery } from '../../store/slices/classInstanceSlice';
+import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
+
+const INITIAL_EVALUATION_STATE = { activeTab: 'marksheet' };
 
 const EvaluationReport = ({ courseType = 'Theory', classInstance }) => {
-  const [activeTab, setActiveTab] = useState('marksheet');
-  const [evaluation, setEvaluation] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchEvaluation = async () => {
-      if (!classInstance?._id) return;
-
-      try {
-        setLoading(true);
-        setError('');
-        const data = await api.get(`/class-instances/${classInstance._id}/evaluation`);
-        setEvaluation(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvaluation();
-  }, [classInstance]);
+  const historyKey = `evaluation-report-${classInstance?._id || 'default'}`;
+  const { state: reportState, pushState: pushReportState } = useHistoryBackedState(historyKey, INITIAL_EVALUATION_STATE);
+  const activeTab = reportState.activeTab;
+  const { data: evaluation, isLoading: loading, error: fetchError } = useGetClassEvaluationQuery(classInstance?._id, {
+    skip: !classInstance?._id
+  });
+  const error = fetchError?.data?.error || fetchError?.message || '';
 
   const isTheory = courseType === 'Theory';
   
@@ -291,14 +278,14 @@ const EvaluationReport = ({ courseType = 'Theory', classInstance }) => {
 
       <div className="flex space-x-1 border-b border-gray-200 dark:border-gray-700 mb-6 font-medium">
         <button
-          onClick={() => setActiveTab('marksheet')}
+          onClick={() => pushReportState((currentState) => ({ ...currentState, activeTab: 'marksheet' }))}
           className={`px-4 py-2 text-sm border-b-2 transition-colors flex items-center ${activeTab === 'marksheet' ? 'border-ruet-blue text-ruet-blue dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'}`}
         >
           <FileText size={16} className="mr-2" />
           General Marksheet
         </button>
         <button
-          onClick={() => setActiveTab('obe')}
+          onClick={() => pushReportState((currentState) => ({ ...currentState, activeTab: 'obe' }))}
           className={`px-4 py-2 text-sm border-b-2 transition-colors flex items-center ${activeTab === 'obe' ? 'border-ruet-blue text-ruet-blue dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'}`}
         >
           <Target size={16} className="mr-2" />
@@ -314,4 +301,3 @@ const EvaluationReport = ({ courseType = 'Theory', classInstance }) => {
 };
 
 export default EvaluationReport;
-

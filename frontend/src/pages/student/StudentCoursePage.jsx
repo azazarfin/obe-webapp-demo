@@ -5,8 +5,11 @@ import { getAttendanceMarks } from '../../utils/attendanceUtils';
 const StudentCoursePage = ({ course, onNavigate }) => {
   if (!course) return null;
 
-  const totalEarned = course.total?.earned || 0;
-  const totalPossible = course.total?.total || 0;
+  const isTheory = course.type !== 'Sessional';
+  const totalEarned = isTheory
+    ? ['attendance', 'ct', 'assignment'].reduce((sum, key) => sum + (Number(course.marks?.[key]?.earned) || 0), 0)
+    : (course.total?.earned || 0);
+  const totalPossible = isTheory ? 40 : (course.total?.total || 0);
   const attendPct = course.attendance || 0;
   const coEntries = Object.entries(course.obe || {});
   const coAttained = coEntries.filter(([, data]) => data.percentage >= data.threshold).length;

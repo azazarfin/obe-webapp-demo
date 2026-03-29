@@ -25,8 +25,24 @@ router.get('/', verifyToken, async (req, res) => {
     if (req.query.status) filter.status = req.query.status;
     if (req.query.type) filter.type = req.query.type;
 
-    const enrollments = await populateEnrollment(Enrollment.find(filter)).sort({ createdAt: 1 });
-    res.json(enrollments);
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 1000;
+    const skip = (page - 1) * limit;
+
+    const enrollments = await populateEnrollment(Enrollment.find(filter))
+      .sort({ createdAt: 1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Enrollment.countDocuments(filter);
+
+    res.json({
+      data: enrollments,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    });
   } catch (error) {
     res.status(500).json({ error: 'Server error fetching enrollments' });
   }

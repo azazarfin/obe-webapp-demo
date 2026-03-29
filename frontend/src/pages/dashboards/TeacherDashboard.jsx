@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { BookOpen, Building, Loader2, Mail, User } from 'lucide-react';
 import TakeAttendance from '../teacher/TakeAttendance';
 import AddAssessment from '../teacher/AddAssessment';
@@ -11,61 +11,57 @@ import ManageAssessments from '../teacher/ManageAssessments';
 import TeacherCoursePage from '../teacher/TeacherCoursePage';
 import SemesterFinalMarking from '../teacher/SemesterFinalMarking';
 import { useAuth } from '../../contexts/AuthContext';
-import api from '../../utils/api';
+import { useGetClassInstancesQuery } from '../../store/slices/classInstanceSlice';
+import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
 
 const getSectionLabel = (instance) => (instance?.section === 'N/A' ? 'No Section' : `Section ${instance?.section}`);
+const INITIAL_DASHBOARD_STATE = { activeTab: 'overview', selectedInstance: null };
 
 const TeacherDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [selectedInstance, setSelectedInstance] = useState(null);
-  const [runningInstances, setRunningInstances] = useState([]);
-  const [finishedInstances, setFinishedInstances] = useState([]);
-  const [loadingInst, setLoadingInst] = useState(true);
-  const [error, setError] = useState('');
   const { currentUser } = useAuth();
-
-  const tabHistoryRef = useRef([]);
+  const {
+    state: dashboardState,
+    pushState: pushDashboardState,
+    goBack
+  } = useHistoryBackedState('teacher-dashboard', INITIAL_DASHBOARD_STATE);
 
   const navigateTab = (newTab) => {
-    tabHistoryRef.current.push(activeTab);
-    setActiveTab(newTab);
+    pushDashboardState((currentState) => ({
+      ...currentState,
+      activeTab: newTab
+    }));
   };
 
-  const goBack = () => {
-    const history = tabHistoryRef.current;
-    if (history.length > 0) {
-      const prevTab = history.pop();
-      setActiveTab(prevTab);
-    }
-  };
+  const teacherId = currentUser?._id || currentUser?.id;
+  const activeTab = dashboardState.activeTab;
+  const selectedInstance = dashboardState.selectedInstance;
+  
+  const { 
+    data: runningData, 
+    isLoading: loadingRunning, 
+    error: errorRunning 
+  } = useGetClassInstancesQuery({ teacher: teacherId, status: 'Running' }, { skip: !teacherId });
 
-  useEffect(() => {
-    const fetchInstances = async () => {
-      const teacherId = currentUser?._id || currentUser?.id;
-      if (!teacherId) return;
-
-      try {
-        setLoadingInst(true);
-        setError('');
-        const [running, finished] = await Promise.all([
-          api.get(`/class-instances?teacher=${teacherId}&status=Running`),
-          api.get(`/class-instances?teacher=${teacherId}&status=Finished`)
-        ]);
-        setRunningInstances(Array.isArray(running) ? running : []);
-        setFinishedInstances(Array.isArray(finished) ? finished : []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoadingInst(false);
-      }
-    };
-
-    fetchInstances();
-  }, [currentUser]);
+  const { 
+    data: finishedData, 
+    isLoading: loadingFinished, 
+    error: errorFinished 
+  } = useGetClassInstancesQuery({ teacher: teacherId, status: 'Finished' }, { skip: !teacherId });
+  const runningInstances = useMemo(() => (Array.isArray(runningData) ? runningData : []), [runningData]);
+  const finishedInstances = useMemo(() => (Array.isArray(finishedData) ? finishedData : []), [finishedData]);
+  const loadingInst = loadingRunning || loadingFinished;
+  const error = errorRunning?.data?.error
+    || errorRunning?.message
+    || errorFinished?.data?.error
+    || errorFinished?.message
+    || '';
 
   const handleCourseClick = (instance) => {
-    setSelectedInstance(instance);
-    navigateTab('course_page');
+    pushDashboardState((currentState) => ({
+      ...currentState,
+      activeTab: 'course_page',
+      selectedInstance: instance
+    }));
   };
 
   const renderCourseCard = (instance, variant) => (
@@ -107,7 +103,9 @@ const TeacherDashboard = () => {
 
     switch (activeTab) {
       case 'course_page':
-        return <TeacherCoursePage classInstance={selectedInstance} mode={coursePageMode} onNavigate={(tab) => navigateTab(tab)} />;
+        return selectedInstance
+          ? <TeacherCoursePage classInstance={selectedInstance} mode={coursePageMode} onNavigate={(tab) => navigateTab(tab)} />
+          : null;
       case 'attendance':
         return <TakeAttendance classInstance={selectedInstance} />;
       case 'assessment':
@@ -130,7 +128,7 @@ const TeacherDashboard = () => {
             classInstance={selectedInstance}
             title="Submit Feedback and Report"
             description="This page will stay blank until the teacher feedback and report workflow is implemented."
-            onBack={() => navigateTab('course_page')}
+            onBack={goBack}
           />
         );
       case 'overview':

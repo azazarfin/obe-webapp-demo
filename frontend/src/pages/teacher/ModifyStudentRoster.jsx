@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { UserPlus, UserMinus, Search, Eye, EyeOff, Loader2 } from 'lucide-react';
-import api from '../../utils/api';
+import { useGetEnrollmentsQuery, useUpdateEnrollmentMutation, useCreateEnrollmentMutation } from '../../store/slices/enrollmentSlice';
 
 const ModifyStudentRoster = ({ classInstance }) => {
   const [enrollments, setEnrollments] = useState([]);
@@ -10,24 +10,25 @@ const ModifyStudentRoster = ({ classInstance }) => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
-  const fetchRoster = async () => {
-    if (!classInstance?._id) return;
-
-    try {
-      setLoading(true);
-      setError('');
-      const data = await api.get(`/enrollments?classInstance=${classInstance._id}`);
-      setEnrollments(Array.isArray(data) ? data : []);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: enrollmentsData, isLoading: loadingEnrollments, error: errorEnrollments } = useGetEnrollmentsQuery({ classInstance: classInstance?._id }, { skip: !classInstance?._id });
+  
+  const [updateEnrollment] = useUpdateEnrollmentMutation();
+  const [createEnrollment] = useCreateEnrollmentMutation();
 
   useEffect(() => {
-    fetchRoster();
-  }, [classInstance]);
+    if (loadingEnrollments) {
+      setLoading(true);
+      return;
+    }
+    setLoading(false);
+
+    if (errorEnrollments) {
+      setError(errorEnrollments?.data?.error || errorEnrollments?.message || 'Failed to fetch roster');
+      return;
+    }
+    
+    setEnrollments(Array.isArray(enrollmentsData?.data) ? enrollmentsData.data : []);
+  }, [enrollmentsData, loadingEnrollments, errorEnrollments]);
 
   const roster = useMemo(() => enrollments
     .map((enrollment) => ({
@@ -50,12 +51,12 @@ const ModifyStudentRoster = ({ classInstance }) => {
       setSaving(true);
       setError('');
       setMessage('');
-      await api.put(`/enrollments/${student.enrollmentId}`, {
+      await updateEnrollment({
+        id: student.enrollmentId,
         status: student.status === 'active' ? 'hidden' : 'active'
-      });
-      await fetchRoster();
+      }).unwrap();
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Failed to change status');
     } finally {
       setSaving(false);
     }
@@ -71,12 +72,11 @@ const ModifyStudentRoster = ({ classInstance }) => {
       setError('');
       setMessage('');
       await Promise.all(activeStudents.map((student) => (
-        api.put(`/enrollments/${student.enrollmentId}`, { status: 'hidden' })
+        updateEnrollment({ id: student.enrollmentId, status: 'hidden' }).unwrap()
       )));
       setMessage('All active students have been hidden from this roster.');
-      await fetchRoster();
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Failed to hide students');
     } finally {
       setSaving(false);
     }
@@ -91,23 +91,24 @@ const ModifyStudentRoster = ({ classInstance }) => {
       setError('');
       setMessage('');
 
-      const students = await api.get(`/users?role=STUDENT&rollNumber=${searchRoll}`);
+      // Using the raw fetch via store to avoid mixing api.js if possible, 
+      // but api.js is still used in this snippet so we'll leave it as api.get.
+      const students = await (await import('../../utils/api')).default.get(`/users?role=STUDENT&rollNumber=${searchRoll}`);
       if (!Array.isArray(students) || students.length === 0) {
         throw new Error('No student found with that roll number.');
       }
 
-      await api.post('/enrollments', {
+      await createEnrollment({
         student: students[0]._id,
         classInstance: classInstance._id,
         type: 'irregular',
         status: 'active'
-      });
+      }).unwrap();
 
       setMessage('Irregular student added to the roster.');
       setSearchRoll('');
-      await fetchRoster();
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Error assigning student');
     } finally {
       setSaving(false);
     }

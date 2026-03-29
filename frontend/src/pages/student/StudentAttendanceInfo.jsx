@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { CheckCircle, XCircle, Filter } from 'lucide-react';
 import { getAttendanceMarks, getAttendanceStatus } from '../../utils/attendanceUtils';
 
@@ -9,12 +9,10 @@ const StudentAttendanceInfo = ({ course }) => {
 
   const teachers = Array.isArray(course.teachers) ? course.teachers : [];
   const isMultiTeacher = teachers.length > 1;
-
-  const attendanceLog = useMemo(() => {
-    const log = Array.isArray(course.attendanceLog) ? course.attendanceLog : [];
-    if (!teacherFilter) return log;
-    return log.filter((entry) => entry.takenBy && String(entry.takenBy) === teacherFilter);
-  }, [course.attendanceLog, teacherFilter]);
+  const log = Array.isArray(course.attendanceLog) ? course.attendanceLog : [];
+  const attendanceLog = !teacherFilter
+    ? log
+    : log.filter((entry) => entry.takenBy && String(entry.takenBy) === teacherFilter);
 
   const totalClasses = attendanceLog.length;
   const presentCount = attendanceLog.filter((entry) => entry.status !== 'Absent').length;

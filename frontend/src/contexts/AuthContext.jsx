@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCredentials, setUser, clearCredentials } from '../store/slices/authSlice';
@@ -9,7 +10,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
-  const { currentUser, userRole, token } = useSelector((state) => state.auth);
+  const { currentUser, userRole } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

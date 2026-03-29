@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   BarChart3,
   BookOpen,
@@ -12,7 +12,7 @@ import {
   UserCog,
   Users
 } from 'lucide-react';
-import api from '../../utils/api';
+import { useGetClassSummaryQuery } from '../../store/slices/classInstanceSlice';
 
 const actionCardClasses = {
   blue: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-800 dark:text-blue-300',
@@ -21,32 +21,16 @@ const actionCardClasses = {
   teal: 'bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800 hover:bg-teal-100 dark:hover:bg-teal-900/40 text-teal-800 dark:text-teal-300',
   gray: 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-300',
   green: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/40 text-green-800 dark:text-green-300',
-  orange: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 text-orange-800 dark:text-orange-300'
+  orange: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 text-orange-800 dark:text-orange-300',
+  amber: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-800 dark:text-amber-300',
+  rose: 'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-800 dark:text-rose-300'
 };
 
 const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running' }) => {
-  const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchSummary = async () => {
-      if (!classInstance?._id) return;
-
-      try {
-        setLoading(true);
-        setError('');
-        const data = await api.get(`/class-instances/${classInstance._id}/summary`);
-        setSummary(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSummary();
-  }, [classInstance]);
+  const { data: summary, isLoading: loading, error: fetchError } = useGetClassSummaryQuery(classInstance?._id, {
+    skip: !classInstance?._id
+  });
+  const error = fetchError?.data?.error || fetchError?.message || '';
 
   const course = summary?.classInstance?.course || classInstance?.course;
   const stats = summary?.stats;
@@ -86,7 +70,7 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
           title: 'Student Feedback',
           description: 'Publish and review student feedback',
           icon: <MessageSquare size={22} className="text-orange-600 dark:text-orange-400 mr-3 group-hover:scale-110 transition-transform" />,
-          tone: 'orange'
+          tone: 'amber'
         },
         {
           key: 'experience_report',
@@ -112,7 +96,7 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
           title: 'Student Feedback',
           description: 'Publish and review student feedback',
           icon: <MessageSquare size={22} className="text-orange-600 dark:text-orange-400 mr-3 group-hover:scale-110 transition-transform" />,
-          tone: 'orange'
+          tone: 'amber'
         },
         {
           key: 'experience_report',
@@ -165,7 +149,7 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
         title: 'Manage Assessments',
         description: 'Edit marks, metadata, or delete assessments',
         icon: <Pencil size={22} className="text-red-600 dark:text-red-400 mr-3 group-hover:scale-110 transition-transform" />,
-        tone: 'orange'
+        tone: 'rose'
       },
       {
         key: 'roster',
@@ -186,7 +170,7 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
         title: 'Student Feedback',
         description: 'Publish and review student feedback',
         icon: <MessageSquare size={22} className="text-orange-600 dark:text-orange-400 mr-3 group-hover:scale-110 transition-transform" />,
-        tone: 'orange'
+        tone: 'amber'
       }
     );
 

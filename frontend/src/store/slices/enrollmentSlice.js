@@ -12,11 +12,39 @@ const enrollmentApi = baseApi.injectEndpoints({
         const qs = search.toString();
         return `/enrollments${qs ? `?${qs}` : ''}`;
       },
+      transformResponse: (response) => {
+        return {
+          data: response.data !== undefined ? response.data : response,
+          total: response.total,
+          page: response.page,
+          limit: response.limit,
+          totalPages: response.totalPages
+        };
+      },
+      serializeQueryArgs: ({ endpointName, queryArgs = {} }) => {
+        const rest = { ...queryArgs };
+        delete rest.page;
+        delete rest.limit;
+        return `${endpointName}-${JSON.stringify(rest)}`;
+      },
+      merge: (currentCache, newItems) => {
+        if (newItems.page === 1) {
+          return newItems;
+        }
+        currentCache.data.push(...newItems.data);
+        currentCache.page = newItems.page;
+        currentCache.totalPages = newItems.totalPages;
+        return currentCache;
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg?.page !== previousArg?.page;
+      },
       providesTags: (result, error, params) => {
         const id = params?.classInstance || 'ALL';
+        const items = Array.isArray(result?.data) ? result.data : [];
         return result
           ? [
-              ...result.map((e) => ({ type: 'Enrollments', id: e._id })),
+              ...items.map((e) => ({ type: 'Enrollments', id: e._id })),
               { type: 'Enrollments', id },
             ]
           : [{ type: 'Enrollments', id }];
@@ -50,6 +78,20 @@ const enrollmentApi = baseApi.injectEndpoints({
             ]
           : [],
     }),
+
+    createEnrollment: builder.mutation({
+      query: (body) => ({
+        url: '/enrollments',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (result) =>
+        result
+          ? [
+              { type: 'ClassSummary', id: result.classInstance?._id || result.classInstance },
+            ]
+          : [],
+    }),
   }),
 });
 
@@ -57,4 +99,5 @@ export const {
   useGetEnrollmentsQuery,
   useSaveAttendanceMutation,
   useUpdateEnrollmentMutation,
+  useCreateEnrollmentMutation,
 } = enrollmentApi;

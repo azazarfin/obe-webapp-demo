@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Save, AlertCircle, X, Loader2 } from 'lucide-react';
-import api from '../../utils/api';
+import { useGetClassSummaryQuery, useUpdateClassInstanceMutation } from '../../store/slices/classInstanceSlice';
+import { useCreateAssessmentMutation, useSaveMarksMutation } from '../../store/slices/assessmentSlice';
 
 const STANDARD_TYPES = ['Quiz', 'Performance/Report', 'Viva', 'Lab Final'];
 const PO_OPTIONS = Array.from({ length: 12 }, (_, index) => `PO${index + 1}`);
@@ -20,18 +21,28 @@ const getNextCONumber = (coList) => {
   return numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
 };
 
-const persistCO = async (classInstance, summary, co, defaultPO) => {
+const INITIAL_FORM_DATA = {
+  assessmentType: '',
+  customType: '',
+  co: 'CO1',
+  po: 'PO1',
+  title: '',
+  date: '',
+  totalMarks: ''
+};
+
+const persistCO = async (classInstance, summary, co, defaultPO, updateClassInstance) => {
   const nextMapping = summary?.classInstance?.coPoMapping
     ? [...summary.classInstance.coPoMapping]
     : [];
   const existing = nextMapping.find((entry) => entry.co === co);
   if (!existing) {
     nextMapping.push({ co, po: [defaultPO] });
-    await api.put(`/class-instances/${classInstance._id}`, { coPoMapping: nextMapping });
+    await updateClassInstance({ id: classInstance._id, coPoMapping: nextMapping }).unwrap();
   }
 };
 
-const ensureMapping = async (classInstance, summary, co, po) => {
+const ensureMapping = async (classInstance, summary, co, po, updateClassInstance) => {
   const existing = (summary?.classInstance?.coPoMapping || []).find((entry) => entry.co === co);
   const nextMapping = summary?.classInstance?.coPoMapping ? [...summary.classInstance.coPoMapping] : [];
 
@@ -46,48 +57,45 @@ const ensureMapping = async (classInstance, summary, co, po) => {
     return;
   }
 
-  await api.put(`/class-instances/${classInstance._id}`, { coPoMapping: nextMapping });
+  await updateClassInstance({ id: classInstance._id, coPoMapping: nextMapping }).unwrap();
 };
 
 const AddSessionalAssessment = ({ classInstance }) => {
-  const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { data: summary, isLoading: loading, error: fetchError } = useGetClassSummaryQuery(classInstance?._id, {
+    skip: !classInstance?._id
+  });
+
+  const [updateClassInstance] = useUpdateClassInstanceMutation();
+  const [createAssessment] = useCreateAssessmentMutation();
+  const [saveMarksMutation] = useSaveMarksMutation();
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [marksData, setMarksData] = useState({});
+  const [showGrid, setShowGrid] = useState(false);
+  const [showAddCO, setShowAddCO] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [showAddCO, setShowAddCO] = useState(false);
-  const [showGrid, setShowGrid] = useState(false);
-  const [marksData, setMarksData] = useState({});
-  const [formData, setFormData] = useState({
-    assessmentType: '',
-    customType: '',
-    co: 'CO1',
-    po: 'PO1',
-    title: '',
-    date: '',
-    totalMarks: ''
-  });
-
-  const fetchSummary = async () => {
-    if (!classInstance?._id) return;
-
-    try {
-      setLoading(true);
-      const data = await api.get(`/class-instances/${classInstance._id}/summary`);
-      setSummary(data);
-      const mappingCOs = (data.classInstance?.coPoMapping || []).map((entry) => entry.co);
-      const firstCO = mappingCOs[0] || 'CO1';
-      setFormData((prev) => ({ ...prev, co: firstCO }));
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchSummary();
-  }, [classInstance]);
+    if (fetchError) {
+      setError(fetchError?.data?.error || fetchError?.message || 'Failed to fetch summary');
+    } else {
+      setError('');
+    }
+  }, [fetchError]);
+
+  useEffect(() => {
+    const mappingCOs = (summary?.classInstance?.coPoMapping || []).map((entry) => entry.co);
+    const nextCO = mappingCOs[0] || 'CO1';
+
+    setFormData((prev) => {
+      if (prev.co && (mappingCOs.length === 0 || mappingCOs.includes(prev.co))) {
+        return prev;
+      }
+
+      return { ...prev, co: nextCO };
+    });
+  }, [summary]);
 
   const students = useMemo(() => (summary?.roster || [])
     .filter((student) => student.status !== 'hidden')
@@ -106,13 +114,11 @@ const AddSessionalAssessment = ({ classInstance }) => {
 
     try {
       setError('');
-      await persistCO(classInstance, summary, newCO, 'PO1');
-      const refreshed = await api.get(`/class-instances/${classInstance._id}/summary`);
-      setSummary(refreshed);
+      await persistCO(classInstance, summary, newCO, 'PO1', updateClassInstance);
       setFormData((prev) => ({ ...prev, co: newCO }));
       setShowAddCO(false);
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Failed to add CO');
     }
   };
 
@@ -144,9 +150,9 @@ const AddSessionalAssessment = ({ classInstance }) => {
       setError('');
       setSuccess('');
 
-      await ensureMapping(classInstance, summary, formData.co, formData.po);
+      await ensureMapping(classInstance, summary, formData.co, formData.po, updateClassInstance);
 
-      const assessment = await api.post('/assessments', {
+      const assessment = await createAssessment({
         classInstance: classInstance._id,
         type: isCustomType ? 'Custom' : mapAssessmentType(formData.assessmentType),
         typeLabel: isCustomType ? formData.customType : formData.assessmentType,
@@ -155,30 +161,26 @@ const AddSessionalAssessment = ({ classInstance }) => {
         title: formData.title,
         assessmentDate: formData.date,
         totalMarks: parseFloat(formData.totalMarks)
-      });
+      }).unwrap();
 
-      await api.put(`/assessments/${assessment._id}/marks`, {
+      await saveMarksMutation({
+        assessmentId: assessment._id,
         classInstanceId: classInstance._id,
         marks: students.map((student) => ({
           studentId: student.studentId,
           rawScore: marksData[student.studentId] === 'A' || !marksData[student.studentId] ? 0 : Number(marksData[student.studentId])
         }))
-      });
+      }).unwrap();
 
       setSuccess('Sessional assessment saved successfully.');
       setShowGrid(false);
       setMarksData({});
       setFormData({
-        assessmentType: '',
-        customType: '',
-        co: coOptions[0] || 'CO1',
-        po: 'PO1',
-        title: '',
-        date: '',
-        totalMarks: ''
+        ...INITIAL_FORM_DATA,
+        co: coOptions[0] || 'CO1'
       });
     } catch (err) {
-      setError(err.message);
+      setError(err?.data?.error || err.message || 'Error saving assessment');
     } finally {
       setSaving(false);
     }

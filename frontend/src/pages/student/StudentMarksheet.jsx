@@ -12,11 +12,91 @@ const labelMap = {
   labFinal: 'Lab Final'
 };
 
+const assessmentTypeLabelMap = {
+  CT: 'Class Test',
+  Assignment: 'Assignment',
+  Presentation: 'Presentation',
+  Quiz: 'Quiz',
+  Report: 'Performance / Report',
+  Viva: 'Viva',
+  LabFinal: 'Lab Final',
+  Custom: 'Custom',
+  Final: 'Semester Final'
+};
+
 const StudentMarksheet = ({ course }) => {
   if (!course) return null;
 
   const isSessional = course.type === 'Sessional';
   const marks = course.marks || {};
+  const assessments = Array.isArray(course.assessments) ? course.assessments : [];
+  const visibleAssessments = isSessional
+    ? assessments
+    : assessments.filter((assessment) => assessment.type !== 'Final');
+  const hiddenFinalCount = isSessional
+    ? 0
+    : assessments.filter((assessment) => assessment.type === 'Final').length;
+
+  const renderAssessmentBreakdown = () => (
+    <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Assessment Breakdown</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Every disclosed assessment mark is listed here while the weighted summary below stays the same.</p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-[#2d2d2d]">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Assessment</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Type</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Obtained</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Total</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Percentage</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white dark:bg-[#1e1e1e] divide-y divide-gray-200 dark:divide-gray-700">
+            {visibleAssessments.length > 0 ? visibleAssessments.map((assessment) => {
+              const totalMarks = Number(assessment.totalMarks) || 0;
+              const rawScore = Number(assessment.rawScore) || 0;
+              const percentage = totalMarks > 0 ? ((rawScore / totalMarks) * 100) : 0;
+
+              return (
+                <tr key={assessment.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                    <div>{assessment.title || assessment.typeLabel || assessmentTypeLabelMap[assessment.type] || assessment.type}</div>
+                    {assessment.assessmentDate && (
+                      <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        {new Date(assessment.assessmentDate).toLocaleDateString()}
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                    {assessment.typeLabel || assessmentTypeLabelMap[assessment.type] || assessment.type}
+                  </td>
+                  <td className="px-6 py-4 text-center text-sm font-bold text-gray-900 dark:text-white">{rawScore}</td>
+                  <td className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">{totalMarks}</td>
+                  <td className="px-6 py-4 text-center text-sm font-semibold text-green-600 dark:text-green-400">
+                    {totalMarks > 0 ? `${percentage.toFixed(0)}%` : '0%'}
+                  </td>
+                </tr>
+              );
+            }) : (
+              <tr>
+                <td colSpan="5" className="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                  No individual assessment marks are available yet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      {hiddenFinalCount > 0 && (
+        <div className="border-t border-gray-200 bg-amber-50/70 px-6 py-3 text-xs text-amber-700 dark:border-gray-700 dark:bg-amber-900/10 dark:text-amber-400">
+          Semester Final question marks remain hidden from students.
+        </div>
+      )}
+    </div>
+  );
 
   if (isSessional) {
     const visibleKeys = ['attendance', 'quiz', 'performance', 'viva', 'labFinal'];
@@ -41,6 +121,8 @@ const StudentMarksheet = ({ course }) => {
           )}
           <span className="inline-block mt-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">Sessional</span>
         </div>
+
+        {renderAssessmentBreakdown()}
 
         <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -123,6 +205,8 @@ const StudentMarksheet = ({ course }) => {
           <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">Only the available continuous assessment marks are shown here.</p>
         </div>
       </div>
+
+      {renderAssessmentBreakdown()}
 
       <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
