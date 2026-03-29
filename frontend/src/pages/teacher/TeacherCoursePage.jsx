@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Loader2,
   MessageSquare,
+  Pencil,
   UserCog,
   Users
 } from 'lucide-react';
@@ -159,6 +160,13 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
     }
 
     tiles.push(
+      {
+        key: 'manage_assessments',
+        title: 'Manage Assessments',
+        description: 'Edit marks, metadata, or delete assessments',
+        icon: <Pencil size={22} className="text-red-600 dark:text-red-400 mr-3 group-hover:scale-110 transition-transform" />,
+        tone: 'orange'
+      },
       {
         key: 'roster',
         title: 'Modify Student Roster',

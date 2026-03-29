@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Save, AlertCircle, Loader2 } from 'lucide-react';
+import { Save, AlertCircle, X, Loader2 } from 'lucide-react';
 import api from '../../utils/api';
 
 const STANDARD_TYPES = ['Quiz', 'Performance/Report', 'Viva', 'Lab Final'];
@@ -11,6 +11,24 @@ const mapAssessmentType = (type) => {
   if (type === 'Viva') return 'Viva';
   if (type === 'Lab Final') return 'LabFinal';
   return 'Custom';
+};
+
+const getNextCONumber = (coList) => {
+  const numbers = coList
+    .map((co) => parseInt(co.replace(/^CO/i, ''), 10))
+    .filter((n) => !Number.isNaN(n));
+  return numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+};
+
+const persistCO = async (classInstance, summary, co, defaultPO) => {
+  const nextMapping = summary?.classInstance?.coPoMapping
+    ? [...summary.classInstance.coPoMapping]
+    : [];
+  const existing = nextMapping.find((entry) => entry.co === co);
+  if (!existing) {
+    nextMapping.push({ co, po: [defaultPO] });
+    await api.put(`/class-instances/${classInstance._id}`, { coPoMapping: nextMapping });
+  }
 };
 
 const ensureMapping = async (classInstance, summary, co, po) => {
@@ -37,6 +55,7 @@ const AddSessionalAssessment = ({ classInstance }) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showAddCO, setShowAddCO] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
   const [marksData, setMarksData] = useState({});
   const [formData, setFormData] = useState({
@@ -49,24 +68,24 @@ const AddSessionalAssessment = ({ classInstance }) => {
     totalMarks: ''
   });
 
+  const fetchSummary = async () => {
+    if (!classInstance?._id) return;
+
+    try {
+      setLoading(true);
+      const data = await api.get(`/class-instances/${classInstance._id}/summary`);
+      setSummary(data);
+      const mappingCOs = (data.classInstance?.coPoMapping || []).map((entry) => entry.co);
+      const firstCO = mappingCOs[0] || 'CO1';
+      setFormData((prev) => ({ ...prev, co: firstCO }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchSummary = async () => {
-      if (!classInstance?._id) return;
-
-      try {
-        setLoading(true);
-        const data = await api.get(`/class-instances/${classInstance._id}/summary`);
-        setSummary(data);
-        const mappingCOs = (data.classInstance?.coPoMapping || []).map((entry) => entry.co);
-        const firstCO = mappingCOs[0] || 'CO1';
-        setFormData((prev) => ({ ...prev, co: firstCO }));
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchSummary();
   }, [classInstance]);
 
@@ -80,6 +99,22 @@ const AddSessionalAssessment = ({ classInstance }) => {
 
   const isCustomType = formData.assessmentType === '__custom__';
   const resolvedType = isCustomType ? formData.customType : formData.assessmentType;
+
+  const handleAddCO = async () => {
+    const nextNum = getNextCONumber(coOptions);
+    const newCO = `CO${nextNum}`;
+
+    try {
+      setError('');
+      await persistCO(classInstance, summary, newCO, 'PO1');
+      const refreshed = await api.get(`/class-instances/${classInstance._id}/summary`);
+      setSummary(refreshed);
+      setFormData((prev) => ({ ...prev, co: newCO }));
+      setShowAddCO(false);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -126,7 +161,7 @@ const AddSessionalAssessment = ({ classInstance }) => {
         classInstanceId: classInstance._id,
         marks: students.map((student) => ({
           studentId: student.studentId,
-          rawScore: marksData[student.studentId] === 'A' ? 0 : Number(marksData[student.studentId] || 0)
+          rawScore: marksData[student.studentId] === 'A' || !marksData[student.studentId] ? 0 : Number(marksData[student.studentId])
         }))
       });
 
@@ -188,8 +223,15 @@ const AddSessionalAssessment = ({ classInstance }) => {
 
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-gray-700 dark:text-gray-300">CO (Course Outcome)</label>
-              <select required value={formData.co} onChange={(e) => setFormData({ ...formData, co: e.target.value })} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
+              <select required value={formData.co} onChange={(e) => {
+                if (e.target.value === '__add_co__') {
+                  setShowAddCO(true);
+                  return;
+                }
+                setFormData({ ...formData, co: e.target.value });
+              }} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
                 {coOptions.map((co) => <option key={co} value={co} className="dark:bg-gray-800">{co}</option>)}
+                <option value="__add_co__" className="dark:bg-gray-800 text-green-600">+ Add New CO</option>
               </select>
             </div>
 
@@ -224,6 +266,24 @@ const AddSessionalAssessment = ({ classInstance }) => {
         </form>
       </div>
 
+      {showAddCO && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[#1e1e1e] rounded-lg shadow-xl w-full max-w-sm p-6 border border-gray-200 dark:border-gray-800">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Add New CO</h3>
+              <button onClick={() => setShowAddCO(false)} className="text-gray-500 hover:text-gray-700"><X size={20} /></button>
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              The next CO will be added as <span className="font-mono font-bold text-ruet-blue dark:text-blue-400">CO{getNextCONumber(coOptions)}</span> and persisted to this class instance.
+            </p>
+            <div className="flex justify-end space-x-2">
+              <button onClick={() => setShowAddCO(false)} className="px-4 py-2 border rounded text-gray-600 dark:text-gray-300 dark:border-gray-700">Cancel</button>
+              <button onClick={handleAddCO} className="px-4 py-2 bg-ruet-blue text-white rounded hover:bg-ruet-dark font-medium">Add CO{getNextCONumber(coOptions)}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showGrid && (
         <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-3">
@@ -240,7 +300,7 @@ const AddSessionalAssessment = ({ classInstance }) => {
           </div>
 
           <div className="flex items-center p-2.5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-amber-700 dark:text-amber-400 text-xs font-medium mb-4">
-            <AlertCircle size={14} className="mr-2 flex-shrink-0" /> Type <strong className="font-mono mx-1">A</strong> to mark a student as absent (counts as 0 marks).
+            <AlertCircle size={14} className="mr-2 flex-shrink-0" /> Type <strong className="font-mono mx-1">A</strong> to mark absent. Empty cells will also be treated as absent (0 marks).
           </div>
 
           <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
@@ -257,7 +317,7 @@ const AddSessionalAssessment = ({ classInstance }) => {
               <tbody className="bg-white dark:bg-[#1e1e1e] divide-y divide-gray-200 dark:divide-gray-700">
                 {students.map((student, index) => {
                   const value = marksData[student.studentId] || '';
-                  const isAbsent = value === 'A';
+                  const isAbsent = value === 'A' || value === '';
                   return (
                     <tr key={student.studentId} className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 ${isAbsent ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
                       <td className="px-4 py-3 text-xs text-gray-400 font-mono">{index + 1}</td>
@@ -267,12 +327,12 @@ const AddSessionalAssessment = ({ classInstance }) => {
                         <input type="text" placeholder="-" value={value} onChange={(e) => handleCellChange(student.studentId, e.target.value)} className={`w-20 text-center p-1.5 border rounded font-mono text-sm outline-none focus:ring-2 focus:ring-ruet-blue ${isAbsent ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold' : 'border-gray-300 dark:border-gray-600 bg-transparent dark:text-white'}`} />
                       </td>
                       <td className="px-4 py-3 text-center text-xs">
-                        {isAbsent ? (
+                        {value === 'A' ? (
                           <span className="px-2 py-0.5 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded font-semibold">Absent</span>
                         ) : value ? (
-                          <span className="px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded font-semibold">Saved</span>
+                          <span className="px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded font-semibold">Entered</span>
                         ) : (
-                          <span className="text-gray-400">-</span>
+                          <span className="px-2 py-0.5 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded font-semibold">Absent</span>
                         )}
                       </td>
                     </tr>

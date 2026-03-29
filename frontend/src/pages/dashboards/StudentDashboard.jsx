@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Award, ChevronRight, User, GraduationCap, Loader2 } from 'lucide-react';
 import UniversityDirectory from '../student/UniversityDirectory';
 import StudentFeedback from '../student/StudentFeedback';
@@ -28,6 +28,21 @@ const StudentDashboard = () => {
   const [error, setError] = useState('');
   const { currentUser } = useAuth();
 
+  const tabHistoryRef = useRef([]);
+
+  const navigateTab = (newTab) => {
+    tabHistoryRef.current.push(activeTab);
+    setActiveTab(newTab);
+  };
+
+  const goBack = () => {
+    const history = tabHistoryRef.current;
+    if (history.length > 0) {
+      const prevTab = history.pop();
+      setActiveTab(prevTab);
+    }
+  };
+
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
@@ -54,18 +69,13 @@ const StudentDashboard = () => {
 
   const handleCourseClick = (course) => {
     setSelectedCourse(course);
-    setActiveTab('course_page');
+    navigateTab('course_page');
   };
 
   const handleSubNavigate = (tab) => {
-    setActiveTab(tab);
+    navigateTab(tab);
   };
 
-  const getBackTarget = () => {
-    if (['attendance_info', 'marksheet', 'obe_attainment', 'give_feedback'].includes(activeTab)) return 'course_page';
-    if (activeTab === 'course_page') return 'overview';
-    return 'overview';
-  };
 
   const programOutcomeEntries = useMemo(() => Object.entries(dashboardData.globalObe), [dashboardData.globalObe]);
 
@@ -202,7 +212,7 @@ const StudentDashboard = () => {
       case 'obe_attainment':
         return <StudentOBEAttainment course={selectedCourse} />;
       case 'give_feedback':
-        return <StudentFeedback course={selectedCourse} onBack={() => setActiveTab('course_page')} />;
+        return <StudentFeedback course={selectedCourse} onBack={() => navigateTab('course_page')} />;
       case 'overview':
       default:
         return renderOverview();
@@ -214,7 +224,7 @@ const StudentDashboard = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-200 dark:border-gray-800 pb-4 gap-4">
         <div className="flex items-center">
           {activeTab !== 'overview' && activeTab !== 'directory' && (
-            <button onClick={() => setActiveTab(getBackTarget())} className="text-sm text-gray-600 dark:text-gray-400 hover:text-ruet-blue dark:hover:text-white font-medium mr-4">
+            <button onClick={goBack} className="text-sm text-gray-600 dark:text-gray-400 hover:text-ruet-blue dark:hover:text-white font-medium mr-4">
               &larr; Back
             </button>
           )}
@@ -222,13 +232,13 @@ const StudentDashboard = () => {
         </div>
         <div className="flex bg-gray-100 dark:bg-[#2d2d2d] p-1 rounded-lg">
           <button
-            onClick={() => { setActiveTab('overview'); setSelectedCourse(null); }}
+            onClick={() => { tabHistoryRef.current = []; setActiveTab('overview'); setSelectedCourse(null); }}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab !== 'directory' ? 'bg-white dark:bg-[#1e1e1e] shadow text-ruet-blue dark:text-blue-400' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
           >
             My Academic Hub
           </button>
           <button
-            onClick={() => setActiveTab('directory')}
+            onClick={() => navigateTab('directory')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'directory' ? 'bg-white dark:bg-[#1e1e1e] shadow text-ruet-blue dark:text-blue-400' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
           >
             University Directory

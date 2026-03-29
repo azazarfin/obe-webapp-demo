@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCredentials, setUser, clearCredentials } from '../store/slices/authSlice';
 import api from '../utils/api';
 
 const AuthContext = createContext();
@@ -6,47 +8,37 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
+  const dispatch = useDispatch();
+  const { currentUser, userRole, token } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const initAuth = async () => {
-      const token = localStorage.getItem('token');
+      const savedToken = localStorage.getItem('token');
       const savedUser = localStorage.getItem('user');
 
-      if (token && savedUser) {
+      if (savedToken && savedUser) {
         try {
           const user = await api.get('/auth/me');
-          setCurrentUser(user);
-          setUserRole(user.role);
-        } catch (error) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          setCurrentUser(null);
-          setUserRole(null);
+          dispatch(setUser(user));
+        } catch {
+          dispatch(clearCredentials());
         }
       }
       setLoading(false);
     };
 
     initAuth();
-  }, []);
+  }, [dispatch]);
 
   const login = async (email, password) => {
     const data = await api.post('/auth/login', { email, password });
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setCurrentUser(data.user);
-    setUserRole(data.user.role);
+    dispatch(setCredentials({ user: data.user, token: data.token }));
     return data.user;
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setCurrentUser(null);
-    setUserRole(null);
+    dispatch(clearCredentials());
   };
 
   const value = {

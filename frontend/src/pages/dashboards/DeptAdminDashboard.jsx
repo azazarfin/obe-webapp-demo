@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BookOpen, UserCheck, GraduationCap, ClipboardList, Building2, Loader2 } from 'lucide-react';
 import CourseReviewHub from '../admin/CourseReviewHub';
 import DeptCourseManagement from '../admin/DeptCourseManagement';
@@ -26,6 +26,21 @@ const DeptAdminDashboard = () => {
   const [summary, setSummary] = useState(initialSummary);
   const [loadingSummary, setLoadingSummary] = useState(true);
   const [error, setError] = useState('');
+
+  const tabHistoryRef = useRef([]);
+
+  const navigateTab = (newTab) => {
+    tabHistoryRef.current.push(activeTab);
+    setActiveTab(newTab);
+  };
+
+  const goBack = () => {
+    const history = tabHistoryRef.current;
+    if (history.length > 0) {
+      const prevTab = history.pop();
+      setActiveTab(prevTab);
+    }
+  };
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -83,7 +98,7 @@ const DeptAdminDashboard = () => {
         <button
           type="button"
           className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800 cursor-pointer hover:shadow-md transition-shadow group text-left"
-          onClick={() => setActiveTab('students')}
+          onClick={() => navigateTab('students')}
         >
           <h3 className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-ruet-blue transition-colors">Total Students</h3>
           {loadingSummary ? (
@@ -100,7 +115,7 @@ const DeptAdminDashboard = () => {
         {actionTiles.map((item) => (
           <button
             key={item.tab}
-            onClick={() => setActiveTab(item.tab)}
+            onClick={() => navigateTab(item.tab)}
             className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-5 border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all group text-left w-full"
           >
             <div className={`p-3 rounded-lg mb-3 inline-block ${item.iconClass} group-hover:scale-110 transition-transform`}>
@@ -137,8 +152,8 @@ const DeptAdminDashboard = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-200 dark:border-gray-800 pb-4 gap-4">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Department Admin Panel</h1>
         {activeTab !== 'overview' && (
-          <button onClick={() => setActiveTab('overview')} className="text-sm text-gray-600 dark:text-gray-400 hover:text-ruet-blue dark:hover:text-white font-medium flex items-center">
-            &larr; Back to Overview
+          <button onClick={goBack} className="text-sm text-gray-600 dark:text-gray-400 hover:text-ruet-blue dark:hover:text-white font-medium flex items-center">
+            &larr; Back
           </button>
         )}
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BookOpen, Building, Loader2, Mail, User } from 'lucide-react';
 import TakeAttendance from '../teacher/TakeAttendance';
 import AddAssessment from '../teacher/AddAssessment';
@@ -7,6 +7,7 @@ import EvaluationReport from '../teacher/EvaluationReport';
 import InstructorExperienceReport from '../teacher/InstructorExperienceReport';
 import ModifyStudentRoster from '../teacher/ModifyStudentRoster';
 import ManageCourseFeedback from '../teacher/ManageCourseFeedback';
+import ManageAssessments from '../teacher/ManageAssessments';
 import TeacherCoursePage from '../teacher/TeacherCoursePage';
 import SemesterFinalMarking from '../teacher/SemesterFinalMarking';
 import { useAuth } from '../../contexts/AuthContext';
@@ -22,6 +23,21 @@ const TeacherDashboard = () => {
   const [loadingInst, setLoadingInst] = useState(true);
   const [error, setError] = useState('');
   const { currentUser } = useAuth();
+
+  const tabHistoryRef = useRef([]);
+
+  const navigateTab = (newTab) => {
+    tabHistoryRef.current.push(activeTab);
+    setActiveTab(newTab);
+  };
+
+  const goBack = () => {
+    const history = tabHistoryRef.current;
+    if (history.length > 0) {
+      const prevTab = history.pop();
+      setActiveTab(prevTab);
+    }
+  };
 
   useEffect(() => {
     const fetchInstances = async () => {
@@ -49,7 +65,7 @@ const TeacherDashboard = () => {
 
   const handleCourseClick = (instance) => {
     setSelectedInstance(instance);
-    setActiveTab('course_page');
+    navigateTab('course_page');
   };
 
   const renderCourseCard = (instance, variant) => (
@@ -91,7 +107,7 @@ const TeacherDashboard = () => {
 
     switch (activeTab) {
       case 'course_page':
-        return <TeacherCoursePage classInstance={selectedInstance} mode={coursePageMode} onNavigate={(tab) => setActiveTab(tab)} />;
+        return <TeacherCoursePage classInstance={selectedInstance} mode={coursePageMode} onNavigate={(tab) => navigateTab(tab)} />;
       case 'attendance':
         return <TakeAttendance classInstance={selectedInstance} />;
       case 'assessment':
@@ -106,13 +122,15 @@ const TeacherDashboard = () => {
         return <ModifyStudentRoster classInstance={selectedInstance} />;
       case 'feedback':
         return <ManageCourseFeedback classInstance={selectedInstance} />;
+      case 'manage_assessments':
+        return <ManageAssessments classInstance={selectedInstance} />;
       case 'experience_report':
         return (
           <InstructorExperienceReport
             classInstance={selectedInstance}
             title="Submit Feedback and Report"
             description="This page will stay blank until the teacher feedback and report workflow is implemented."
-            onBack={() => setActiveTab('course_page')}
+            onBack={() => navigateTab('course_page')}
           />
         );
       case 'overview':
@@ -189,8 +207,8 @@ const TeacherDashboard = () => {
       <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Teacher Dashboard</h1>
         {activeTab !== 'overview' && (
-          <button onClick={() => (activeTab === 'course_page' ? setActiveTab('overview') : setActiveTab('course_page'))} className="text-sm text-gray-600 dark:text-gray-400 hover:text-ruet-blue dark:hover:text-white font-medium">
-            &larr; {activeTab === 'course_page' ? 'Back to Overview' : 'Back to Course Page'}
+          <button onClick={goBack} className="text-sm text-gray-600 dark:text-gray-400 hover:text-ruet-blue dark:hover:text-white font-medium">
+            &larr; Back
           </button>
         )}
       </div>

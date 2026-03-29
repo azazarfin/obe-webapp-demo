@@ -11,6 +11,24 @@ const sortQuestions = (questions) => [...questions].sort((left, right) => {
   return String(left.questionNo || left.title || '').localeCompare(String(right.questionNo || right.title || ''));
 });
 
+const getNextCONumber = (coList) => {
+  const numbers = coList
+    .map((co) => parseInt(co.replace(/^CO/i, ''), 10))
+    .filter((n) => !Number.isNaN(n));
+  return numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+};
+
+const persistCO = async (classInstance, summary, co, defaultPO) => {
+  const nextMapping = summary?.classInstance?.coPoMapping
+    ? [...summary.classInstance.coPoMapping]
+    : [];
+  const existing = nextMapping.find((entry) => entry.co === co);
+  if (!existing) {
+    nextMapping.push({ co, po: [defaultPO] });
+    await api.put(`/class-instances/${classInstance._id}`, { coPoMapping: nextMapping });
+  }
+};
+
 const ensureMapping = async (classInstance, summary, co, po) => {
   const existing = (summary?.classInstance?.coPoMapping || []).find((entry) => entry.co === co);
   const nextMapping = summary?.classInstance?.coPoMapping ? [...summary.classInstance.coPoMapping] : [];
@@ -34,46 +52,47 @@ const SemesterFinalMarking = ({ classInstance }) => {
   const [enrollments, setEnrollments] = useState([]);
   const [marksData, setMarksData] = useState({});
   const [showAddForm, setShowAddForm] = useState(null);
+  const [showAddCO, setShowAddCO] = useState(false);
   const [newQuestion, setNewQuestion] = useState({ no: '', co: 'CO1', po: 'PO1', totalMarks: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!classInstance?._id) return;
+  const fetchData = async () => {
+    if (!classInstance?._id) return;
 
-      try {
-        setLoading(true);
-        setError('');
-        const [summaryData, enrollmentData] = await Promise.all([
-          api.get(`/class-instances/${classInstance._id}/summary`),
-          api.get(`/enrollments?classInstance=${classInstance._id}`)
-        ]);
-        setSummary(summaryData);
-        const activeEnrollments = (Array.isArray(enrollmentData) ? enrollmentData : []).filter((enrollment) => enrollment.status !== 'hidden');
-        setEnrollments(activeEnrollments);
+    try {
+      setLoading(true);
+      setError('');
+      const [summaryData, enrollmentData] = await Promise.all([
+        api.get(`/class-instances/${classInstance._id}/summary`),
+        api.get(`/enrollments?classInstance=${classInstance._id}`)
+      ]);
+      setSummary(summaryData);
+      const activeEnrollments = (Array.isArray(enrollmentData) ? enrollmentData : []).filter((enrollment) => enrollment.status !== 'hidden');
+      setEnrollments(activeEnrollments);
 
-        const initialMarks = {};
-        activeEnrollments.forEach((enrollment) => {
-          const studentId = enrollment.student?._id;
-          if (!studentId) return;
-          initialMarks[studentId] = {};
-          (enrollment.marks || []).forEach((mark) => {
-            if (mark.assessment?.type === 'Final') {
-              initialMarks[studentId][mark.assessment._id] = String(mark.rawScore);
-            }
-          });
+      const initialMarks = {};
+      activeEnrollments.forEach((enrollment) => {
+        const studentId = enrollment.student?._id;
+        if (!studentId) return;
+        initialMarks[studentId] = {};
+        (enrollment.marks || []).forEach((mark) => {
+          if (mark.assessment?.type === 'Final') {
+            initialMarks[studentId][mark.assessment._id] = String(mark.rawScore);
+          }
         });
-        setMarksData(initialMarks);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+      });
+      setMarksData(initialMarks);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, [classInstance]);
 
@@ -91,6 +110,22 @@ const SemesterFinalMarking = ({ classInstance }) => {
     const mappingCOs = (summary?.classInstance?.coPoMapping || []).map((entry) => entry.co);
     return mappingCOs.length > 0 ? mappingCOs : ['CO1'];
   }, [summary]);
+
+  const handleAddCO = async () => {
+    const nextNum = getNextCONumber(coOptions);
+    const newCO = `CO${nextNum}`;
+
+    try {
+      setError('');
+      await persistCO(classInstance, summary, newCO, 'PO1');
+      const refreshed = await api.get(`/class-instances/${classInstance._id}/summary`);
+      setSummary(refreshed);
+      setNewQuestion((prev) => ({ ...prev, co: newCO }));
+      setShowAddCO(false);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   const handleAddQuestion = async (part) => {
     if (!newQuestion.no || !newQuestion.totalMarks) return;
@@ -164,10 +199,13 @@ const SemesterFinalMarking = ({ classInstance }) => {
       setSuccess('');
       await Promise.all(finalQuestions.map((question) => api.put(`/assessments/${question._id}/marks`, {
         classInstanceId: classInstance._id,
-        marks: roster.map((student) => ({
-          studentId: student.studentId,
-          rawScore: marksData[student.studentId]?.[question._id] === 'A' ? 0 : Number(marksData[student.studentId]?.[question._id] || 0)
-        }))
+        marks: roster.map((student) => {
+          const val = marksData[student.studentId]?.[question._id];
+          return {
+            studentId: student.studentId,
+            rawScore: val === 'A' || !val ? 0 : Number(val)
+          };
+        })
       })));
       setSuccess('Semester final marks saved successfully.');
     } catch (err) {
@@ -259,8 +297,15 @@ const SemesterFinalMarking = ({ classInstance }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold mb-1.5 text-gray-700 dark:text-gray-300">CO</label>
-                  <select value={newQuestion.co} onChange={(e) => setNewQuestion({ ...newQuestion, co: e.target.value })} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
+                  <select value={newQuestion.co} onChange={(e) => {
+                    if (e.target.value === '__add_co__') {
+                      setShowAddCO(true);
+                      return;
+                    }
+                    setNewQuestion({ ...newQuestion, co: e.target.value });
+                  }} className="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-ruet-blue">
                     {coOptions.map((co) => <option key={co} value={co} className="dark:bg-gray-800">{co}</option>)}
+                    <option value="__add_co__" className="dark:bg-gray-800 text-green-600">+ Add New CO</option>
                   </select>
                 </div>
                 <div>
@@ -283,10 +328,28 @@ const SemesterFinalMarking = ({ classInstance }) => {
         </div>
       )}
 
+      {showAddCO && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white dark:bg-[#1e1e1e] rounded-lg shadow-xl w-full max-w-sm p-6 border border-gray-200 dark:border-gray-800">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Add New CO</h3>
+              <button onClick={() => setShowAddCO(false)} className="text-gray-500 hover:text-gray-700"><X size={20} /></button>
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              The next CO will be added as <span className="font-mono font-bold text-ruet-blue dark:text-blue-400">CO{getNextCONumber(coOptions)}</span> and persisted to this class instance.
+            </p>
+            <div className="flex justify-end space-x-2">
+              <button onClick={() => setShowAddCO(false)} className="px-4 py-2 border rounded text-gray-600 dark:text-gray-300 dark:border-gray-700">Cancel</button>
+              <button onClick={handleAddCO} className="px-4 py-2 bg-ruet-blue text-white rounded hover:bg-ruet-dark font-medium">Add CO{getNextCONumber(coOptions)}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {finalQuestions.length > 0 && (
         <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800">
           <div className="flex items-center p-2.5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-amber-700 dark:text-amber-400 text-xs font-medium mb-4">
-            <AlertCircle size={14} className="mr-2 flex-shrink-0" /> Type <strong className="font-mono mx-1">A</strong> to mark absent (counts as 0).
+            <AlertCircle size={14} className="mr-2 flex-shrink-0" /> Type <strong className="font-mono mx-1">A</strong> to mark absent. Empty cells will also be treated as absent (0 marks).
           </div>
 
           <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
