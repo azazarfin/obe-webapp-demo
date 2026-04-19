@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { BookOpen, Award, ChevronRight, User, GraduationCap, Loader2 } from 'lucide-react';
+import { BookOpen, Award, ChevronRight, User, GraduationCap, Loader2, LayoutDashboard, CalendarCheck, BarChart3, Target, MessageSquare } from 'lucide-react';
+import CourseTabs from '../../components/CourseTabs';
 import UniversityDirectory from '../student/UniversityDirectory';
 import StudentFeedback from '../student/StudentFeedback';
 import StudentCoursePage from '../student/StudentCoursePage';
@@ -21,6 +22,14 @@ const initialDashboard = {
   globalObe: {}
 };
 const INITIAL_DASHBOARD_STATE = { activeTab: 'overview', selectedCourse: null };
+
+const getStudentCourseTabs = () => [
+  { key: 'course_page', label: 'Overview', icon: LayoutDashboard },
+  { key: 'attendance_info', label: 'Attendance', icon: CalendarCheck },
+  { key: 'marksheet', label: 'Marks', icon: BarChart3 },
+  { key: 'obe_attainment', label: 'OBE Progress', icon: Target },
+  { key: 'give_feedback', label: 'Feedback', icon: MessageSquare }
+];
 
 const StudentDashboard = () => {
   const { currentUser } = useAuth();
@@ -249,6 +258,14 @@ const StudentDashboard = () => {
           </button>
         </div>
       </div>
+
+      {activeTab !== 'overview' && activeTab !== 'directory' && selectedCourse && (
+        <CourseTabs 
+          activeTab={activeTab} 
+          onNavigate={navigateTab} 
+          tabsConfig={getStudentCourseTabs()}
+        />
+      )}
 
       {loading ? (
         <div className="flex justify-center py-20"><Loader2 className="animate-spin text-ruet-blue" size={32} /></div>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useSyncExternalStore } from 'react';
 
-const DASHBOARD_HISTORY_KEY = '__dashboardState';
-const HISTORY_CHANGE_EVENT = 'dashboardhistorychange';
+export const DASHBOARD_HISTORY_KEY = '__dashboardState';
+export const HISTORY_CHANGE_EVENT = 'dashboardhistorychange';
 
 const getCurrentUrl = () => `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
@@ -20,7 +20,7 @@ const readDashboardState = (historyKey) => {
   return currentState?.[DASHBOARD_HISTORY_KEY]?.[historyKey] ?? null;
 };
 
-const buildNextWindowState = (historyKey, value) => {
+export const buildNextWindowState = (historyKey, value) => {
   const currentState = getWindowHistoryState();
   const dashboardState = currentState[DASHBOARD_HISTORY_KEY] && typeof currentState[DASHBOARD_HISTORY_KEY] === 'object'
     ? currentState[DASHBOARD_HISTORY_KEY]

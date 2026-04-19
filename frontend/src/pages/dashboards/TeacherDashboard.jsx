@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { BookOpen, Building, Loader2, Mail, User } from 'lucide-react';
+import { BookOpen, Building, Loader2, Mail, User, LayoutDashboard, CalendarCheck, ClipboardList, GraduationCap, Pencil, UserCog, BarChart3, MessageSquare, FileText } from 'lucide-react';
+import CourseTabs from '../../components/CourseTabs';
 import TakeAttendance from '../teacher/TakeAttendance';
 import AddAssessment from '../teacher/AddAssessment';
 import AddSessionalAssessment from '../teacher/AddSessionalAssessment';
@@ -16,6 +17,39 @@ import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
 
 const getSectionLabel = (instance) => (instance?.section === 'N/A' ? 'No Section' : `Section ${instance?.section}`);
 const INITIAL_DASHBOARD_STATE = { activeTab: 'overview', selectedInstance: null };
+
+const getTeacherCourseTabs = (isTheory, status) => {
+  const isFinished = status === 'Finished';
+
+  if (isFinished) {
+    return [
+      { key: 'course_page', label: 'Overview', icon: LayoutDashboard },
+      { key: 'evaluation', label: 'Evaluation', icon: BarChart3 },
+      { key: 'feedback', label: 'Feedback', icon: MessageSquare },
+      { key: 'experience_report', label: 'CQI Report', icon: FileText }
+    ];
+  }
+
+  const base = [
+    { key: 'course_page', label: 'Overview', icon: LayoutDashboard },
+    { key: 'attendance', label: 'Attendance', icon: CalendarCheck },
+    isTheory 
+      ? { key: 'assessment', label: 'Assessments', icon: ClipboardList }
+      : { key: 'sessional_assessment', label: 'Assessments', icon: BookOpen },
+  ];
+
+  if (isTheory) {
+    base.push({ key: 'semester_final', label: 'Semester Final', icon: GraduationCap });
+  }
+
+  return [
+    ...base,
+    { key: 'manage_assessments', label: 'Manage Tools', icon: Pencil },
+    { key: 'roster', label: 'Roster', icon: UserCog },
+    { key: 'evaluation', label: 'Evaluation', icon: BarChart3 },
+    { key: 'feedback', label: 'Feedback', icon: MessageSquare }
+  ];
+};
 
 const TeacherDashboard = () => {
   const { currentUser } = useAuth();
@@ -210,6 +244,14 @@ const TeacherDashboard = () => {
           </button>
         )}
       </div>
+
+      {activeTab !== 'overview' && selectedInstance && (
+        <CourseTabs 
+          activeTab={activeTab} 
+          onNavigate={navigateTab} 
+          tabsConfig={getTeacherCourseTabs(selectedInstance?.course?.type !== 'Sessional', selectedInstance?.status)}
+        />
+      )}
 
       {renderContent()}
     </div>
