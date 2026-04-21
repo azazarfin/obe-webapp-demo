@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { BookOpen, Award, ChevronRight, User, GraduationCap, Loader2, LayoutDashboard, CalendarCheck, BarChart3, Target, MessageSquare } from 'lucide-react';
-import CourseTabs from '../../components/CourseTabs';
+
 import UniversityDirectory from '../student/UniversityDirectory';
 import StudentFeedback from '../student/StudentFeedback';
 import StudentCoursePage from '../student/StudentCoursePage';
@@ -10,6 +10,7 @@ import StudentAttendanceInfo from '../student/StudentAttendanceInfo';
 import { useAuth } from '../../contexts/AuthContext';
 import { useGetStudentDashboardQuery } from '../../store/slices/dashboardSlice';
 import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
+import { useSidebar } from '../../contexts/SidebarContext';
 
 const initialDashboard = {
   stats: {
@@ -23,16 +24,11 @@ const initialDashboard = {
 };
 const INITIAL_DASHBOARD_STATE = { activeTab: 'overview', selectedCourse: null };
 
-const getStudentCourseTabs = () => [
-  { key: 'course_page', label: 'Overview', icon: LayoutDashboard },
-  { key: 'attendance_info', label: 'Attendance', icon: CalendarCheck },
-  { key: 'marksheet', label: 'Marks', icon: BarChart3 },
-  { key: 'obe_attainment', label: 'OBE Progress', icon: Target },
-  { key: 'give_feedback', label: 'Feedback', icon: MessageSquare }
-];
+
 
 const StudentDashboard = () => {
   const { currentUser } = useAuth();
+  const { updateCourseData } = useSidebar();
   const {
     state: dashboardState,
     pushState: pushDashboardState,
@@ -59,6 +55,16 @@ const StudentDashboard = () => {
     finishedCourses: Array.isArray(dashboardResp?.finishedCourses) ? dashboardResp.finishedCourses : [],
     globalObe: dashboardResp?.globalObe || {}
   }), [dashboardResp]);
+
+  // Push course data to sidebar context
+  useEffect(() => {
+    updateCourseData({
+      runningCourses: dashboardData.enrolledCourses,
+      finishedCourses: dashboardData.finishedCourses,
+      loading: loading,
+    });
+  }, [dashboardData.enrolledCourses, dashboardData.finishedCourses, loading, updateCourseData]);
+
   const selectedCourse = useMemo(() => {
     if (!selectedCourseState) {
       return null;
@@ -259,13 +265,7 @@ const StudentDashboard = () => {
         </div>
       </div>
 
-      {activeTab !== 'overview' && activeTab !== 'directory' && selectedCourse && (
-        <CourseTabs 
-          activeTab={activeTab} 
-          onNavigate={navigateTab} 
-          tabsConfig={getStudentCourseTabs()}
-        />
-      )}
+
 
       {loading ? (
         <div className="flex justify-center py-20"><Loader2 className="animate-spin text-ruet-blue" size={32} /></div>

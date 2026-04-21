@@ -1,0 +1,186 @@
+/* ── Sidebar Scrollbar ── */
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+}
+.dark .sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+.dark .sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ── Collapse / Expand Animations ── */
+.sidebar-group-children {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s ease,
+              padding 0.3s ease;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.sidebar-group-children.expanded {
+  max-height: 800px;
+  opacity: 1;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+/* ── Section Header ── */
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.4);
+  padding: 16px 16px 6px;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+.dark .sidebar-section-label {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── Sidebar Width Transitions ── */
+.sidebar-panel {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-panel.collapsed {
+  width: 72px;
+}
+
+.sidebar-panel.expanded {
+  width: 272px;
+}
+
+/* ── Tooltip for collapsed mode ── */
+.sidebar-tooltip {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 8px;
+  padding: 4px 10px;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.dark .sidebar-tooltip {
+  background: #1e293b;
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.sidebar-nav-item:hover .sidebar-tooltip {
+  opacity: 1;
+}
+
+/* ── Chevron rotation ── */
+.sidebar-chevron {
+  transition: transform 0.25s ease;
+}
+
+.sidebar-chevron.rotated {
+  transform: rotate(90deg);
+}
+
+/* ── Course child items ── */
+.sidebar-course-child {
+  position: relative;
+  padding-left: 20px;
+}
+
+.sidebar-course-child::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.08);
+}
+.dark .sidebar-course-child::before {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Active indicator ── */
+.sidebar-active-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 0 3px 3px 0;
+  background: #1E70C3;
+  transition: opacity 0.2s;
+}
+
+/* ── User info footer ── */
+.sidebar-user-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.02);
+  transition: opacity 0.2s;
+}
+.dark .sidebar-user-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* ── Mobile slide animation ── */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.sidebar-mobile-enter {
+  animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ── Hover effect for items ── */
+.sidebar-nav-item {
+  position: relative;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-nav-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+.dark .sidebar-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.sidebar-nav-item.active {
+  background-color: rgba(30, 112, 195, 0.1);
+}
+.dark .sidebar-nav-item.active {
+  background-color: rgba(255, 255, 255, 0.15);
+}
