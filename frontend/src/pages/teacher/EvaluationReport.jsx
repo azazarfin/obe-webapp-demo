@@ -59,8 +59,8 @@ const EvaluationReport = ({ courseType = 'Theory', classInstance }) => {
       rows = (obeData.studentAttainment || []).map((s) => [
         s.id,
         s.name,
-        ...poKeys.map((po) => s[po.toLowerCase()] ?? ''),
-        ...coKeys.map((co) => s[co.toLowerCase()] ?? '')
+        ...poKeys.map((po) => { const pct = s[po.toLowerCase()] ?? ''; const obt = s[`${po.toLowerCase()}_obtained`]; const mx = s[`${po.toLowerCase()}_max`]; return obt != null ? `${pct}% (${obt}/${mx})` : `${pct}%`; }),
+        ...coKeys.map((co) => { const pct = s[co.toLowerCase()] ?? ''; const obt = s[`${co.toLowerCase()}_obtained`]; const mx = s[`${co.toLowerCase()}_max`]; return obt != null ? `${pct}% (${obt}/${mx})` : `${pct}%`; })
       ]);
 
       // Add Summary Section
@@ -97,8 +97,8 @@ const EvaluationReport = ({ courseType = 'Theory', classInstance }) => {
       rows = (obeData.studentAttainment || []).map((s) => [
         s.id,
         s.name,
-        ...poKeys.map((po) => `${s[po.toLowerCase()] ?? 0}%`),
-        ...coKeys.map((co) => `${s[co.toLowerCase()] ?? 0}%`)
+        ...poKeys.map((po) => { const pct = s[po.toLowerCase()] ?? 0; const obt = s[`${po.toLowerCase()}_obtained`]; const mx = s[`${po.toLowerCase()}_max`]; return obt != null ? `${pct}% (${obt}/${mx})` : `${pct}%`; }),
+        ...coKeys.map((co) => { const pct = s[co.toLowerCase()] ?? 0; const obt = s[`${co.toLowerCase()}_obtained`]; const mx = s[`${co.toLowerCase()}_max`]; return obt != null ? `${pct}% (${obt}/${mx})` : `${pct}%`; })
       ]);
 
       // Add Summary Section
@@ -234,11 +234,25 @@ const EvaluationReport = ({ courseType = 'Theory', classInstance }) => {
                 </td>
                 {Object.keys(obeData.coAttainment || {}).map((co) => {
                   const val = s[co.toLowerCase()] ?? 0;
-                  return <td key={co} className={`px-4 py-4 text-center text-sm font-medium border-l border-gray-100 dark:border-gray-800 ${val >= 50 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>{val}%</td>;
+                  const obtained = s[`${co.toLowerCase()}_obtained`];
+                  const max = s[`${co.toLowerCase()}_max`];
+                  return (
+                    <td key={co} className={`px-4 py-3 text-center border-l border-gray-100 dark:border-gray-800 ${val >= 50 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                      <div className="text-sm font-medium">{val}%</div>
+                      <div className="text-xs text-blue-500 dark:text-blue-400 font-medium">{obtained ?? '?'}/{max ?? '?'}</div>
+                    </td>
+                  );
                 })}
                 {Object.keys(obeData.poAttainment || {}).map((po) => {
                   const val = s[po.toLowerCase()] ?? 0;
-                  return <td key={po} className={`px-4 py-4 text-center text-sm font-bold border-l border-gray-100 dark:border-gray-800 ${val >= 50 ? 'text-blue-600 dark:text-blue-400' : 'text-red-500 dark:text-red-400'}`}>{val}%</td>;
+                  const obtained = s[`${po.toLowerCase()}_obtained`];
+                  const max = s[`${po.toLowerCase()}_max`];
+                  return (
+                    <td key={po} className={`px-4 py-3 text-center border-l border-gray-100 dark:border-gray-800 ${val >= 50 ? 'text-blue-600 dark:text-blue-400' : 'text-red-500 dark:text-red-400'}`}>
+                      <div className="text-sm font-bold">{val}%</div>
+                      <div className="text-xs text-blue-500 dark:text-blue-400 font-medium">{obtained ?? '?'}/{max ?? '?'}</div>
+                    </td>
+                  );
                 })}
               </tr>
             ))}

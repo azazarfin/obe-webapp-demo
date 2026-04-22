@@ -475,8 +475,11 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
     .sort()
     .reduce((accumulator, co) => {
       const total = coTotals[co];
-      const percentage = total > 0 ? (coScores[co] / total) * 100 : 0;
+      const obtained = coScores[co] || 0;
+      const percentage = total > 0 ? (obtained / total) * 100 : 0;
       accumulator[co] = {
+        obtained: round(obtained, 1),
+        max: round(total, 1),
         percentage: round(percentage, 0),
         threshold: OBE_THRESHOLD,
         achieved: percentage >= OBE_THRESHOLD
@@ -492,17 +495,24 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
 
     (mapping.po || []).forEach((po) => {
       if (!poAccumulator[po]) {
-        poAccumulator[po] = { total: 0, count: 0 };
+        poAccumulator[po] = { total: 0, count: 0, obtained: 0, max: 0 };
       }
       poAccumulator[po].total += coData.percentage;
       poAccumulator[po].count += 1;
+      poAccumulator[po].obtained += coData.obtained;
+      poAccumulator[po].max += coData.max;
     });
   });
 
   const poEntries = Object.keys(poAccumulator)
     .sort()
     .reduce((accumulator, po) => {
-      accumulator[po] = round(poAccumulator[po].total / poAccumulator[po].count, 0);
+      const data = poAccumulator[po];
+      accumulator[po] = {
+        percentage: round(data.total / data.count, 0),
+        obtained: round(data.obtained, 1),
+        max: round(data.max, 1)
+      };
       return accumulator;
     }, {});
 
@@ -666,12 +676,12 @@ const buildClassEvaluation = async (classInstanceId) => {
       }
     });
 
-    Object.entries(metrics.poAttainment).forEach(([po, percentage]) => {
+    Object.entries(metrics.poAttainment).forEach(([po, data]) => {
       if (!poStats[po]) {
         poStats[po] = { passed: 0, total: 0 };
       }
       poStats[po].total += 1;
-      if (percentage >= OBE_THRESHOLD) {
+      if (data.percentage >= OBE_THRESHOLD) {
         poStats[po].passed += 1;
       }
     });
@@ -696,12 +706,16 @@ const buildClassEvaluation = async (classInstanceId) => {
       name: row.name
     };
 
-    Object.entries(metrics.poAttainment).forEach(([po, percentage]) => {
-      studentAttainment[po.toLowerCase()] = percentage;
+    Object.entries(metrics.poAttainment).forEach(([po, data]) => {
+      studentAttainment[po.toLowerCase()] = data.percentage;
+      studentAttainment[`${po.toLowerCase()}_obtained`] = data.obtained;
+      studentAttainment[`${po.toLowerCase()}_max`] = data.max;
     });
 
     Object.entries(metrics.obe).forEach(([co, data]) => {
       studentAttainment[co.toLowerCase()] = data.percentage;
+      studentAttainment[`${co.toLowerCase()}_obtained`] = data.obtained;
+      studentAttainment[`${co.toLowerCase()}_max`] = data.max;
     });
 
     studentRows.push({
@@ -841,11 +855,11 @@ const getStudentDashboardData = async (studentId) => {
       isFinished: classInstance.status === 'Finished'
     };
 
-    Object.entries(metrics.poAttainment).forEach(([po, percentage]) => {
+    Object.entries(metrics.poAttainment).forEach(([po, data]) => {
       if (!globalPo[po]) {
         globalPo[po] = { total: 0, count: 0 };
       }
-      globalPo[po].total += percentage;
+      globalPo[po].total += data.percentage;
       globalPo[po].count += 1;
     });
 

@@ -5,7 +5,7 @@ const StudentOBEAttainment = ({ course }) => {
   if (!course) return null;
 
   const coEntries = Object.entries(course.obe || {});
-  const poEntries = Object.entries(course.poAttainment || {}).map(([po, percentage]) => ({ po, percentage }));
+  const poEntries = Object.entries(course.poAttainment || {}).map(([po, data]) => ({ po, percentage: data.percentage, obtained: data.obtained, max: data.max }));
   const totalCOs = coEntries.length;
   const attainedCOs = coEntries.filter(([, data]) => data.percentage >= data.threshold).length;
   const overallAttainment = totalCOs > 0 ? Math.round(coEntries.reduce((sum, [, data]) => sum + data.percentage, 0) / totalCOs) : 0;
@@ -58,8 +58,9 @@ const StudentOBEAttainment = ({ course }) => {
                   <div className={`h-full rounded-full transition-all duration-500 ${met ? 'bg-green-500 dark:bg-green-600' : 'bg-red-500 dark:bg-red-600'}`} style={{ width: `${Math.min(data.percentage, 100)}%` }} />
                   <div className="absolute top-0 h-full border-l-2 border-dashed border-gray-400 dark:border-gray-500" style={{ left: `${data.threshold}%` }} title={`Threshold: ${data.threshold}%`} />
                 </div>
-                <div className="w-16 text-right">
+                <div className="w-28 text-right">
                   <span className={`text-sm font-bold ${met ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{data.percentage}%</span>
+                  <span className="text-xs text-blue-500 dark:text-blue-400 ml-1 font-medium">({data.obtained ?? '?'}/{data.max ?? '?'})</span>
                 </div>
                 <div className="w-6">
                   {met ? <CheckCircle size={16} className="text-green-500" /> : <AlertTriangle size={16} className="text-red-500" />}
@@ -79,10 +80,11 @@ const StudentOBEAttainment = ({ course }) => {
             <TrendingUp className="mr-2 text-indigo-500" size={20} /> Program Outcome (PO) Contribution
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {poEntries.map(({ po, percentage }) => (
+            {poEntries.map(({ po, percentage, obtained, max }) => (
               <div key={po} className={`rounded-lg p-4 text-center border ${percentage >= 60 ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'}`}>
                 <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">{po}</p>
                 <p className={`text-2xl font-bold mt-1 ${percentage >= 60 ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>{percentage}%</p>
+                <p className="text-xs text-blue-500 dark:text-blue-400 mt-0.5 font-medium">({obtained ?? '?'}/{max ?? '?'})</p>
               </div>
             ))}
           </div>
