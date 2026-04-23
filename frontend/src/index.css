@@ -10,3 +10,15 @@
 body {
   @apply antialiased;
 }
+
+/* Force native select/option dropdowns to respect dark theme */
+.dark select,
+.dark select option {
+  background-color: #2d2d2d;
+  color: #e5e5e5;
+}
+
+.dark select option:checked {
+  background-color: #1E70C3;
+  color: #ffffff;
+}
