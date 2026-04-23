@@ -38,7 +38,12 @@ export const baseApi = createApi({
     'Evaluation',
     'DeptDashboard',
     'StudentDashboard',
-    'Feedback'
+    'Feedback',
+    'Notices',
+    'NoticeCount',
+    'CourseAdvisors',
+    'AdvisedSections',
+    'SectionStudents'
   ],
   endpoints: () => ({}),
 });

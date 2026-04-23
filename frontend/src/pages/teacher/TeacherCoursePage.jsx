@@ -7,6 +7,7 @@ import {
   FileText,
   GraduationCap,
   Loader2,
+  Megaphone,
   MessageSquare,
   Pencil,
   UserCog,
@@ -144,6 +145,13 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
     }
 
     tiles.push(
+      {
+        key: 'notices',
+        title: 'Manage Notice',
+        description: 'Post and manage course notifications',
+        icon: <Megaphone size={22} className="text-blue-600 dark:text-blue-400 mr-3 group-hover:scale-110 transition-transform" />,
+        tone: 'blue'
+      },
       {
         key: 'manage_assessments',
         title: 'Manage Assessments',

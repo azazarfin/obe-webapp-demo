@@ -31,7 +31,13 @@ import {
   Sun,
   Moon,
   LogOut,
+  Bell,
+  Megaphone,
+  UserCheck,
 } from 'lucide-react';
+import { useGetUnreadCountQuery } from '../store/slices/noticeSlice';
+import { useGetAdvisedSectionsQuery } from '../store/slices/courseAdvisorSlice';
+import NotificationDropdown from './NotificationDropdown';
 import './Sidebar.css';
 
 // ─── Helpers ───────────────────────────────────────────────
@@ -120,6 +126,7 @@ const getCourseSubLabel = (item, role) => {
 
 const getCentralAdminNav = () => [
   { type: 'item', name: 'Dashboard', tabKey: 'overview', icon: LayoutDashboard },
+  { type: 'item', name: 'Manage Notice', tabKey: 'notices', icon: Megaphone },
   { type: 'section', label: 'Management' },
   { type: 'item', name: 'Departments', tabKey: 'departments', icon: Building2 },
   { type: 'item', name: 'Courses', tabKey: 'courses', icon: BookOpen },
@@ -130,12 +137,14 @@ const getCentralAdminNav = () => [
 
 const getDeptAdminNav = () => [
   { type: 'item', name: 'Dashboard', tabKey: 'overview', icon: LayoutDashboard },
+  { type: 'item', name: 'Manage Notice', tabKey: 'notices', icon: Megaphone },
   { type: 'section', label: 'Course Operations' },
   { type: 'item', name: 'Course Management', tabKey: 'course_mgmt', icon: ClipboardList },
   { type: 'item', name: 'Add / Edit Courses', tabKey: 'add_course', icon: BookMarked },
   { type: 'section', label: 'People' },
   { type: 'item', name: 'Teachers', tabKey: 'teachers', icon: Users },
   { type: 'item', name: 'Students', tabKey: 'students', icon: GraduationCap },
+  { type: 'item', name: 'Course Advisors', tabKey: 'advisors', icon: UserCheck },
   { type: 'section', label: 'Analytics' },
   { type: 'item', name: 'Course Reviews', tabKey: 'reviews', icon: Star },
 ];
@@ -320,6 +329,22 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
   const [currentTab, setCurrentTab] = useState('overview');
   const [selectedId, setSelectedId] = useState(null);
   const [expandedCourses, setExpandedCourses] = useState(new Set());
+  const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
+
+  const isNotifRole = userRole === 'TEACHER' || userRole === 'STUDENT';
+
+  // Poll unread notification count every 60 seconds (only for teacher/student)
+  const { data: unreadData } = useGetUnreadCountQuery(undefined, {
+    pollingInterval: 60000,
+    skip: !isNotifRole,
+  });
+  const unreadCount = isNotifRole ? (unreadData?.count || 0) : 0;
+
+  // Check if teacher is a course advisor
+  const { data: advisedSections = [] } = useGetAdvisedSectionsQuery(undefined, {
+    skip: userRole !== 'TEACHER',
+  });
+  const isCourseAdvisor = advisedSections.length > 0;
 
   // Sync with history state
   useEffect(() => {
@@ -417,15 +442,23 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
     switch (userRole) {
       case 'CENTRAL_ADMIN': return getCentralAdminNav();
       case 'DEPT_ADMIN': return getDeptAdminNav();
-      case 'TEACHER': return [
-        { type: 'item', name: 'Dashboard', tabKey: 'overview', icon: LayoutDashboard },
-      ];
+      case 'TEACHER': {
+        const nav = [
+          { type: 'item', name: 'Dashboard', tabKey: 'overview', icon: LayoutDashboard },
+          { type: 'item', name: 'Manage Notice', tabKey: 'notices', icon: Megaphone },
+        ];
+        if (isCourseAdvisor) {
+          nav.push({ type: 'item', name: 'Manage Section CRs', tabKey: 'class_reps', icon: UserCog });
+        }
+        return nav;
+      }
       case 'STUDENT': return [
         { type: 'item', name: 'Dashboard', tabKey: 'overview', icon: LayoutDashboard },
+        { type: 'item', name: 'Manage Notice', tabKey: 'notices', icon: Megaphone },
       ];
       default: return [];
     }
-  }, [userRole]);
+  }, [userRole, isCourseAdvisor]);
 
   const studentStaticBottom = useMemo(() => {
     if (userRole === 'STUDENT') {
@@ -471,6 +504,54 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
             </button>
           )}
         </div>
+
+        {/* ── Notification Bell (Teacher/Student only) ── */}
+        {isNotifRole && (
+          <div className={`px-2 pb-1 flex-shrink-0 relative ${isCollapsed ? 'flex justify-center' : ''}`}>
+            <button
+              data-notification-bell
+              onClick={() => setNotifDropdownOpen((prev) => !prev)}
+              className={`sidebar-nav-item flex items-center rounded-lg transition-all duration-150 group ${
+                isCollapsed ? 'justify-center px-2 py-3' : 'w-full px-3 py-2.5 space-x-3'
+              } text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white`}
+              title="Notifications"
+            >
+              <span className="relative inline-flex flex-shrink-0" style={{ width: isCollapsed ? 22 : 18, height: isCollapsed ? 22 : 18 }}>
+                <Bell size={isCollapsed ? 22 : 18} className="transition-transform duration-150 group-hover:scale-110" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center leading-none animate-pulse">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                )}
+              </span>
+              {!isCollapsed && (
+                <span className="text-sm truncate">
+                  Notifications
+                  {unreadCount > 0 && (
+                    <span className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400 font-bold">
+                      {unreadCount}
+                    </span>
+                  )}
+                </span>
+              )}
+              {isCollapsed && <span className="sidebar-tooltip">Notifications{unreadCount > 0 ? ` (${unreadCount})` : ''}</span>}
+            </button>
+
+            {/* Notification Dropdown Panel */}
+            <NotificationDropdown
+              isOpen={notifDropdownOpen}
+              onClose={() => setNotifDropdownOpen(false)}
+              onShowAll={() => {
+                handleNavClick('notices');
+                setNotifDropdownOpen(false);
+              }}
+              onNoticeClick={() => {
+                handleNavClick('notices');
+                setNotifDropdownOpen(false);
+              }}
+            />
+          </div>
+        )}
 
         {/* ── Theme Toggle ── */}
         <div className={`px-2 pb-1 flex-shrink-0 ${isCollapsed ? 'flex justify-center' : ''}`}>
@@ -579,6 +660,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
             );
           })}
         </div>
+
 
         {/* ── User Footer ── */}
         {!isCollapsed && currentUser && (

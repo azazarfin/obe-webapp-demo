@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
+  isCR: { type: Boolean, default: false },
   series: { type: Number },
   section: { type: String }
 }, { timestamps: true });

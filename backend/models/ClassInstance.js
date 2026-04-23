@@ -22,6 +22,7 @@ const classInstanceSchema = new mongoose.Schema({
     co: { type: String, required: true }, // e.g., "CO1"
     po: [{ type: String, required: true }] // e.g., ["PO1", "PO2"]
   }],
+
   feedbackQuestions: {
     type: [String],
     default: []

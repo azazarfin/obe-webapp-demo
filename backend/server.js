@@ -15,7 +15,8 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const instructorReportRoutes = require('./routes/instructorReportRoutes');
 const seriesRoutes = require('./routes/seriesRoutes');
-
+const noticeRoutes = require('./routes/noticeRoutes');
+const courseAdvisorRoutes = require('./routes/courseAdvisorRoutes');
 const app = express();
 
 const defaultAllowedOrigins = [
@@ -53,12 +54,13 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
 
-const authLimiter = rateLimit({
+const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
-  message: { error: 'Too many login attempts, please try again after 15 minutes' },
+  max: 10,
+  message: { error: 'Too many failed login attempts, please try again after 15 minutes' },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  skipSuccessfulRequests: true
 });
 
 const PORT = process.env.PORT || 5000;
@@ -67,7 +69,8 @@ app.get('/', (req, res) => {
   res.send('RUET OBE Evaluation System API');
 });
 
-app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/auth/login', loginLimiter);
+app.use('/api/auth', authRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
@@ -78,7 +81,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/instructor-reports', instructorReportRoutes);
 app.use('/api/series', seriesRoutes);
-
+app.use('/api/notices', noticeRoutes);
+app.use('/api/course-advisors', courseAdvisorRoutes);
 app.use((err, req, res, next) => {
   if (err.message === corsErrorMessage) {
     return res.status(403).json({ error: corsErrorMessage });

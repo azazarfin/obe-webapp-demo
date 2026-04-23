@@ -11,10 +11,13 @@ import ManageCourseFeedback from '../teacher/ManageCourseFeedback';
 import ManageAssessments from '../teacher/ManageAssessments';
 import TeacherCoursePage from '../teacher/TeacherCoursePage';
 import SemesterFinalMarking from '../teacher/SemesterFinalMarking';
+import ManageSectionCRs from '../teacher/ManageSectionCRs';
+import NoticeBoard from '../notices/NoticeBoard';
 import { useAuth } from '../../contexts/AuthContext';
 import { useGetClassInstancesQuery } from '../../store/slices/classInstanceSlice';
 import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
 import { useSidebar } from '../../contexts/SidebarContext';
+import { useGetAdvisedSectionsQuery } from '../../store/slices/courseAdvisorSlice';
 
 const getSectionLabel = (instance) => (instance?.section === 'N/A' ? 'No Section' : `Section ${instance?.section}`);
 const INITIAL_DASHBOARD_STATE = { activeTab: 'overview', selectedInstance: null };
@@ -60,6 +63,8 @@ const TeacherDashboard = () => {
     || errorFinished?.data?.error
     || errorFinished?.message
     || '';
+
+  const { data: advisedSections = [], isLoading: loadingAdvisors } = useGetAdvisedSectionsQuery(undefined, { skip: !teacherId });
 
   // Push course data to sidebar context
   useEffect(() => {
@@ -145,6 +150,10 @@ const TeacherDashboard = () => {
             onBack={goBack}
           />
         );
+      case 'class_reps':
+        return <ManageSectionCRs />;
+      case 'notices':
+        return <NoticeBoard initialCourseId={selectedInstance?._id || selectedInstance?.classInstanceId} />;
       case 'overview':
       default:
         return (
@@ -209,6 +218,33 @@ const TeacherDashboard = () => {
                 )}
               </div>
             </div>
+
+            {/* Course Advisor Section */}
+            {!loadingAdvisors && advisedSections.length > 0 && (
+              <div className="bg-white dark:bg-[#1e1e1e] shadow rounded-lg p-6 border border-gray-100 dark:border-gray-800 mt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Course Advisor</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage Class Representatives for your assigned sections</p>
+                  </div>
+                  <button
+                    onClick={() => navigateTab('class_reps')}
+                    className="bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 text-sm"
+                  >
+                    <UserCog size={18} />
+                    Manage CRs
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {advisedSections.map(sec => (
+                    <div key={sec._id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-[#151b2e]">
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Series {sec.series}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Section {sec.section}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         );
     }

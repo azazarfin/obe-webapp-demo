@@ -4,6 +4,7 @@ const ClassInstance = require('../models/ClassInstance');
 const Enrollment = require('../models/Enrollment');
 const { verifyToken, requireRole } = require('../middleware/authMiddleware');
 const { getAssignedTeacherIds } = require('../utils/classInstanceUtils');
+const { createAutoNotice } = require('../services/notificationService');
 
 const router = express.Router();
 
@@ -49,6 +50,19 @@ router.post('/', verifyToken, requireRole('TEACHER', 'DEPT_ADMIN'), async (req, 
     };
 
     const assessment = await Assessment.create(payload);
+
+    // Auto-notification: inform enrolled students about the new assessment
+    const courseName = classInstance.course?.courseCode || 'the course';
+    createAutoNotice({
+      title: `New Assessment: ${assessment.title}`,
+      body: `A new ${assessment.type} "${assessment.title}" has been added to ${courseName}.`,
+      author: req.user.id,
+      scope: 'COURSE',
+      classInstance: classInstance._id,
+      type: 'ASSESSMENT',
+      relatedEntity: assessment._id
+    });
+
     res.status(201).json(assessment);
   } catch (error) {
     res.status(500).json({ error: 'Server error creating assessment' });

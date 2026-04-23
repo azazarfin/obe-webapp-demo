@@ -5,6 +5,8 @@ import DeptCourseManagement from '../admin/DeptCourseManagement';
 import DeptStudentInfo from '../admin/DeptStudentInfo';
 import DeptAddCourse from '../admin/DeptAddCourse';
 import TeacherInfo from '../admin/TeacherInfo';
+import NoticeBoard from '../notices/NoticeBoard';
+import ManageCourseAdvisors from '../dept-admin/ManageCourseAdvisors';
 import { useGetDeptDashboardQuery } from '../../store/slices/dashboardSlice';
 import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
 
@@ -14,7 +16,8 @@ const actionTiles = [
   { title: 'Course Management', desc: 'Assign teachers to courses', icon: <ClipboardList size={22} />, iconClass: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400', tab: 'course_mgmt' },
   { title: 'Add / Edit Courses', desc: 'Manage department syllabus', icon: <BookOpen size={22} />, iconClass: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400', tab: 'add_course' },
   { title: 'Teacher Info', desc: 'View & add faculty', icon: <UserCheck size={22} />, iconClass: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', tab: 'teachers' },
-  { title: 'Student Info', desc: 'Filter by series & section', icon: <GraduationCap size={22} />, iconClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', tab: 'students' }
+  { title: 'Student Info', desc: 'Filter by series & section', icon: <GraduationCap size={22} />, iconClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', tab: 'students' },
+  { title: 'Course Advisors', desc: 'Assign section advisors', icon: <UserCheck size={22} />, iconClass: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', tab: 'advisors' }
 ];
 
 const DeptAdminDashboard = () => {
@@ -120,6 +123,10 @@ const DeptAdminDashboard = () => {
         return <DeptStudentInfo />;
       case 'reviews':
         return <CourseReviewHub />;
+      case 'notices':
+        return <NoticeBoard />;
+      case 'advisors':
+        return <ManageCourseAdvisors />;
       case 'overview':
       default:
         return renderOverview();

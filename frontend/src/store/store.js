@@ -6,6 +6,8 @@ import './slices/classInstanceSlice';
 import './slices/assessmentSlice';
 import './slices/enrollmentSlice';
 import './slices/dashboardSlice';
+import './slices/noticeSlice';
+import './slices/courseAdvisorSlice';
 
 export const store = configureStore({
   reducer: {

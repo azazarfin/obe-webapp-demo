@@ -46,6 +46,7 @@ const classInstanceApi = baseApi.injectEndpoints({
         { type: 'ClassSummary', id },
       ],
     }),
+
   }),
 });
 

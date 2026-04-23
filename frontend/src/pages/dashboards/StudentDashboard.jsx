@@ -7,6 +7,7 @@ import StudentCoursePage from '../student/StudentCoursePage';
 import StudentOBEAttainment from '../student/StudentOBEAttainment';
 import StudentMarksheet from '../student/StudentMarksheet';
 import StudentAttendanceInfo from '../student/StudentAttendanceInfo';
+import NoticeBoard from '../notices/NoticeBoard';
 import { useAuth } from '../../contexts/AuthContext';
 import { useGetStudentDashboardQuery } from '../../store/slices/dashboardSlice';
 import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
@@ -228,6 +229,8 @@ const StudentDashboard = () => {
         return selectedCourse ? <StudentOBEAttainment course={selectedCourse} /> : renderOverview();
       case 'give_feedback':
         return selectedCourse ? <StudentFeedback course={selectedCourse} onBack={goBack} /> : renderOverview();
+      case 'notices':
+        return <NoticeBoard />;
       case 'overview':
       default:
         return renderOverview();

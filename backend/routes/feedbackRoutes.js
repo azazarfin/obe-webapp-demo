@@ -11,6 +11,7 @@ const {
 } = require('../services/analyticsService');
 const { createHttpError, idsEqual } = require('../utils/departmentRules');
 const { getAssignedTeacherIds } = require('../utils/classInstanceUtils');
+const { createAutoNotice } = require('../services/notificationService');
 
 const router = express.Router();
 const DEPARTMENT_SELECT = 'name shortName hasSections sectionCount';
@@ -144,6 +145,32 @@ router.put('/class/:classInstanceId/config', verifyToken, async (req, res) => {
 
     if (!updatedClassInstance) {
       return res.status(404).json({ error: 'Class instance not found' });
+    }
+
+    // Auto-notification: inform students about feedback form state changes
+    if (typeof req.body.published === 'boolean') {
+      const courseName = classInstance.course?.courseCode || 'the course';
+      if (req.body.published) {
+        createAutoNotice({
+          title: `Feedback Form Open: ${courseName}`,
+          body: `The course feedback form for ${courseName} is now open. Please submit your feedback.`,
+          author: req.user.id,
+          scope: 'COURSE',
+          classInstance: classInstance._id,
+          type: 'FEEDBACK_OPEN',
+          relatedEntity: classInstance._id
+        });
+      } else {
+        createAutoNotice({
+          title: `Feedback Form Closed: ${courseName}`,
+          body: `The course feedback form for ${courseName} has been closed.`,
+          author: req.user.id,
+          scope: 'COURSE',
+          classInstance: classInstance._id,
+          type: 'FEEDBACK_CLOSE',
+          relatedEntity: classInstance._id
+        });
+      }
     }
 
     res.json({

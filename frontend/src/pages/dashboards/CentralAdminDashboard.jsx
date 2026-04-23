@@ -5,6 +5,7 @@ import CourseInfo from '../admin/CourseInfo';
 import TeacherInfo from '../admin/TeacherInfo';
 import StudentInfo from '../admin/StudentInfo';
 import SeriesManagement from '../admin/SeriesManagement';
+import NoticeBoard from '../notices/NoticeBoard';
 import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
 
 const INITIAL_DASHBOARD_STATE = { activeTab: 'overview' };
@@ -36,6 +37,8 @@ const CentralAdminDashboard = () => {
         return <StudentInfo />;
       case 'series':
         return <SeriesManagement />;
+      case 'notices':
+        return <NoticeBoard />;
       case 'overview':
       default:
         return <CentralDashboardOverview setActiveTab={navigateTab} />;

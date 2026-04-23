@@ -5,11 +5,7 @@ build/
 .DS_Store
 
 # Plan and documentation files
-*_plan.txt
-plan-text.txt
-OBE Webapp Plan Elaboration.pdf
-guidelines.md
-gemini.md
+
 
 # Mock data and spreadsheets
 *.xlsx
@@ -30,6 +26,4 @@ yarn-error.log*
 
 
 # Antigravity agent context
-.agent/
-AGENTS.md
-GUIDELINES.md
+
