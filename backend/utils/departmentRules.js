@@ -44,11 +44,8 @@ const courseCodeMatchesDepartment = (courseCode, department) => (
 );
 
 module.exports = {
-  SECTION_LETTERS,
-  compactCourseCode,
   courseCodeMatchesDepartment,
   createHttpError,
-  getAvailableSections,
   idsEqual,
   normalizeCourseCode,
   normalizeSectionForDepartment

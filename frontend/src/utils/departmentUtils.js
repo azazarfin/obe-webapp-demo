@@ -1,4 +1,4 @@
-export const SECTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
+const SECTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
 export const getDepartmentById = (departments, departmentId) => (
   departments.find((department) => department._id === departmentId) || null

@@ -895,10 +895,8 @@ const getStudentDashboardData = async (studentId) => {
 
 module.exports = {
   DEFAULT_FEEDBACK_QUESTIONS,
-  OBE_THRESHOLD,
   buildClassSummary,
   buildClassEvaluation,
-  getAttendanceMarks,
   getStudentDashboardData,
   sanitizeFeedbackQuestions,
   syncRegularEnrollmentsForClassInstance

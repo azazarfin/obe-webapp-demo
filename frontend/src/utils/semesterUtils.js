@@ -8,5 +8,3 @@ export const SEMESTERS = [
   '4th Year Odd',
   '4th Year Even',
 ];
-
-export const getSemesterLabel = (index) => SEMESTERS[index] || SEMESTERS[0];
