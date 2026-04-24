@@ -20,7 +20,8 @@ const classInstanceSchema = new mongoose.Schema({
   },
   coPoMapping: [{
     co: { type: String, required: true }, // e.g., "CO1"
-    po: [{ type: String, required: true }] // e.g., ["PO1", "PO2"]
+    po: [{ type: String, required: true }], // e.g., ["PO1", "PO2"]
+    description: { type: String, default: '' } // CO description for OBE report
   }],
 
   feedbackQuestions: {

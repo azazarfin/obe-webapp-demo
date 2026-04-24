@@ -10,6 +10,7 @@ import {
   Megaphone,
   MessageSquare,
   Pencil,
+  Target,
   UserCog,
   Users
 } from 'lucide-react';
@@ -41,17 +42,19 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
   const statTiles = useMemo(() => {
     if (!stats) return [];
 
+    const coCount = summary?.classInstance?.coPoMapping?.length || 0;
+
     return isTheory
       ? [
           { label: 'Students', value: stats.students, icon: <Users size={20} className="text-blue-500" /> },
+          { label: 'COs Defined', value: coCount, icon: <Target size={20} className="text-cyan-500" /> },
           { label: 'CTs Taken', value: stats.ctsTaken, icon: <ClipboardList size={20} className="text-indigo-500" /> },
-          { label: 'Assignments', value: stats.assignmentsTaken, icon: <FileText size={20} className="text-green-500" /> },
           { label: 'Attendance', value: stats.attendanceClasses, icon: <CalendarCheck size={20} className="text-orange-500" /> }
         ]
       : [
           { label: 'Students', value: stats.students, icon: <Users size={20} className="text-blue-500" /> },
+          { label: 'COs Defined', value: coCount, icon: <Target size={20} className="text-cyan-500" /> },
           { label: 'Quizzes', value: stats.quizzesTaken, icon: <ClipboardList size={20} className="text-indigo-500" /> },
-          { label: 'Reports', value: stats.reportsTaken, icon: <FileText size={20} className="text-green-500" /> },
           { label: 'Attendance', value: stats.attendanceClasses, icon: <CalendarCheck size={20} className="text-orange-500" /> }
         ];
   }, [isTheory, stats]);
@@ -65,6 +68,13 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
           description: 'Marksheet and OBE attainment',
           icon: <BarChart3 size={22} className="text-green-600 dark:text-green-400 mr-3 group-hover:scale-110 transition-transform" />,
           tone: 'green'
+        },
+        {
+          key: 'manage_cos',
+          title: 'Manage COs',
+          description: 'View Course Outcomes and PO mappings',
+          icon: <Target size={22} className="text-teal-600 dark:text-teal-400 mr-3 group-hover:scale-110 transition-transform" />,
+          tone: 'teal'
         },
         {
           key: 'feedback',
@@ -145,6 +155,13 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
     }
 
     tiles.push(
+      {
+        key: 'manage_cos',
+        title: 'Manage COs',
+        description: 'Add, edit, or remove Course Outcomes and PO mappings',
+        icon: <Target size={22} className="text-teal-600 dark:text-teal-400 mr-3 group-hover:scale-110 transition-transform" />,
+        tone: 'teal'
+      },
       {
         key: 'notices',
         title: 'Manage Notice',

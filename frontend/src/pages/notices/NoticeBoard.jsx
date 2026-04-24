@@ -8,6 +8,7 @@ import {
   useMarkAllNoticesReadMutation,
   useDeleteNoticeMutation,
 } from '../../store/slices/noticeSlice';
+import { useGetClassInstancesQuery } from '../../store/slices/classInstanceSlice';
 import NoticeCard from './NoticeCard';
 import CreateNoticeForm from './CreateNoticeForm';
 import api from '../../utils/api';
@@ -47,11 +48,21 @@ const NoticeBoard = ({ initialCourseId }) => {
     || userRole === 'TEACHER'
     || (userRole === 'STUDENT' && currentUser?.isCR);
 
+  // Fetch class instances for admins since they don't have courseData populated
+  const needsAdminClassInstances = userRole === 'CENTRAL_ADMIN' || userRole === 'DEPT_ADMIN';
+  const { data: adminClassInstances } = useGetClassInstancesQuery(
+    { status: 'Running' },
+    { skip: !needsAdminClassInstances }
+  );
+
   // Get class instances for the create form
   const classInstances = useMemo(() => {
+    if (needsAdminClassInstances) {
+      return adminClassInstances || [];
+    }
     const running = courseData.runningCourses || [];
     return running;
-  }, [courseData.runningCourses]);
+  }, [needsAdminClassInstances, adminClassInstances, courseData.runningCourses]);
 
   const handleOpenCreate = async () => {
     // Load departments for central admin

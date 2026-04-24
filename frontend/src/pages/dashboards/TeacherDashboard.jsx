@@ -9,6 +9,7 @@ import InstructorExperienceReport from '../teacher/InstructorExperienceReport';
 import ModifyStudentRoster from '../teacher/ModifyStudentRoster';
 import ManageCourseFeedback from '../teacher/ManageCourseFeedback';
 import ManageAssessments from '../teacher/ManageAssessments';
+import ManageCOs from '../teacher/ManageCOs';
 import TeacherCoursePage from '../teacher/TeacherCoursePage';
 import SemesterFinalMarking from '../teacher/SemesterFinalMarking';
 import ManageSectionCRs from '../teacher/ManageSectionCRs';
@@ -141,6 +142,8 @@ const TeacherDashboard = () => {
         return <ManageCourseFeedback classInstance={selectedInstance} />;
       case 'manage_assessments':
         return <ManageAssessments classInstance={selectedInstance} />;
+      case 'manage_cos':
+        return <ManageCOs classInstance={selectedInstance} />;
       case 'experience_report':
         return (
           <InstructorExperienceReport

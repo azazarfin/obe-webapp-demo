@@ -86,14 +86,11 @@ const AddSessionalAssessment = ({ classInstance }) => {
 
   useEffect(() => {
     const mappingCOs = (summary?.classInstance?.coPoMapping || []).map((entry) => entry.co);
-    const nextCO = mappingCOs[0] || 'CO1';
+    if (mappingCOs.length === 0) return;
 
     setFormData((prev) => {
-      if (prev.co && (mappingCOs.length === 0 || mappingCOs.includes(prev.co))) {
-        return prev;
-      }
-
-      return { ...prev, co: nextCO };
+      if (mappingCOs.includes(prev.co)) return prev;
+      return { ...prev, co: mappingCOs[0] };
     });
   }, [summary]);
 

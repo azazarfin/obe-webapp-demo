@@ -60,23 +60,25 @@ const InstructorExperienceReport = ({ classInstance, onBack, readOnly = false })
     }
   }, [existingReport]);
 
-  // ---- Derive COs from coPoMapping if none saved yet ----
+  // ---- Derive COs from coPoMapping (single source of truth) ----
   useEffect(() => {
-    if (courseOutcomes.length === 0 && classInstance?.coPoMapping?.length > 0) {
+    // Primary source: coPoMapping from ClassInstance (set in ManageCOs)
+    if (classInstance?.coPoMapping?.length > 0) {
       const derived = classInstance.coPoMapping.map((m) => ({
         code: m.co,
-        description: '',
+        description: m.description || '',
       }));
       setCourseOutcomes(derived);
+      return;
     }
-    // Also try evaluation data
-    if (courseOutcomes.length === 0 && evaluation?.obeData?.coAttainment) {
+    // Fallback: derive from evaluation data if no coPoMapping
+    if (evaluation?.obeData?.coAttainment) {
       const coKeys = Object.keys(evaluation.obeData.coAttainment).sort();
       if (coKeys.length > 0) {
         setCourseOutcomes(coKeys.map((co) => ({ code: co, description: '' })));
       }
     }
-  }, [classInstance, evaluation, courseOutcomes.length]);
+  }, [classInstance, evaluation]);
 
   // ---- OBE Data ----
   const obeData = useMemo(() => {
