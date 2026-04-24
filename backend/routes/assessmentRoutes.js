@@ -71,7 +71,20 @@ router.post('/', verifyToken, requireRole('TEACHER', 'DEPT_ADMIN'), async (req, 
 
 router.put('/:id', verifyToken, requireRole('TEACHER'), async (req, res) => {
   try {
-    const assessment = await Assessment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const allowedFields = ['title', 'type', 'totalMarks', 'mappedCO', 'mappedPOs',
+                           'typeLabel', 'assessmentDate', 'finalPart', 'questionNo'];
+    const updateData = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    }
+
+    const assessment = await Assessment.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true, runValidators: true }
+    );
     if (!assessment) return res.status(404).json({ error: 'Assessment not found' });
     res.json(assessment);
   } catch (error) {
@@ -92,28 +105,37 @@ router.put('/:id/marks', verifyToken, requireRole('TEACHER'), async (req, res) =
     }
 
     const classInstanceId = req.body.classInstanceId || assessment.classInstance?.toString();
+    const assessmentId = req.params.id;
 
-    const results = [];
-    for (const entry of marks) {
-      const enrollment = await Enrollment.findOne({
-        student: entry.studentId,
-        classInstance: classInstanceId
-      });
-
-      if (enrollment) {
-        const existingMark = enrollment.marks.find(m => m.assessment.toString() === req.params.id);
-        if (existingMark) {
-          existingMark.rawScore = entry.rawScore;
-        } else {
-          enrollment.marks.push({ assessment: req.params.id, rawScore: entry.rawScore });
+    // Build bulk operations: update existing marks, push new ones
+    const bulkOps = marks.flatMap((entry) => [
+      // If this assessment already exists in the marks array, update in place
+      {
+        updateOne: {
+          filter: {
+            student: entry.studentId,
+            classInstance: classInstanceId,
+            'marks.assessment': assessmentId
+          },
+          update: { $set: { 'marks.$.rawScore': entry.rawScore } }
         }
-        await enrollment.save();
-        results.push({ studentId: entry.studentId, status: 'saved' });
-      } else {
-        results.push({ studentId: entry.studentId, status: 'enrollment_not_found' });
+      },
+      // If this assessment does NOT exist in the marks array, push it
+      {
+        updateOne: {
+          filter: {
+            student: entry.studentId,
+            classInstance: classInstanceId,
+            'marks.assessment': { $ne: assessmentId }
+          },
+          update: { $push: { marks: { assessment: assessmentId, rawScore: entry.rawScore } } }
+        }
       }
-    }
+    ]);
 
+    await Enrollment.bulkWrite(bulkOps, { ordered: false });
+
+    const results = marks.map((entry) => ({ studentId: entry.studentId, status: 'saved' }));
     res.json({ message: 'Marks saved', results });
   } catch (error) {
     res.status(500).json({ error: 'Server error saving marks' });

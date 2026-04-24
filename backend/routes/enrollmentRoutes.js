@@ -102,35 +102,56 @@ router.post('/:id/attendance', verifyToken, requireRole('TEACHER'), async (req, 
     }
 
     const takenBy = req.user.id;
-    const results = [];
-    for (const record of records) {
-      const enrollment = await Enrollment.findOne({
-        student: record.studentId,
-        classInstance: req.params.id
-      });
+    const classInstanceId = req.params.id;
+    const dateObj = new Date(date);
 
-      if (enrollment) {
-        const existingRecord = enrollment.attendanceRecord.find(
-          r => new Date(r.date).toDateString() === new Date(date).toDateString()
-        );
+    // Build a day-boundary range for matching the same calendar day
+    const dayStart = new Date(dateObj);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(dayStart);
+    dayEnd.setDate(dayEnd.getDate() + 1);
 
-        const normalizedStatus = record.status === 'A'
-          ? 'Absent'
-          : 'Present';
+    const bulkOps = records.flatMap((record) => {
+      const normalizedStatus = record.status === 'A' ? 'Absent' : 'Present';
 
-        if (existingRecord) {
-          existingRecord.status = normalizedStatus;
-          existingRecord.takenBy = takenBy;
-        } else {
-          enrollment.attendanceRecord.push({ date: new Date(date), status: normalizedStatus, takenBy });
+      return [
+        // Update if a record for this date already exists
+        {
+          updateOne: {
+            filter: {
+              student: record.studentId,
+              classInstance: classInstanceId,
+              'attendanceRecord.date': { $gte: dayStart, $lt: dayEnd }
+            },
+            update: {
+              $set: {
+                'attendanceRecord.$.status': normalizedStatus,
+                'attendanceRecord.$.takenBy': takenBy
+              }
+            }
+          }
+        },
+        // Push if no record for this date yet
+        {
+          updateOne: {
+            filter: {
+              student: record.studentId,
+              classInstance: classInstanceId,
+              'attendanceRecord.date': { $not: { $gte: dayStart, $lt: dayEnd } }
+            },
+            update: {
+              $push: {
+                attendanceRecord: { date: dateObj, status: normalizedStatus, takenBy }
+              }
+            }
+          }
         }
-        await enrollment.save();
-        results.push({ studentId: record.studentId, status: 'saved' });
-      } else {
-        results.push({ studentId: record.studentId, status: 'enrollment_not_found' });
-      }
-    }
+      ];
+    });
 
+    await Enrollment.bulkWrite(bulkOps, { ordered: false });
+
+    const results = records.map((record) => ({ studentId: record.studentId, status: 'saved' }));
     res.json({ message: 'Attendance recorded', results });
   } catch (error) {
     res.status(500).json({ error: 'Server error recording attendance' });

@@ -22,3 +22,58 @@ body {
   background-color: #1E70C3;
   color: #ffffff;
 }
+
+/* ── Scrollable table wrappers with always-visible scrollbars ──
+   Constrains height so both scrollbars stay within the visible area,
+   eliminating the need to scroll to the page bottom for horizontal scroll.
+   Tables with their own max-h (e.g. modals) are excluded via :not(). */
+.overflow-x-auto:has(> table) {
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-color: rgba(120, 120, 120, 0.45) transparent;
+  scrollbar-width: thin;
+}
+
+/* Sticky table headers inside bounded wrappers */
+.overflow-x-auto:has(> table) > table > thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Webkit scrollbar styling (Chrome, Edge, Safari) */
+.overflow-x-auto:has(> table)::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.overflow-x-auto:has(> table)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-x-auto:has(> table)::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 140, 140, 0.4);
+  border-radius: 4px;
+}
+
+.overflow-x-auto:has(> table)::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(140, 140, 140, 0.65);
+}
+
+.overflow-x-auto:has(> table)::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Dark mode scrollbar */
+.dark .overflow-x-auto:has(> table) {
+  scrollbar-color: rgba(160, 160, 160, 0.3) transparent;
+}
+
+.dark .overflow-x-auto:has(> table)::-webkit-scrollbar-thumb {
+  background-color: rgba(180, 180, 180, 0.25);
+}
+
+.dark .overflow-x-auto:has(> table)::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(180, 180, 180, 0.5);
+}

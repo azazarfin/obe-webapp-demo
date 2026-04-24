@@ -15,7 +15,7 @@ const { getAssignedTeacherIds } = require('../utils/classInstanceUtils');
 const { createAutoNotice } = require('../services/notificationService');
 
 const router = express.Router();
-const DEPARTMENT_SELECT = 'name shortName hasSections sectionCount';
+const { DEPARTMENT_SELECT } = require('../utils/routeHelpers');
 
 const loadClassInstanceForAccess = async (classInstanceId) => {
   const classInstance = await ClassInstance.findById(classInstanceId)

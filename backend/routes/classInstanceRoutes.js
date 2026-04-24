@@ -20,7 +20,7 @@ const {
 
 const router = express.Router();
 
-const DEPARTMENT_SELECT = 'name shortName hasSections sectionCount';
+const { DEPARTMENT_SELECT, getScopedCurrentUser } = require('../utils/routeHelpers');
 const TEACHER_SELECT = 'name email designation teacherType onLeave leaveReason';
 const normalizeTeacherIds = (value) => {
   if (Array.isArray(value)) {
@@ -32,14 +32,6 @@ const normalizeTeacherIds = (value) => {
 const uniqueTeacherIds = (teacherIds) => Array.from(new Set(
   normalizeTeacherIds(teacherIds).map((teacherId) => String(teacherId))
 ));
-
-const getScopedCurrentUser = async (req) => {
-  const currentUser = await User.findById(req.user.id).populate('department', DEPARTMENT_SELECT);
-  if (!currentUser) {
-    throw createHttpError(401, 'User not found');
-  }
-  return currentUser;
-};
 
 const getCourseWithDepartment = async (courseId) => {
   const course = await Course.findById(courseId).populate('department', DEPARTMENT_SELECT);

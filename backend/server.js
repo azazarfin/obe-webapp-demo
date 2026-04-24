@@ -83,12 +83,29 @@ app.use('/api/instructor-reports', instructorReportRoutes);
 app.use('/api/series', seriesRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/course-advisors', courseAdvisorRoutes);
-app.use((err, req, res, next) => {
+// ─── Global Error Handler ───────────────────────────────────────
+// Catches CORS errors, route errors via next(err), and any unhandled middleware failures.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, _next) => {
+  // CORS rejection
   if (err.message === corsErrorMessage) {
     return res.status(403).json({ error: corsErrorMessage });
   }
 
-  return next(err);
+  const status = err.status || 500;
+  const isServerError = status >= 500;
+
+  // Always log server-side for observability
+  if (isServerError) {
+    console.error(`[Error] ${req.method} ${req.originalUrl}:`, err);
+  }
+
+  // Never leak internal details to the client in production
+  const message = isServerError
+    ? 'Internal server error'
+    : err.message || 'Something went wrong';
+
+  return res.status(status).json({ error: message });
 });
 
 mongoose.connect(process.env.MONGO_URI, {})

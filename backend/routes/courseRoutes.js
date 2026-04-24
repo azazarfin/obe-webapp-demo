@@ -2,7 +2,6 @@ const express = require('express');
 const Assessment = require('../models/Assessment');
 const ClassInstance = require('../models/ClassInstance');
 const Course = require('../models/Course');
-const Department = require('../models/Department');
 const Enrollment = require('../models/Enrollment');
 const Feedback = require('../models/Feedback');
 const InstructorReport = require('../models/InstructorReport');
@@ -14,33 +13,14 @@ const {
   idsEqual,
   normalizeCourseCode
 } = require('../utils/departmentRules');
+const {
+  DEPARTMENT_SELECT,
+  resolveDepartmentId,
+  getScopedCurrentUser,
+  ensureDepartment
+} = require('../utils/routeHelpers');
 
 const router = express.Router();
-
-const DEPARTMENT_SELECT = 'name shortName hasSections sectionCount';
-
-const resolveDepartmentId = (value) => value?._id || value || null;
-
-const getScopedCurrentUser = async (req) => {
-  const currentUser = await User.findById(req.user.id).populate('department', DEPARTMENT_SELECT);
-  if (!currentUser) {
-    throw createHttpError(401, 'User not found');
-  }
-  return currentUser;
-};
-
-const ensureDepartment = async (departmentId) => {
-  if (!departmentId) {
-    throw createHttpError(400, 'Department is required');
-  }
-
-  const department = await Department.findById(departmentId);
-  if (!department) {
-    throw createHttpError(400, 'Department not found');
-  }
-
-  return department;
-};
 
 const buildCoursePayload = async (req, existingCourse = null) => {
   const currentUser = req.user.role === 'DEPT_ADMIN' ? await getScopedCurrentUser(req) : null;

@@ -1,8 +1,29 @@
+/**
+ * Core analytics service — OBE attainment, class evaluation, and student dashboard.
+ *
+ * Attendance, grading, and teacher helpers have been extracted into:
+ *   - attendanceHelpers.js
+ *   - gradingHelpers.js
+ *   - teacherHelpers.js
+ */
+
 const Assessment = require('../models/Assessment');
-const ClassInstance = require('../models/ClassInstance');
 const Enrollment = require('../models/Enrollment');
 const User = require('../models/User');
 const { calculateBestOfNAverage } = require('./obeEngine');
+
+// ─── Imported helpers ──────────────────────────────────────────
+const { toDateKey, buildAttendanceSummary, buildMultiTeacherAttendance } = require('./attendanceHelpers');
+const { OBE_THRESHOLD, THEORY_COMPONENT_WEIGHTS, round, getGPA, normalizeComponentToWeight } = require('./gradingHelpers');
+const {
+  populateEnrollment,
+  getAssignedTeachers,
+  getAssignedTeacherNames,
+  getAssignedTeacherEmails,
+  ensureClassInstance
+} = require('./teacherHelpers');
+
+// ─── Constants ─────────────────────────────────────────────────
 
 const DEFAULT_FEEDBACK_QUESTIONS = [
   'Level of effort you put into the course',
@@ -13,136 +34,11 @@ const DEFAULT_FEEDBACK_QUESTIONS = [
   'The assessment tools were appropriate to evaluate the CLOs.'
 ];
 
-const OBE_THRESHOLD = 50;
-const THEORY_COMPONENT_WEIGHTS = {
-  attendance: 10,
-  ct: 20,
-  assignment: 10,
-  final: 60
-};
-
-const populateTeacherFields = (query) => query
-  .populate('teacher', 'name email designation teacherType onLeave leaveReason')
-  .populate('teachers', 'name email designation teacherType onLeave leaveReason');
-
-const populateClassInstance = (query) => populateTeacherFields(
-  query.populate({ path: 'course', populate: { path: 'department', select: 'name shortName' } })
-);
-
-const populateEnrollment = (query) => query
-  .populate('student', 'name email rollNumber series section department')
-  .populate({
-    path: 'classInstance',
-    populate: [
-      { path: 'course', populate: { path: 'department', select: 'name shortName' } },
-      { path: 'teacher', select: 'name email designation teacherType onLeave leaveReason' },
-      { path: 'teachers', select: 'name email designation teacherType onLeave leaveReason' }
-    ]
-  })
-  .populate('marks.assessment')
-  .populate('attendanceRecord.takenBy', 'name email');
-
-const toDateKey = (value) => new Date(value).toISOString().slice(0, 10);
-
-const normalizeAttendanceStatus = (value) => {
-  const normalized = String(value || 'Present').trim().toLowerCase();
-  if (normalized === 'a' || normalized === 'absent') return 'Absent';
-  if (normalized === 'l' || normalized === 'late') return 'Late';
-  return 'Present';
-};
-
-const getAttendanceMarks = (percentage) => {
-  if (percentage >= 90) return 10;
-  if (percentage >= 85) return 9;
-  if (percentage >= 80) return 8;
-  if (percentage >= 75) return 7;
-  if (percentage >= 70) return 6;
-  if (percentage >= 65) return 5;
-  if (percentage >= 60) return 4;
-  return 0;
-};
-
-const getGPA = (total) => {
-  if (total >= 80) return 4.0;
-  if (total >= 75) return 3.75;
-  if (total >= 70) return 3.5;
-  if (total >= 65) return 3.25;
-  if (total >= 60) return 3.0;
-  if (total >= 55) return 2.75;
-  if (total >= 50) return 2.5;
-  if (total >= 45) return 2.25;
-  if (total >= 40) return 2.0;
-  return 0;
-};
-
-const round = (value, digits = 1) => Number(Number(value || 0).toFixed(digits));
-
-const normalizeComponentToWeight = (component, weight) => {
-  const earned = Number(component?.earned) || 0;
-  const total = Number(component?.total) || 0;
-
-  if (total <= 0) {
-    return {
-      earned: 0,
-      total: 0
-    };
-  }
-
-  return {
-    earned: round(Math.min((earned / total) * weight, weight), 1),
-    total: weight
-  };
-};
-
 const sanitizeFeedbackQuestions = () => {
   return DEFAULT_FEEDBACK_QUESTIONS;
 };
 
-const getAssignedTeachers = (classInstance) => {
-  const teachers = Array.isArray(classInstance?.teachers)
-    ? classInstance.teachers.filter(Boolean)
-    : [];
-
-  if (teachers.length > 0) {
-    return teachers;
-  }
-
-  return classInstance?.teacher ? [classInstance.teacher] : [];
-};
-
-const getAssignedTeacherNames = (classInstance) => {
-  const names = getAssignedTeachers(classInstance)
-    .map((teacher) => teacher?.name)
-    .filter(Boolean);
-
-  return names.length > 0 ? names.join(', ') : 'Unassigned';
-};
-
-const getAssignedTeacherEmails = (classInstance) => (
-  getAssignedTeachers(classInstance)
-    .map((teacher) => teacher?.email)
-    .filter(Boolean)
-    .join(', ')
-);
-
-const ensureClassInstance = async (classInstanceOrId) => {
-  if (!classInstanceOrId) {
-    throw new Error('Class instance is required');
-  }
-
-  if (typeof classInstanceOrId === 'string' || !classInstanceOrId.course?.courseCode) {
-    const instanceId = typeof classInstanceOrId === 'string'
-      ? classInstanceOrId
-      : classInstanceOrId._id;
-    const instance = await populateClassInstance(ClassInstance.findById(instanceId));
-    if (!instance) {
-      throw new Error('Class instance not found');
-    }
-    return instance;
-  }
-
-  return classInstanceOrId;
-};
+// ─── Enrollment sync ───────────────────────────────────────────
 
 const syncRegularEnrollmentsForClassInstance = async (classInstanceOrId) => {
   const instance = await ensureClassInstance(classInstanceOrId);
@@ -194,80 +90,7 @@ const syncRegularEnrollmentsForClassInstance = async (classInstanceOrId) => {
   return documentsToInsert.length;
 };
 
-const buildAttendanceSummary = (attendanceRecord = [], teacherFilter = null) => {
-  const byDate = new Map();
-
-  attendanceRecord.forEach((record) => {
-    if (!record?.date) return;
-    if (teacherFilter && record.takenBy) {
-      const recordTeacherId = record.takenBy._id ? record.takenBy._id.toString() : record.takenBy.toString();
-      if (recordTeacherId !== teacherFilter) return;
-    } else if (teacherFilter && !record.takenBy) {
-      return;
-    }
-    const dateKey = toDateKey(record.date);
-    const takenById = record.takenBy?._id ? record.takenBy._id.toString() : (record.takenBy ? record.takenBy.toString() : null);
-    const takenByName = record.takenBy?.name || null;
-    byDate.set(dateKey, {
-      status: normalizeAttendanceStatus(record.status),
-      takenBy: takenById,
-      takenByName
-    });
-  });
-
-  const attendanceLog = Array.from(byDate.entries())
-    .sort(([left], [right]) => new Date(left) - new Date(right))
-    .map(([date, data]) => ({
-      date,
-      status: data.status,
-      takenBy: data.takenBy,
-      takenByName: data.takenByName
-    }));
-
-  const totalClasses = attendanceLog.length;
-  const presentCount = attendanceLog.filter((entry) => entry.status !== 'Absent').length;
-  const absentCount = totalClasses - presentCount;
-  const percentage = totalClasses > 0 ? (presentCount / totalClasses) * 100 : 0;
-
-  return {
-    attendanceLog,
-    totalClasses,
-    presentCount,
-    absentCount,
-    percentage: round(percentage, 1),
-    marks: getAttendanceMarks(percentage)
-  };
-};
-
-const buildMultiTeacherAttendance = (attendanceRecord = [], teacherIds = []) => {
-  if (teacherIds.length <= 1) {
-    return null;
-  }
-
-  const perTeacher = {};
-  let totalMarks = 0;
-  let barred = false;
-
-  teacherIds.forEach((teacherId) => {
-    const summary = buildAttendanceSummary(attendanceRecord, teacherId);
-    perTeacher[teacherId] = summary;
-    totalMarks += summary.marks;
-    if (summary.totalClasses > 0 && summary.percentage < 50) {
-      barred = true;
-    }
-  });
-
-  const averagedMarks = round(totalMarks / teacherIds.length, 1);
-
-  const combinedSummary = buildAttendanceSummary(attendanceRecord);
-
-  return {
-    perTeacher,
-    averagedMarks,
-    barred,
-    combined: combinedSummary
-  };
-};
+// ─── Assessment helpers ────────────────────────────────────────
 
 const getAssessmentTypeLabel = (assessment) => assessment.typeLabel || assessment.type;
 
@@ -290,8 +113,26 @@ const getAssessmentBuckets = (assessment, courseType) => {
   return ['assignment'];
 };
 
-const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
-  const courseType = classInstance.course?.type || 'Theory';
+const isAssignmentBucketType = (type) => ['Assignment', 'Presentation', 'Quiz', 'Custom'].includes(type);
+
+const buildAssessmentScoreEntry = (assessment, earned) => ({
+  id: assessment._id.toString(),
+  type: assessment.type,
+  typeLabel: getAssessmentTypeLabel(assessment),
+  title: assessment.title,
+  totalMarks: Number(assessment.totalMarks) || 0,
+  rawScore: earned,
+  mappedCO: assessment.mappedCO || '',
+  mappedPOs: assessment.mappedPOs || [],
+  finalPart: assessment.finalPart || '',
+  questionNo: assessment.questionNo || '',
+  assessmentDate: assessment.assessmentDate || null,
+  createdBy: assessment.createdBy?.name || null
+});
+
+// ─── Component calculation (CQ-3 extraction) ──────────────────
+
+const calculateAttendanceComponent = (enrollment, classInstance) => {
   const assignedTeachers = getAssignedTeachers(classInstance);
   const teacherIds = assignedTeachers.map((t) => (t._id ? t._id.toString() : t.toString()));
   const isMultiTeacher = teacherIds.length > 1;
@@ -308,8 +149,13 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
     ? multiTeacherAttendance.barred
     : (attendance.totalClasses > 0 && attendance.percentage < 50);
 
-  const markMap = new Map();
+  return { attendance, multiTeacherAttendance, effectiveAttendanceMarks, isBarred, isMultiTeacher, teacherIds };
+};
 
+const calculateAssessmentComponents = (assessments, enrollment, classInstance, effectiveAttendanceMarks, isMultiTeacher) => {
+  const courseType = classInstance.course?.type || 'Theory';
+
+  const markMap = new Map();
   (enrollment.marks || []).forEach((entry) => {
     if (!entry.assessment) return;
     const assessmentId = entry.assessment._id ? entry.assessment._id.toString() : entry.assessment.toString();
@@ -330,8 +176,6 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
   const ctScores = [];
   const ctTotals = [];
   const assessmentsWithScores = [];
-
-  const isAssignmentBucketType = (type) => ['Assignment', 'Presentation', 'Quiz', 'Custom'].includes(type);
 
   if (isMultiTeacher && courseType === 'Theory') {
     const assignmentByTeacher = {};
@@ -363,32 +207,17 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
         });
       }
 
-      assessmentsWithScores.push({
-        id: assessmentId,
-        type: assessment.type,
-        typeLabel: getAssessmentTypeLabel(assessment),
-        title: assessment.title,
-        totalMarks: total,
-        rawScore: earned,
-        mappedCO: assessment.mappedCO || '',
-        mappedPOs: assessment.mappedPOs || [],
-        finalPart: assessment.finalPart || '',
-        questionNo: assessment.questionNo || '',
-        assessmentDate: assessment.assessmentDate || null,
-        createdBy: assessment.createdBy?.name || null
-      });
+      assessmentsWithScores.push(buildAssessmentScoreEntry(assessment, earned));
     });
 
     const teacherAssignKeys = Object.keys(assignmentByTeacher);
     if (teacherAssignKeys.length > 0) {
       let cappedTotal = 0;
-      let maxTotal = 0;
       teacherAssignKeys.forEach((tid) => {
         const teacherTotal = assignmentTotalByTeacher[tid] || 0;
         const teacherEarned = assignmentByTeacher[tid] || 0;
         const scaledEarned = teacherTotal > 0 ? (teacherEarned / teacherTotal) * 10 : 0;
         cappedTotal += Math.min(scaledEarned, 10);
-        maxTotal += 10;
       });
       components.assignment.earned = round(cappedTotal / teacherAssignKeys.length, 1);
       components.assignment.total = 10;
@@ -410,20 +239,7 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
         });
       }
 
-      assessmentsWithScores.push({
-        id: assessmentId,
-        type: assessment.type,
-        typeLabel: getAssessmentTypeLabel(assessment),
-        title: assessment.title,
-        totalMarks: total,
-        rawScore: earned,
-        mappedCO: assessment.mappedCO || '',
-        mappedPOs: assessment.mappedPOs || [],
-        finalPart: assessment.finalPart || '',
-        questionNo: assessment.questionNo || '',
-        assessmentDate: assessment.assessmentDate || null,
-        createdBy: assessment.createdBy?.name || null
-      });
+      assessmentsWithScores.push(buildAssessmentScoreEntry(assessment, earned));
     });
   }
 
@@ -448,6 +264,10 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
     components.final = normalizeComponentToWeight(components.final, THEORY_COMPONENT_WEIGHTS.final);
   }
 
+  return { components, assessmentsWithScores, markMap };
+};
+
+const calculateOBEAttainment = (assessments, markMap, classInstance) => {
   const coTotals = {};
   const coScores = {};
   const classMappings = classInstance.coPoMapping || [];
@@ -515,6 +335,23 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
       return accumulator;
     }, {});
 
+  return { coEntries, poEntries };
+};
+
+// ─── computeStudentMetrics (CQ-3: now a thin orchestrator) ─────
+
+const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
+  const courseType = classInstance.course?.type || 'Theory';
+
+  const { attendance, multiTeacherAttendance, effectiveAttendanceMarks, isBarred, isMultiTeacher } =
+    calculateAttendanceComponent(enrollment, classInstance);
+
+  const { components, assessmentsWithScores, markMap } =
+    calculateAssessmentComponents(assessments, enrollment, classInstance, effectiveAttendanceMarks, isMultiTeacher);
+
+  const { coEntries, poEntries } =
+    calculateOBEAttainment(assessments, markMap, classInstance);
+
   const componentKeys = courseType === 'Theory'
     ? ['attendance', 'ct', 'assignment', 'final']
     : ['attendance', 'quiz', 'performance', 'viva', 'labFinal'];
@@ -537,51 +374,10 @@ const computeStudentMetrics = ({ enrollment, assessments, classInstance }) => {
   };
 };
 
-const buildClassSummary = async (classInstanceId) => {
-  const classInstance = await ensureClassInstance(classInstanceId);
-  await syncRegularEnrollmentsForClassInstance(classInstance);
+// ─── buildClassSummary ─────────────────────────────────────────
 
-  const [enrollments, assessments] = await Promise.all([
-    populateEnrollment(Enrollment.find({ classInstance: classInstance._id })).sort({ createdAt: 1 }),
-    Assessment.find({ classInstance: classInstance._id }).populate('createdBy', 'name email').sort({ createdAt: 1, title: 1 })
-  ]);
-
-  const roster = enrollments.map((enrollment) => {
-    const attendance = buildAttendanceSummary(enrollment.attendanceRecord || []);
-
-    return {
-      enrollmentId: enrollment._id,
-      studentId: enrollment.student?._id,
-      rollNumber: enrollment.student?.rollNumber || '',
-      name: enrollment.student?.name || '',
-      email: enrollment.student?.email || '',
-      type: enrollment.type || 'regular',
-      status: enrollment.status || 'active',
-      series: enrollment.student?.series,
-      section: enrollment.student?.section,
-      attendancePercentage: attendance.percentage,
-      attendanceCount: attendance.presentCount,
-      attendanceClasses: attendance.totalClasses
-    };
-  });
-
-  const activeRoster = roster.filter((student) => student.status !== 'hidden');
-  const attendanceDates = new Map();
-
-  enrollments.forEach((enrollment) => {
-    (enrollment.attendanceRecord || []).forEach((record) => {
-      if (record?.date) {
-        const dateKey = toDateKey(record.date);
-        if (!attendanceDates.has(dateKey)) {
-          const takenById = record.takenBy?._id ? record.takenBy._id.toString() : (record.takenBy ? record.takenBy.toString() : null);
-          const takenByName = record.takenBy?.name || null;
-          attendanceDates.set(dateKey, { takenBy: takenById, takenByName });
-        }
-      }
-    });
-  });
-
-  const counts = assessments.reduce((accumulator, assessment) => {
+const countAssessmentTypes = (assessments) => {
+  return assessments.reduce((accumulator, assessment) => {
     switch (assessment.type) {
       case 'CT':
         accumulator.ctsTaken += 1;
@@ -619,6 +415,58 @@ const buildClassSummary = async (classInstanceId) => {
     labFinalsTaken: 0,
     finalQuestions: 0
   });
+};
+
+const extractAttendanceDates = (enrollments) => {
+  const attendanceDates = new Map();
+
+  enrollments.forEach((enrollment) => {
+    (enrollment.attendanceRecord || []).forEach((record) => {
+      if (record?.date) {
+        const dateKey = toDateKey(record.date);
+        if (!attendanceDates.has(dateKey)) {
+          const takenById = record.takenBy?._id ? record.takenBy._id.toString() : (record.takenBy ? record.takenBy.toString() : null);
+          const takenByName = record.takenBy?.name || null;
+          attendanceDates.set(dateKey, { takenBy: takenById, takenByName });
+        }
+      }
+    });
+  });
+
+  return attendanceDates;
+};
+
+const buildClassSummary = async (classInstanceId) => {
+  const classInstance = await ensureClassInstance(classInstanceId);
+  await syncRegularEnrollmentsForClassInstance(classInstance);
+
+  const [enrollments, assessments] = await Promise.all([
+    populateEnrollment(Enrollment.find({ classInstance: classInstance._id })).sort({ createdAt: 1 }),
+    Assessment.find({ classInstance: classInstance._id }).populate('createdBy', 'name email').sort({ createdAt: 1, title: 1 })
+  ]);
+
+  const roster = enrollments.map((enrollment) => {
+    const attendance = buildAttendanceSummary(enrollment.attendanceRecord || []);
+
+    return {
+      enrollmentId: enrollment._id,
+      studentId: enrollment.student?._id,
+      rollNumber: enrollment.student?.rollNumber || '',
+      name: enrollment.student?.name || '',
+      email: enrollment.student?.email || '',
+      type: enrollment.type || 'regular',
+      status: enrollment.status || 'active',
+      series: enrollment.student?.series,
+      section: enrollment.student?.section,
+      attendancePercentage: attendance.percentage,
+      attendanceCount: attendance.presentCount,
+      attendanceClasses: attendance.totalClasses
+    };
+  });
+
+  const activeRoster = roster.filter((student) => student.status !== 'hidden');
+  const attendanceDates = extractAttendanceDates(enrollments);
+  const counts = countAssessmentTypes(assessments);
 
   return {
     classInstance: {
@@ -645,27 +493,14 @@ const buildClassSummary = async (classInstanceId) => {
   };
 };
 
-const buildClassEvaluation = async (classInstanceId) => {
-  const summary = await buildClassSummary(classInstanceId);
-  const classInstance = summary.classInstance;
-  const assessments = summary.assessments;
+// ─── buildClassEvaluation ──────────────────────────────────────
 
-  const enrollments = await populateEnrollment(
-    Enrollment.find({ classInstance: classInstance.id, status: { $ne: 'hidden' } })
-  ).sort({ createdAt: 1 });
-
-  const studentRows = [];
+const aggregateClassOBEStats = (studentRows) => {
   const coStats = {};
   const poStats = {};
 
-  enrollments.forEach((enrollment) => {
-    const metrics = computeStudentMetrics({
-      enrollment,
-      assessments,
-      classInstance
-    });
-
-    Object.entries(metrics.obe).forEach(([co, data]) => {
+  studentRows.forEach((row) => {
+    Object.entries(row.obe).forEach(([co, data]) => {
       if (!coStats[co]) {
         coStats[co] = { passed: 0, total: 0 };
       }
@@ -675,7 +510,7 @@ const buildClassEvaluation = async (classInstanceId) => {
       }
     });
 
-    Object.entries(metrics.poAttainment).forEach(([po, data]) => {
+    Object.entries(row.poAttainment).forEach(([po, data]) => {
       if (!poStats[po]) {
         poStats[po] = { passed: 0, total: 0 };
       }
@@ -683,45 +518,6 @@ const buildClassEvaluation = async (classInstanceId) => {
       if (data.percentage >= OBE_THRESHOLD) {
         poStats[po].passed += 1;
       }
-    });
-
-    const row = {
-      id: enrollment.student?.rollNumber || enrollment.student?._id?.toString(),
-      name: enrollment.student?.name || '',
-      att: metrics.marks.attendance.earned,
-      ct: metrics.marks.ct.earned,
-      assign: metrics.marks.assignment.earned,
-      final: metrics.marks.final.earned,
-      quiz: metrics.marks.quiz.earned,
-      performance: metrics.marks.performance.earned,
-      viva: metrics.marks.viva.earned,
-      labFinal: metrics.marks.labFinal.earned,
-      total: metrics.total.earned,
-      gpa: round(getGPA(metrics.total.earned), 2)
-    };
-
-    const studentAttainment = {
-      id: row.id,
-      name: row.name
-    };
-
-    Object.entries(metrics.poAttainment).forEach(([po, data]) => {
-      studentAttainment[po.toLowerCase()] = data.percentage;
-      studentAttainment[`${po.toLowerCase()}_obtained`] = data.obtained;
-      studentAttainment[`${po.toLowerCase()}_max`] = data.max;
-    });
-
-    Object.entries(metrics.obe).forEach(([co, data]) => {
-      studentAttainment[co.toLowerCase()] = data.percentage;
-      studentAttainment[`${co.toLowerCase()}_obtained`] = data.obtained;
-      studentAttainment[`${co.toLowerCase()}_max`] = data.max;
-    });
-
-    studentRows.push({
-      ...row,
-      obe: metrics.obe,
-      poAttainment: metrics.poAttainment,
-      studentAttainment
     });
   });
 
@@ -751,6 +547,64 @@ const buildClassEvaluation = async (classInstanceId) => {
       return accumulator;
     }, {});
 
+  return { coAttainment, poAttainment };
+};
+
+const buildClassEvaluation = async (classInstanceId) => {
+  const summary = await buildClassSummary(classInstanceId);
+  const classInstance = summary.classInstance;
+  const assessments = summary.assessments;
+
+  const enrollments = await populateEnrollment(
+    Enrollment.find({ classInstance: classInstance.id, status: { $ne: 'hidden' } })
+  ).sort({ createdAt: 1 });
+
+  const studentRows = enrollments.map((enrollment) => {
+    const metrics = computeStudentMetrics({
+      enrollment,
+      assessments,
+      classInstance
+    });
+
+    const row = {
+      id: enrollment.student?.rollNumber || enrollment.student?._id?.toString(),
+      name: enrollment.student?.name || '',
+      att: metrics.marks.attendance.earned,
+      ct: metrics.marks.ct.earned,
+      assign: metrics.marks.assignment.earned,
+      final: metrics.marks.final.earned,
+      quiz: metrics.marks.quiz.earned,
+      performance: metrics.marks.performance.earned,
+      viva: metrics.marks.viva.earned,
+      labFinal: metrics.marks.labFinal.earned,
+      total: metrics.total.earned,
+      gpa: round(getGPA(metrics.total.earned), 2)
+    };
+
+    const studentAttainment = { id: row.id, name: row.name };
+
+    Object.entries(metrics.poAttainment).forEach(([po, data]) => {
+      studentAttainment[po.toLowerCase()] = data.percentage;
+      studentAttainment[`${po.toLowerCase()}_obtained`] = data.obtained;
+      studentAttainment[`${po.toLowerCase()}_max`] = data.max;
+    });
+
+    Object.entries(metrics.obe).forEach(([co, data]) => {
+      studentAttainment[co.toLowerCase()] = data.percentage;
+      studentAttainment[`${co.toLowerCase()}_obtained`] = data.obtained;
+      studentAttainment[`${co.toLowerCase()}_max`] = data.max;
+    });
+
+    return {
+      ...row,
+      obe: metrics.obe,
+      poAttainment: metrics.poAttainment,
+      studentAttainment
+    };
+  });
+
+  const { coAttainment, poAttainment } = aggregateClassOBEStats(studentRows);
+
   return {
     classInstance,
     marksheet: {
@@ -778,12 +632,17 @@ const buildClassEvaluation = async (classInstanceId) => {
   };
 };
 
+// ─── Student Dashboard ─────────────────────────────────────────
+
 const getStudentDashboardData = async (studentId) => {
   const student = await User.findById(studentId).populate('department', 'name shortName');
   if (!student) {
     throw new Error('Student not found');
   }
 
+  const { populateClassInstance } = require('./teacherHelpers');
+
+  const ClassInstance = require('../models/ClassInstance');
   const matchingInstances = await populateClassInstance(
     ClassInstance.find({
       series: student.series,
@@ -892,6 +751,8 @@ const getStudentDashboardData = async (studentId) => {
     globalObe
   };
 };
+
+// ─── Exports ───────────────────────────────────────────────────
 
 module.exports = {
   DEFAULT_FEEDBACK_QUESTIONS,

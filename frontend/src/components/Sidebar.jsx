@@ -6,315 +6,37 @@ import { useSidebar } from '../contexts/SidebarContext';
 import { buildNextWindowState, DASHBOARD_HISTORY_KEY, HISTORY_CHANGE_EVENT } from '../hooks/useHistoryBackedState';
 import {
   LayoutDashboard,
-  Building2,
   BookOpen,
-  Users,
-  GraduationCap,
-  BookMarked,
-  Calendar,
-  ClipboardList,
-  CalendarCheck,
-  BarChart3,
-  MessageSquare,
-  FileText,
-  Pencil,
-  UserCog,
-  Target,
-  Search,
-  ChevronRight,
   PanelLeftClose,
   PanelLeftOpen,
-  ChevronDown,
   Loader2,
-  Star,
-  FlaskConical,
   Sun,
   Moon,
   LogOut,
   Bell,
   Megaphone,
-  UserCheck,
+  UserCog,
+  Search,
+  Star,
 } from 'lucide-react';
 import { useGetUnreadCountQuery } from '../store/slices/noticeSlice';
 import { useGetAdvisedSectionsQuery } from '../store/slices/courseAdvisorSlice';
 import NotificationDropdown from './NotificationDropdown';
 import './Sidebar.css';
 
-// ─── Helpers ───────────────────────────────────────────────
-
-const getHistoryKey = (role) => {
-  switch (role) {
-    case 'CENTRAL_ADMIN': return 'central-admin-dashboard';
-    case 'DEPT_ADMIN': return 'dept-admin-dashboard';
-    case 'TEACHER': return 'teacher-dashboard';
-    case 'STUDENT': return 'student-dashboard';
-    default: return '';
-  }
-};
-
-const getBasePath = (role) => {
-  switch (role) {
-    case 'CENTRAL_ADMIN': return '/central-admin';
-    case 'DEPT_ADMIN': return '/dept-admin';
-    case 'TEACHER': return '/teacher';
-    case 'STUDENT': return '/student';
-    default: return '/';
-  }
-};
-
-const getRoleLabel = (role) => {
-  switch (role) {
-    case 'CENTRAL_ADMIN': return 'Central Admin';
-    case 'DEPT_ADMIN': return 'Dept Admin';
-    case 'TEACHER': return 'Teacher';
-    case 'STUDENT': return 'Student';
-    default: return 'User';
-  }
-};
-
-const getRoleBadgeClass = (role) => {
-  switch (role) {
-    case 'CENTRAL_ADMIN': return 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300';
-    case 'DEPT_ADMIN': return 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300';
-    case 'TEACHER': return 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300';
-    case 'STUDENT': return 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300';
-    default: return 'bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-300';
-  }
-};
-
-const COURSE_COLORS = [
-  'text-blue-500 dark:text-blue-400',
-  'text-purple-500 dark:text-purple-400',
-  'text-emerald-500 dark:text-emerald-400',
-  'text-amber-500 dark:text-amber-400',
-  'text-pink-500 dark:text-pink-400',
-  'text-cyan-500 dark:text-cyan-400',
-  'text-rose-500 dark:text-rose-400',
-  'text-indigo-500 dark:text-indigo-400',
-];
-
-const getCourseColorClass = (id) => {
-  if (!id) return COURSE_COLORS[0];
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = id.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return COURSE_COLORS[Math.abs(hash) % COURSE_COLORS.length];
-};
-
-const getSectionLabel = (instance) =>
-  instance?.section === 'N/A' ? '' : `Sec ${instance?.section}`;
-
-const getCourseLabel = (item, role) => {
-  if (role === 'TEACHER') {
-    const code = item?.course?.courseCode || 'Course';
-    const sec = getSectionLabel(item);
-    return sec ? `${code} - ${sec}` : code;
-  }
-  // Student
-  return item?.code || 'Course';
-};
-
-const getCourseSubLabel = (item, role) => {
-  if (role === 'TEACHER') {
-    return item?.course?.courseName || '';
-  }
-  return item?.name || '';
-};
-
-// ─── Navigation Config by Role ─────────────────────────────
-
-const getCentralAdminNav = () => [
-  { type: 'item', name: 'Dashboard', tabKey: 'overview', icon: LayoutDashboard },
-  { type: 'item', name: 'Manage Notice', tabKey: 'notices', icon: Megaphone },
-  { type: 'section', label: 'Management' },
-  { type: 'item', name: 'Departments', tabKey: 'departments', icon: Building2 },
-  { type: 'item', name: 'Courses', tabKey: 'courses', icon: BookOpen },
-  { type: 'item', name: 'Teachers', tabKey: 'teachers', icon: Users },
-  { type: 'item', name: 'Students', tabKey: 'students', icon: GraduationCap },
-  { type: 'item', name: 'Series Management', tabKey: 'series', icon: Calendar },
-];
-
-const getDeptAdminNav = () => [
-  { type: 'item', name: 'Dashboard', tabKey: 'overview', icon: LayoutDashboard },
-  { type: 'item', name: 'Manage Notice', tabKey: 'notices', icon: Megaphone },
-  { type: 'section', label: 'Course Operations' },
-  { type: 'item', name: 'Course Management', tabKey: 'course_mgmt', icon: ClipboardList },
-  { type: 'item', name: 'Add / Edit Courses', tabKey: 'add_course', icon: BookMarked },
-  { type: 'section', label: 'People' },
-  { type: 'item', name: 'Teachers', tabKey: 'teachers', icon: Users },
-  { type: 'item', name: 'Students', tabKey: 'students', icon: GraduationCap },
-  { type: 'item', name: 'Course Advisors', tabKey: 'advisors', icon: UserCheck },
-  { type: 'section', label: 'Analytics' },
-  { type: 'item', name: 'Feedback Analytics', tabKey: 'reviews', icon: Star },
-];
-
-const getTeacherCourseChildren = (instance) => {
-  const isTheory = instance?.course?.type !== 'Sessional';
-  const isFinished = instance?.status === 'Finished';
-
-  if (isFinished) {
-    return [
-      { name: 'Overview', tabKey: 'course_page', icon: LayoutDashboard },
-      { name: 'Evaluation', tabKey: 'evaluation', icon: BarChart3 },
-      { name: 'Feedback', tabKey: 'feedback', icon: MessageSquare },
-      { name: 'CQI Report', tabKey: 'experience_report', icon: FileText },
-    ];
-  }
-
-  const children = [
-    { name: 'Overview', tabKey: 'course_page', icon: LayoutDashboard },
-    { name: 'Attendance', tabKey: 'attendance', icon: CalendarCheck },
-    isTheory
-      ? { name: 'Assessments', tabKey: 'assessment', icon: ClipboardList }
-      : { name: 'Assessments', tabKey: 'sessional_assessment', icon: BookOpen },
-  ];
-
-  if (isTheory) {
-    children.push({ name: 'Semester Final', tabKey: 'semester_final', icon: GraduationCap });
-  }
-
-  children.push(
-    { name: 'Manage Tools', tabKey: 'manage_assessments', icon: Pencil },
-    { name: 'Roster', tabKey: 'roster', icon: UserCog },
-    { name: 'Evaluation', tabKey: 'evaluation', icon: BarChart3 },
-    { name: 'Feedback', tabKey: 'feedback', icon: MessageSquare }
-  );
-
-  return children;
-};
-
-const getStudentCourseChildren = () => [
-  { name: 'Overview', tabKey: 'course_page', icon: LayoutDashboard },
-  { name: 'Attendance', tabKey: 'attendance_info', icon: CalendarCheck },
-  { name: 'Marks', tabKey: 'marksheet', icon: BarChart3 },
-  { name: 'OBE Progress', tabKey: 'obe_attainment', icon: Target },
-  { name: 'Feedback', tabKey: 'give_feedback', icon: MessageSquare },
-];
-
-// ─── Sub-components ──────────────────────────────────────────
-
-const NavItem = ({ item, isActive, onClick, collapsed }) => {
-  const Icon = item.icon;
-  return (
-    <button
-      onClick={onClick}
-      className={`sidebar-nav-item flex w-full items-center rounded-lg transition-all duration-150 group ${
-        collapsed ? 'justify-center px-2 py-3' : 'px-3 py-2.5 space-x-3'
-      } ${
-        isActive
-          ? 'active text-blue-700 dark:text-white font-semibold'
-          : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
-      }`}
-    >
-      {isActive && <span className="sidebar-active-indicator" />}
-      <Icon size={collapsed ? 22 : 18} className="flex-shrink-0 transition-transform duration-150 group-hover:scale-110" />
-      {!collapsed && <span className="text-sm truncate">{item.name}</span>}
-      {collapsed && <span className="sidebar-tooltip">{item.name}</span>}
-    </button>
-  );
-};
-
-const SectionLabel = ({ label, collapsed }) => {
-  if (collapsed) {
-    return <div className="mx-auto my-2 w-6 h-px bg-gray-200 dark:bg-white/10" />;
-  }
-  return <div className="sidebar-section-label">{label}</div>;
-};
-
-const CourseGroup = ({
-  course,
-  children,
-  isExpanded,
-  onToggle,
-  onChildClick,
-  activeTabKey,
-  selectedId,
-  collapsed,
-  role,
-  statusBadge,
-}) => {
-  const courseId = role === 'TEACHER'
-    ? course?._id
-    : (course?.classInstanceId || course?.id);
-  const isSelected = selectedId === courseId;
-  const label = getCourseLabel(course, role);
-  const subLabel = getCourseSubLabel(course, role);
-
-  const courseType = role === 'TEACHER' ? course?.course?.type : course?.type;
-  const isSessional = courseType === 'Sessional' || (course?.name || '').toLowerCase().includes('sessional');
-  const Icon = isSessional ? FlaskConical : BookOpen;
-  const colorClass = getCourseColorClass(courseId);
-
-  if (collapsed) {
-    return (
-      <button
-        onClick={() => onChildClick(course, children[0]?.tabKey || 'course_page')}
-        className={`sidebar-nav-item flex w-full items-center justify-center rounded-lg px-2 py-3 ${
-          isSelected ? 'active text-blue-700 dark:text-white' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
-        }`}
-      >
-        <Icon size={18} className={`flex-shrink-0 ${colorClass}`} />
-        <span className="sidebar-tooltip">{label}</span>
-      </button>
-    );
-  }
-
-  return (
-    <div className="mb-0.5">
-      <button
-        onClick={onToggle}
-        className={`sidebar-nav-item flex w-full items-center justify-between rounded-lg px-3 py-2 group ${
-          isSelected && !isExpanded ? 'active text-blue-700 dark:text-white' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
-        }`}
-      >
-        <div className="flex items-center space-x-2.5 min-w-0">
-          <Icon size={16} className={`flex-shrink-0 ${colorClass}`} />
-          <div className="min-w-0 text-left">
-            <span className="text-sm font-medium block truncate">{label}</span>
-            {subLabel && (
-              <span className="text-[10px] text-gray-500 block truncate leading-tight">{subLabel}</span>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center space-x-1.5 flex-shrink-0">
-          {statusBadge && (
-            <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${
-              statusBadge === 'Running' ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
-            }`}>
-              {statusBadge === 'Running' ? '●' : '○'}
-            </span>
-          )}
-          <ChevronRight
-            size={14}
-            className={`sidebar-chevron text-gray-500 ${isExpanded ? 'rotated' : ''}`}
-          />
-        </div>
-      </button>
-
-      <div className={`sidebar-group-children sidebar-course-child ${isExpanded ? 'expanded' : ''}`}>
-        {children.map((child) => {
-          const Icon = child.icon;
-          const isChildActive = isSelected && activeTabKey === child.tabKey;
-          return (
-            <button
-              key={child.tabKey}
-              onClick={() => onChildClick(course, child.tabKey)}
-              className={`sidebar-nav-item flex w-full items-center space-x-2.5 rounded-md px-3 py-1.5 ml-3 group ${
-                isChildActive
-                  ? 'active text-blue-700 dark:text-white font-medium'
-                  : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
-              }`}
-            >
-              <Icon size={14} className="flex-shrink-0 opacity-70" />
-              <span className="text-xs truncate">{child.name}</span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
+// ─── Extracted sub-components and config ────────────────────
+import { NavItem, SectionLabel } from './sidebar/NavItem';
+import { CourseGroup, FinishedCoursesGroup } from './sidebar/CourseGroup';
+import {
+  getHistoryKey,
+  getBasePath,
+  getRoleLabel,
+  getRoleBadgeClass,
+  getCentralAdminNav,
+  getDeptAdminNav,
+  getTeacherCourseChildren,
+  getStudentCourseChildren,
+} from './sidebar/sidebarConfig';
 
 // ─── Main Sidebar ─────────────────────────────────────────
 
@@ -727,75 +449,6 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         </div>
       )}
     </>
-  );
-};
-
-// ─── Finished Courses Wrapper ─────────────────────────────
-
-const FinishedCoursesGroup = ({
-  courses,
-  expandedCourses,
-  toggleCourseExpand,
-  handleCourseChildClick,
-  activeTabKey,
-  selectedId,
-  collapsed,
-  role,
-}) => {
-  const [groupExpanded, setGroupExpanded] = useState(false);
-
-  if (collapsed) {
-    return null; // Don't show finished courses in collapsed mode for cleanliness
-  }
-
-  return (
-    <div className="mt-1">
-      <button
-        onClick={() => setGroupExpanded((prev) => !prev)}
-        className="sidebar-nav-item flex w-full items-center justify-between rounded-lg px-3 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
-      >
-        <div className="flex items-center space-x-2.5">
-          <GraduationCap size={16} className="opacity-60" />
-          <span className="text-xs font-medium">Finished Courses</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="text-[10px] bg-gray-200 text-gray-600 dark:bg-gray-600/30 dark:text-gray-400 px-1.5 py-0.5 rounded-full font-bold">
-            {courses.length}
-          </span>
-          <ChevronDown
-            size={14}
-            className={`transition-transform duration-200 ${groupExpanded ? 'rotate-180' : ''}`}
-          />
-        </div>
-      </button>
-
-      <div className={`sidebar-group-children ${groupExpanded ? 'expanded' : ''}`}>
-        {courses.map((course) => {
-          const courseId = role === 'TEACHER'
-            ? course._id
-            : (course.classInstanceId || course.id);
-          const children = role === 'TEACHER'
-            ? getTeacherCourseChildren(course)
-            : getStudentCourseChildren();
-
-          return (
-            <CourseGroup
-              key={courseId}
-              course={course}
-              children={children}
-              isExpanded={expandedCourses.has(courseId)}
-              onToggle={() => toggleCourseExpand(courseId)}
-              onChildClick={handleCourseChildClick}
-              activeTabKey={activeTabKey}
-              selectedId={selectedId}
-              collapsed={collapsed}
-              role={role}
-              statusBadge="Finished"
-            />
-          );
-        })}
-      </div>
-    </div>
   );
 };
 
