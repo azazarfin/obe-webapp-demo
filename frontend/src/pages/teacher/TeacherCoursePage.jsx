@@ -75,8 +75,8 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
         },
         {
           key: 'experience_report',
-          title: 'Submit Feedback and Report',
-          description: 'Reserved for the upcoming teacher feedback workflow',
+          title: 'OBE Course Evaluation Report',
+          description: 'Self-assess, review CO attainment, and export the official report',
           icon: <FileText size={22} className="text-indigo-600 dark:text-indigo-400 mr-3 group-hover:scale-110 transition-transform" />,
           tone: 'indigo'
         }
@@ -101,8 +101,8 @@ const TeacherCoursePage = ({ classInstance, onNavigate, mode = 'teacher-running'
         },
         {
           key: 'experience_report',
-          title: 'Teacher Feedback and Report',
-          description: 'Reserved for the upcoming teacher feedback workflow',
+          title: 'OBE Course Evaluation Report',
+          description: 'View instructor self-assessment and course evaluation report',
           icon: <FileText size={22} className="text-indigo-600 dark:text-indigo-400 mr-3 group-hover:scale-110 transition-transform" />,
           tone: 'indigo'
         }

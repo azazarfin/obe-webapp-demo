@@ -357,9 +357,8 @@ const DeptCourseManagement = () => {
         {activeView === 'experience_report' && (
           <InstructorExperienceReport
             classInstance={selectedInstance}
-            title="Teacher Feedback and Report"
-            description="This page will stay blank until the teacher feedback and report workflow is implemented."
             onBack={goBack}
+            readOnly
           />
         )}
       </div>

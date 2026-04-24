@@ -146,7 +146,7 @@ const getDeptAdminNav = () => [
   { type: 'item', name: 'Students', tabKey: 'students', icon: GraduationCap },
   { type: 'item', name: 'Course Advisors', tabKey: 'advisors', icon: UserCheck },
   { type: 'section', label: 'Analytics' },
-  { type: 'item', name: 'Course Reviews', tabKey: 'reviews', icon: Star },
+  { type: 'item', name: 'Feedback Analytics', tabKey: 'reviews', icon: Star },
 ];
 
 const getTeacherCourseChildren = (instance) => {

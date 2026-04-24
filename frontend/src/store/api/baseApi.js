@@ -43,7 +43,9 @@ export const baseApi = createApi({
     'NoticeCount',
     'CourseAdvisors',
     'AdvisedSections',
-    'SectionStudents'
+    'SectionStudents',
+    'InstructorReport',
+    'FeedbackAnalytics'
   ],
   endpoints: () => ({}),
 });

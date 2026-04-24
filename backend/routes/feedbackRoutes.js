@@ -1,5 +1,6 @@
 const express = require('express');
 const ClassInstance = require('../models/ClassInstance');
+const Course = require('../models/Course');
 const Enrollment = require('../models/Enrollment');
 const Feedback = require('../models/Feedback');
 const User = require('../models/User');
@@ -76,6 +77,82 @@ const ensureFeedbackAccess = async (req, classInstance, options = {}) => {
     throw createHttpError(403, 'Forbidden: Insufficient permissions');
   }
 };
+
+// ---- Department-wide student feedback summary (batch) ----
+router.get('/department-summary', verifyToken, async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.user.id).populate('department', DEPARTMENT_SELECT);
+    if (!currentUser) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    const departmentId = req.query.department || currentUser.department?._id;
+    if (!departmentId) {
+      return res.status(400).json({ error: 'Department is required' });
+    }
+
+    // Only DEPT_ADMIN or CENTRAL_ADMIN
+    if (req.user.role !== 'DEPT_ADMIN' && req.user.role !== 'CENTRAL_ADMIN') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    const courseIds = await Course.find({ department: departmentId }).distinct('_id');
+    const classInstances = await ClassInstance.find({ course: { $in: courseIds } })
+      .populate('course', 'courseCode courseName type')
+      .populate('teacher', 'name email designation')
+      .populate('teachers', 'name email designation')
+      .sort({ series: -1, createdAt: -1 });
+
+    const questions = sanitizeFeedbackQuestions();
+
+    const summaries = await Promise.all(classInstances.map(async (ci) => {
+      const [feedbacks, enrollmentCount] = await Promise.all([
+        Feedback.find({ classInstance: ci._id }),
+        Enrollment.countDocuments({ classInstance: ci._id, status: { $ne: 'hidden' } })
+      ]);
+
+      const participation = feedbacks.length;
+      const averages = questions.map((question) => {
+        const scores = feedbacks
+          .map((f) => f.ratings.find((r) => r.attribute === question)?.score)
+          .filter((s) => typeof s === 'number');
+        if (scores.length === 0) return 0;
+        return Number((scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2));
+      });
+
+      const overallAverage = averages.length > 0
+        ? Number((averages.filter((a) => a > 0).reduce((a, b) => a + b, 0) / Math.max(averages.filter((a) => a > 0).length, 1)).toFixed(2))
+        : 0;
+
+      const suggestions = feedbacks
+        .map((f) => f.suggestions)
+        .filter((s) => typeof s === 'string' && s.trim().length > 0);
+
+      const teachers = (ci.teachers?.length > 0 ? ci.teachers : [ci.teacher]).filter(Boolean);
+
+      return {
+        classInstanceId: ci._id,
+        courseCode: ci.course?.courseCode || '',
+        courseName: ci.course?.courseName || '',
+        courseType: ci.course?.type || 'Theory',
+        section: ci.section || 'N/A',
+        series: ci.series,
+        status: ci.status,
+        teachers: teachers.map((t) => ({ _id: t._id, name: t.name, designation: t.designation })),
+        participation,
+        totalStudents: enrollmentCount,
+        averages,
+        overallAverage,
+        suggestions,
+        feedbackPublished: Boolean(ci.feedbackPublished)
+      };
+    }));
+
+    res.json({ summaries, questions });
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message || 'Server error fetching department feedback summary' });
+  }
+});
 
 router.get('/class/:classInstanceId', verifyToken, async (req, res) => {
   try {

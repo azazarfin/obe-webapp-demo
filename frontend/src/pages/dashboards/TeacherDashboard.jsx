@@ -145,8 +145,6 @@ const TeacherDashboard = () => {
         return (
           <InstructorExperienceReport
             classInstance={selectedInstance}
-            title="Submit Feedback and Report"
-            description="This page will stay blank until the teacher feedback and report workflow is implemented."
             onBack={goBack}
           />
         );

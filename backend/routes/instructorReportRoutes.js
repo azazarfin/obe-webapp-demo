@@ -11,6 +11,10 @@ router.get('/', verifyToken, async (req, res) => {
   try {
     const filter = {};
 
+    if (req.query.classInstance) {
+      filter.classInstance = req.query.classInstance;
+    }
+
     if (req.query.department) {
       const courseIds = await Course.find({ department: req.query.department }).distinct('_id');
       const classInstanceIds = await ClassInstance.find({ course: { $in: courseIds } }).distinct('_id');
@@ -53,6 +57,7 @@ router.post('/', verifyToken, requireRole('TEACHER'), async (req, res) => {
       classInstance: classInstance._id,
       teacher: req.user.id,
       ratings: Array.isArray(req.body.ratings) ? req.body.ratings : [],
+      courseOutcomes: Array.isArray(req.body.courseOutcomes) ? req.body.courseOutcomes : [],
       suggestions: {
         syllabus: req.body.suggestions?.syllabus || '',
         teaching: req.body.suggestions?.teaching || '',

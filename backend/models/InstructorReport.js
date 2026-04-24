@@ -7,6 +7,10 @@ const instructorReportSchema = new mongoose.Schema({
     attribute: { type: String, required: true },
     score: { type: Number, min: 1, max: 5, required: true }
   }],
+  courseOutcomes: [{
+    code: { type: String, required: true },       // e.g. "CO1"
+    description: { type: String, default: '' }     // instructor-provided CO description
+  }],
   suggestions: {
     syllabus: { type: String },
     teaching: { type: String },
