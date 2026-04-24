@@ -5,10 +5,12 @@ const User = require('../models/User');
 const { calculateBestOfNAverage } = require('./obeEngine');
 
 const DEFAULT_FEEDBACK_QUESTIONS = [
-  'Does the teacher clearly explain the concepts?',
-  'Is the syllabus material up to date?',
-  'Are the assessments fair and aligned with what was taught?',
-  'Are teaching-learning facilities (labs, projectors) adequate?'
+  'Level of effort you put into the course',
+  'The course contents met the CLOs.',
+  'The course contents were well structured and arranged properly.',
+  'The course contents were updated and effective in developing professional skills.',
+  'The assessment rubrics were fair and clear enough.',
+  'The assessment tools were appropriate to evaluate the CLOs.'
 ];
 
 const OBE_THRESHOLD = 50;
@@ -92,11 +94,8 @@ const normalizeComponentToWeight = (component, weight) => {
   };
 };
 
-const sanitizeFeedbackQuestions = (questions = []) => {
-  const cleaned = questions
-    .map((question) => String(question || '').trim())
-    .filter(Boolean);
-  return cleaned.length > 0 ? cleaned : DEFAULT_FEEDBACK_QUESTIONS;
+const sanitizeFeedbackQuestions = () => {
+  return DEFAULT_FEEDBACK_QUESTIONS;
 };
 
 const getAssignedTeachers = (classInstance) => {

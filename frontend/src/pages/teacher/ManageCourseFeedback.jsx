@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Send, PieChart, Clock, PenTool, Loader2 } from 'lucide-react';
+import { Send, PieChart, Clock, PenTool, Loader2, Download } from 'lucide-react';
 import api from '../../utils/api';
 import { useHistoryBackedState } from '../../hooks/useHistoryBackedState';
+import { exportFeedbackToExcel } from '../../utils/excelExport';
 
 const INITIAL_FEEDBACK_STATE = { activeTab: 'setup' };
 
 const ManageCourseFeedback = ({ classInstance }) => {
   const [isPublished, setIsPublished] = useState(false);
   const [questions, setQuestions] = useState([]);
-  const [newQuestion, setNewQuestion] = useState('');
-  const [results, setResults] = useState({ participation: 0, totalStudents: 0, averages: [] });
+  const [results, setResults] = useState({ participation: 0, totalStudents: 0, averages: [], suggestions: [] });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const historyKey = `course-feedback-${classInstance?._id || 'default'}`;
@@ -31,7 +32,8 @@ const ManageCourseFeedback = ({ classInstance }) => {
         setResults({
           participation: data.participation || 0,
           totalStudents: data.totalStudents || 0,
-          averages: Array.isArray(data.averages) ? data.averages : []
+          averages: Array.isArray(data.averages) ? data.averages : [],
+          suggestions: Array.isArray(data.suggestions) ? data.suggestions : []
         });
       } catch (err) {
         setError(err.message);
@@ -43,16 +45,21 @@ const ManageCourseFeedback = ({ classInstance }) => {
     fetchFeedbackData();
   }, [classInstance?._id]);
 
-  const handleAddQuestion = (e) => {
-    e.preventDefault();
-    if (newQuestion.trim() !== '') {
-      setQuestions([...questions, newQuestion.trim()]);
-      setNewQuestion('');
-    }
-  };
 
-  const handleRemoveQuestion = (index) => {
-    setQuestions(questions.filter((_, itemIndex) => itemIndex !== index));
+
+  const handleExport = async () => {
+    if (!classInstance?._id) return;
+    try {
+      setExporting(true);
+      setError('');
+      const data = await api.get(`/feedback/class/${classInstance._id}/export-data`);
+      const courseName = `${classInstance.course?.courseCode || 'Course'}_Sec_${classInstance.section}_${classInstance.series}`;
+      await exportFeedbackToExcel(data.feedbacks, data.questions, courseName);
+    } catch (err) {
+      setError(err.message || 'Failed to export data');
+    } finally {
+      setExporting(false);
+    }
   };
 
   const handleSaveConfig = async (published = isPublished) => {
@@ -63,18 +70,18 @@ const ManageCourseFeedback = ({ classInstance }) => {
       setError('');
       setMessage('');
       await api.put(`/feedback/class/${classInstance._id}/config`, {
-        questions,
         published
       });
       setIsPublished(published);
-      setMessage(published ? 'Feedback form published successfully.' : 'Feedback configuration saved.');
+      setMessage(published ? 'Feedback form published successfully.' : 'Feedback form closed successfully.');
       const data = await api.get(`/feedback/class/${classInstance._id}`);
       setQuestions(Array.isArray(data.questions) ? data.questions : []);
       setIsPublished(Boolean(data.published));
       setResults({
         participation: data.participation || 0,
         totalStudents: data.totalStudents || 0,
-        averages: Array.isArray(data.averages) ? data.averages : []
+        averages: Array.isArray(data.averages) ? data.averages : [],
+        suggestions: Array.isArray(data.suggestions) ? data.suggestions : []
       });
     } catch (err) {
       setError(err.message);
@@ -112,54 +119,26 @@ const ManageCourseFeedback = ({ classInstance }) => {
       {error && <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded text-sm mb-4">{error}</div>}
 
       {activeTab === 'setup' ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="col-span-1 md:col-span-2 space-y-4">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <h3 className="font-semibold text-lg text-gray-800 dark:text-gray-200 flex items-center">
-                  <PenTool className="mr-2" size={18} /> Edit Questionnaire
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">These questions are shown to students on a 1-5 scale.</p>
-              </div>
-              <button onClick={() => handleSaveConfig(false)} disabled={saving || isPublished} className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-60">
-                Save Draft
-              </button>
-            </div>
-
-            <ul className="space-y-3">
-              {questions.map((question, index) => (
-                <li key={`${question}-${index}`} className="flex justify-between items-center bg-gray-50 dark:bg-[#2d2d2d] p-3 rounded-md border border-gray-200 dark:border-gray-700">
-                  <span className="text-sm text-gray-800 dark:text-gray-200 font-medium">{index + 1}. {question}</span>
-                  <button onClick={() => handleRemoveQuestion(index)} disabled={isPublished || saving} className="text-red-500 hover:text-red-700 text-sm font-bold px-2 disabled:opacity-50">X</button>
-                </li>
-              ))}
-            </ul>
-
-            <form onSubmit={handleAddQuestion} className="flex mt-4">
-              <input type="text" placeholder="Type a new custom question..." value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} disabled={isPublished || saving} className="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-white dark:bg-[#1e1e1e] text-gray-900 dark:text-white outline-none focus:border-ruet-blue disabled:opacity-50" />
-              <button disabled={isPublished || saving} type="submit" className="bg-gray-200 text-gray-800 px-4 rounded-r-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors font-medium disabled:opacity-50">Add</button>
-            </form>
-          </div>
-
-          <div className="col-span-1">
-            <div className={`p-6 rounded-lg border flex flex-col items-center justify-center h-full text-center ${isPublished ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' : 'bg-gray-50 border-gray-200 dark:bg-[#2d2d2d] dark:border-gray-700'}`}>
+        <div className="flex justify-center mt-8 mb-4">
+          <div className="w-full max-w-md">
+            <div className={`p-8 rounded-lg border flex flex-col items-center justify-center text-center shadow-sm ${isPublished ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' : 'bg-gray-50 border-gray-200 dark:bg-[#2d2d2d] dark:border-gray-700'}`}>
               {isPublished ? (
                 <>
-                  <div className="w-16 h-16 bg-green-100 dark:bg-green-800/50 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 mb-4">
-                    <Send size={32} />
+                  <div className="w-20 h-20 bg-green-100 dark:bg-green-800/50 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 mb-6 shadow-sm">
+                    <Send size={40} />
                   </div>
-                  <h3 className="text-xl font-bold text-green-700 dark:text-green-400 mb-2">Form is Live</h3>
-                  <p className="text-sm text-green-600 dark:text-green-500 mb-6">Students can submit anonymous feedback from their portal.</p>
-                  <button onClick={handlePublishToggle} disabled={saving} className="w-full py-2 border border-red-500 text-red-600 font-bold rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-60">Close Form</button>
+                  <h3 className="text-2xl font-bold text-green-700 dark:text-green-400 mb-3">Form is Live</h3>
+                  <p className="text-gray-600 dark:text-green-500 mb-8">Students can submit anonymous feedback from their portal using the standardized feedback form.</p>
+                  <button onClick={handlePublishToggle} disabled={saving} className="w-full py-3 border-2 border-red-500 text-red-600 font-bold rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-60 text-lg">Close Feedback Form</button>
                 </>
               ) : (
                 <>
-                  <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 mb-4">
-                    <Clock size={32} />
+                  <div className="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 mb-6 shadow-sm">
+                    <Clock size={40} />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-2">Form is Closed</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Edit your questions, save the draft, then publish when you are ready to collect feedback.</p>
-                  <button onClick={handlePublishToggle} disabled={saving || questions.length === 0} className="w-full py-2 bg-ruet-blue text-white font-bold rounded-md hover:bg-ruet-dark transition-colors disabled:opacity-60">Publish Form</button>
+                  <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-3">Form is Closed</h3>
+                  <p className="text-gray-500 dark:text-gray-400 mb-8">Publish the standardized feedback form to start collecting responses from students.</p>
+                  <button onClick={handlePublishToggle} disabled={saving} className="w-full py-3 bg-ruet-blue text-white font-bold rounded-lg hover:bg-ruet-dark transition-colors disabled:opacity-60 text-lg shadow-sm">Publish Feedback Form</button>
                 </>
               )}
             </div>
@@ -182,7 +161,17 @@ const ManageCourseFeedback = ({ classInstance }) => {
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Aggregated Ratings (Out of 5)</h3>
+            <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Aggregated Ratings (Out of 5)</h3>
+              <button 
+                onClick={handleExport}
+                disabled={exporting || results.participation === 0}
+                className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-60 text-sm font-medium shadow-sm"
+              >
+                {exporting ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Download size={16} className="mr-2" />}
+                Export to Excel
+              </button>
+            </div>
             <div className="space-y-4">
               {questions.length > 0 ? questions.map((question, index) => {
                 const average = results.averages[index] || 0;
@@ -202,6 +191,19 @@ const ManageCourseFeedback = ({ classInstance }) => {
               )}
             </div>
           </div>
+
+          {results.suggestions && results.suggestions.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Student Suggestions</h3>
+              <div className="space-y-4">
+                {results.suggestions.map((suggestion, idx) => (
+                  <div key={idx} className="bg-gray-50 dark:bg-[#2d2d2d] border border-gray-200 dark:border-gray-700 p-4 rounded-lg">
+                    <p className="text-gray-800 dark:text-gray-200 text-sm whitespace-pre-wrap">{suggestion}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

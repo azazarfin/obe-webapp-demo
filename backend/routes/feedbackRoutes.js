@@ -104,11 +104,16 @@ router.get('/class/:classInstanceId', verifyToken, async (req, res) => {
       return Number((total / scores.length).toFixed(1));
     });
 
+    const suggestions = feedbacks
+      .map((f) => f.suggestions)
+      .filter((s) => typeof s === 'string' && s.trim().length > 0);
+
     const hasSubmitted = req.user.role === 'STUDENT'
       ? Boolean(await Feedback.findOne({ classInstance: classInstance._id, student: req.user.id }).select('_id'))
       : false;
 
     res.json({
+      suggestions,
       questions,
       published: Boolean(classInstance.feedbackPublished),
       participation,
@@ -122,6 +127,31 @@ router.get('/class/:classInstanceId', verifyToken, async (req, res) => {
   }
 });
 
+router.get('/class/:classInstanceId/export-data', verifyToken, async (req, res) => {
+  try {
+    const classInstance = await loadClassInstanceForAccess(req.params.classInstanceId);
+    await ensureFeedbackAccess(req, classInstance);
+
+    const feedbacks = await Feedback.find({ classInstance: classInstance._id }).sort({ createdAt: 1 });
+    
+    const questions = sanitizeFeedbackQuestions();
+
+    const data = feedbacks.map((f) => ({
+      id: f._id,
+      timestamp: f.createdAt,
+      ratings: f.ratings.map((r) => ({ attribute: r.attribute, score: r.score })),
+      suggestions: f.suggestions
+    }));
+
+    res.json({
+      questions,
+      feedbacks: data
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message || 'Server error fetching export data' });
+  }
+});
+
 router.put('/class/:classInstanceId/config', verifyToken, async (req, res) => {
   try {
     const classInstance = await loadClassInstanceForAccess(req.params.classInstanceId);
@@ -129,9 +159,7 @@ router.put('/class/:classInstanceId/config', verifyToken, async (req, res) => {
 
     const payload = {};
 
-    if (Array.isArray(req.body.questions)) {
-      payload.feedbackQuestions = sanitizeFeedbackQuestions(req.body.questions);
-    }
+    // Custom questions are no longer editable, ignore req.body.questions
 
     if (typeof req.body.published === 'boolean') {
       payload.feedbackPublished = req.body.published;
@@ -229,7 +257,8 @@ router.post('/class/:classInstanceId/submit', verifyToken, requireRole('STUDENT'
     await Feedback.create({
       classInstance: classInstance._id,
       student: req.user.id,
-      ratings: cleanedRatings
+      ratings: cleanedRatings,
+      suggestions: String(req.body.suggestions || '').trim()
     });
 
     res.status(201).json({ message: 'Feedback submitted successfully' });

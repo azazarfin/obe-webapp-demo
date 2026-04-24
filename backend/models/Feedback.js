@@ -6,7 +6,8 @@ const feedbackSchema = new mongoose.Schema({
   ratings: [{
     attribute: { type: String, required: true },
     score: { type: Number, min: 1, max: 5, required: true }
-  }]
+  }],
+  suggestions: { type: String, default: '' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Feedback', feedbackSchema);

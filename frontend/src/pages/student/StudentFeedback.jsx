@@ -5,11 +5,52 @@ import api from '../../utils/api';
 const StudentFeedback = ({ course, onBack }) => {
   const [ratings, setRatings] = useState({});
   const [questions, setQuestions] = useState([]);
+  const [suggestions, setSuggestions] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [feedbackInfo, setFeedbackInfo] = useState({ published: false, hasSubmitted: false, canSubmit: false });
+
+  const RatingTable = ({ tableQuestions, startIndex, ratingsState, handleRating }) => (
+    <div className="w-full overflow-x-auto bg-gray-50/50 dark:bg-[#252525] rounded-lg">
+      <table className="w-full text-sm text-left">
+        <thead>
+          <tr className="border-b border-gray-200 dark:border-gray-700">
+            <th className="py-3 px-4 font-medium text-gray-500 dark:text-gray-400 w-1/2"></th>
+            <th className="py-3 px-2 font-medium text-center text-gray-500 dark:text-gray-400 w-24">Poor</th>
+            <th className="py-3 px-2 font-medium text-center text-gray-500 dark:text-gray-400 w-24">Fair</th>
+            <th className="py-3 px-2 font-medium text-center text-gray-500 dark:text-gray-400 w-24">Satisfactory</th>
+            <th className="py-3 px-2 font-medium text-center text-gray-500 dark:text-gray-400 w-24">Very good</th>
+            <th className="py-3 px-2 font-medium text-center text-gray-500 dark:text-gray-400 w-24">Excellent</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tableQuestions.map((q, idx) => {
+            const qId = `q${startIndex + idx + 1}`;
+            return (
+              <tr key={qId} className="border-b border-gray-100 dark:border-gray-800 hover:bg-white dark:hover:bg-[#2a2a2a] transition-colors">
+                <td className="py-4 px-4 text-gray-800 dark:text-gray-200">{q}</td>
+                {[1, 2, 3, 4, 5].map((val) => (
+                  <td key={val} className="py-4 px-2 text-center">
+                    <input
+                      type="radio"
+                      name={qId}
+                      value={val}
+                      checked={ratingsState[qId] === val}
+                      onChange={() => handleRating(qId, val)}
+                      required
+                      className="w-5 h-5 cursor-pointer text-ruet-blue border-gray-300 focus:ring-ruet-blue dark:bg-[#2d2d2d] dark:border-gray-600"
+                    />
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
 
   useEffect(() => {
     const fetchFeedbackConfig = async () => {
@@ -57,7 +98,8 @@ const StudentFeedback = ({ course, onBack }) => {
         ratings: questionEntries.map((question) => ({
           attribute: question.text,
           score: ratings[question.id]
-        }))
+        })),
+        suggestions
       });
       setSubmitted(true);
     } catch (err) {
@@ -111,34 +153,51 @@ const StudentFeedback = ({ course, onBack }) => {
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="space-y-6">
-              {questionEntries.map((question, index) => (
-                <div key={question.id} className="border-b border-gray-100 dark:border-gray-800 pb-5">
-                  <p className="font-medium text-gray-800 dark:text-gray-200 mb-3">{index + 1}. {question.text}</p>
-                  <div className="flex flex-wrap gap-4">
-                    {[
-                      { val: 1, label: 'Strongly Disagree' },
-                      { val: 2, label: 'Disagree' },
-                      { val: 3, label: 'Neutral' },
-                      { val: 4, label: 'Agree' },
-                      { val: 5, label: 'Strongly Agree' }
-                    ].map((option) => (
-                      <label key={option.val} className="flex items-center space-x-2 cursor-pointer group">
-                        <input
-                          type="radio"
-                          name={question.id}
-                          value={option.val}
-                          checked={ratings[question.id] === option.val}
-                          onChange={() => handleRatingChange(question.id, option.val)}
-                          required
-                          className="w-4 h-4 text-ruet-blue border-gray-300 focus:ring-ruet-blue dark:bg-[#2d2d2d] dark:border-gray-600"
-                        />
-                        <span className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200">{option.label}</span>
-                      </label>
-                    ))}
+            <div className="space-y-8">
+              {questions.length >= 6 && (
+                <>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Level of effort <span className="text-red-500">*</span></h3>
+                    <RatingTable 
+                      tableQuestions={[questions[0]]} 
+                      startIndex={0} 
+                      ratingsState={ratings} 
+                      handleRating={handleRatingChange} 
+                    />
                   </div>
-                </div>
-              ))}
+
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">PART I: Course Contents <span className="text-red-500">*</span></h3>
+                    <RatingTable 
+                      tableQuestions={[questions[1], questions[2], questions[3]]} 
+                      startIndex={1} 
+                      ratingsState={ratings} 
+                      handleRating={handleRatingChange} 
+                    />
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">PART II: Assessment Policy <span className="text-red-500">*</span></h3>
+                    <RatingTable 
+                      tableQuestions={[questions[4], questions[5]]} 
+                      startIndex={4} 
+                      ratingsState={ratings} 
+                      handleRating={handleRatingChange} 
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className="bg-white dark:bg-[#1e1e1e] p-6 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Any suggestions</h3>
+                <textarea
+                  value={suggestions}
+                  onChange={(e) => setSuggestions(e.target.value)}
+                  placeholder="Your answer"
+                  className="w-full border-b border-gray-300 dark:border-gray-600 bg-transparent py-2 px-1 focus:outline-none focus:border-ruet-blue dark:focus:border-blue-400 dark:text-white transition-colors resize-none"
+                  rows={2}
+                />
+              </div>
             </div>
 
             <div className="mt-8 flex justify-end">
